@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+
+# Macro Begin: /home/shved/Projects/3D/FCMacros/WholesCompounds.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
+import FreeCAD
+import Part
+
+
+Data = App.activeDocument().getObjectsByLabel('Data')[0]
+NumRows = int(Data.NumRows)
+NumColumns = int(Data.NumColumns)
+NumHoles = int(Data.NumHoles)
+Hole = App.activeDocument().getObjectsByLabel('Hole')[0]
+
+Compounds = []
+
+def CreateCompoundHelp(name, x, y):
+    try:
+        App.activeDocument().removeObject(name)
+    except BaseException as e:
+        pass
+    c = App.activeDocument().addObject("Part::Compound", name)
+    c.Links = [Hole,]
+    if x:
+        c.setExpression('Placement.Base.x', x)
+    if y:
+        c.setExpression('Placement.Base.y', y)
+    Compounds.append(c)
+
+def CreateCompound(x, y):
+    name = "Hole_" + str(x + 1) + "_" + str(y + 1)
+    extrax = ""
+    if y % 2 > 0:
+        extrax = "+ Data.XHoleSpace/2"
+    CreateCompoundHelp(name, u'Data.XHoleSpace * ' + str(x) + extrax,
+                             u'Data.YHoleSpace * ' + str(y) + u'+ Data.Gap - Data.Width/2 + Data.YHoleSpace/2')
+
+for r in range(NumRows):
+    for c in range(NumColumns):
+        CreateCompound(c, r)
+
+if NumRows*NumColumns < NumHoles:
+#    CreateCompoundHelp("Hole_" + str(NumColumns + 1), u'Data.XHoleSpace * ' + str(NumColumns), None)
+    CreateCompound(NumColumns, 0)
+
+c = App.activeDocument().getObject('Holes')
+
+if not c:
+    c = App.activeDocument().addObject("Part::Compound", AllCompoundsName)
+c.Links = Compounds
+
+App.ActiveDocument.recompute()
+# Macro End: /home/shved/Projects/3D/FCMacros/WholesCompounds.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++

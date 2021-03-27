@@ -1,0 +1,8 @@
+# -*- coding: utf-8 -*-
+
+# Macro Begin: /home/shved/Projects/3D/FCMacros/PlacementAccess.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
+import FreeCAD
+
+FreeCAD.getDocument("Unnamed").getObject("Compound001").Placement = App.Placement(App.Vector(100,0,0),App.Rotation(App.Vector(0,0,1),0))
+App.getDocument('Unnamed').Compound001.setExpression('Placement.Base.x', u'Data.Length')
+# Macro End: /home/shved/Projects/3D/FCMacros/PlacementAccess.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++

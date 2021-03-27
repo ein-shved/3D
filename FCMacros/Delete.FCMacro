@@ -1,0 +1,8 @@
+# -*- coding: utf-8 -*-
+
+# Macro Begin: /home/shved/Projects/3D/FCMacros/Delete.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
+import FreeCAD
+
+App.getDocument("Unnamed").removeObject("Compound001")
+App.getDocument("Unnamed").recompute()
+# Macro End: /home/shved/Projects/3D/FCMacros/Delete.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++

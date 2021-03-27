@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+
+# Macro Begin: /home/shved/Projects/3D/FCMacros/DataAccess.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
+import FreeCAD
+import PartDesignGui
+import Part
+
+#Gui.activateWorkbench("PartWorkbench")
+App.ActiveDocument.addObject("Part::Box","Box")
+App.ActiveDocument.ActiveObject.Label = "Cube"
+App.ActiveDocument.recompute()
+#Gui.SendMsgToActiveView("ViewFit")
+App.getDocument('Unnamed').Box.setExpression('Length', u'Data.Length')
+# Macro End: /home/shved/Projects/3D/FCMacros/DataAccess.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,0 +1,174 @@
+# -*- coding: utf-8 -*-
+
+# Macro Begin: /home/shved/Projects/3D/FCMacros/wall.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
+import FreeCAD
+import Part
+import Part,PartGui
+
+height = 50
+
+from FreeCAD import Base
+App.ActiveDocument.addObject("Part::Wedge","Wedge002")
+App.ActiveDocument.Wedge002.Xmin=0.00
+App.ActiveDocument.Wedge002.Ymin=0.00
+App.ActiveDocument.Wedge002.Zmin=0.00
+App.ActiveDocument.Wedge002.X2min=2.00
+App.ActiveDocument.Wedge002.Z2min=2.00
+App.ActiveDocument.Wedge002.Xmax=10.00
+App.ActiveDocument.Wedge002.Ymax=10.00
+App.ActiveDocument.Wedge002.Zmax=10.00
+App.ActiveDocument.Wedge002.X2max=8.00
+App.ActiveDocument.Wedge002.Z2max=8.00
+App.ActiveDocument.Wedge002.Placement=Base.Placement(Base.Vector(0.00,0.00,0.00),Base.Rotation(0.00,0.00,0.00,1.00))
+App.ActiveDocument.Wedge002.Label='Wedge'
+
+App.ActiveDocument.recompute()
+#Gui.SendMsgToActiveView("ViewFit")
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Xmin = '1 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Xmin = '2 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Ymax = '2 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2max = '5 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2max = '50 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2min = '5 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2min = '50 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2min = '0 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Zmax = '5 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Zmax = '50 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2max = '5 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2max = '51 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2max = '5 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2max = '52 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").X2max = '1 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").X2max = '10 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").X2max = '100 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Xmax = '1 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Xmax = '10 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Xmax = '100 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Zmin = '4 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2min = '4 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").X2max = '10 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").X2max = '102 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Xmax = '10 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Xmax = '102 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Wedge002").Z2max = height + 3
+App.ActiveDocument.addObject("Part::Box","Box")
+App.ActiveDocument.ActiveObject.Label = "Cube"
+App.ActiveDocument.recompute()
+#Gui.SendMsgToActiveView("ViewFit")
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Length = '4 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Length = '40 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Length = '4 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Length = '1 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Length = '2 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Width = '4 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Height = '4 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Height = '40 mm'
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Length = height - 10
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Placement = App.Placement(App.Vector(4,0,0),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Placement = App.Placement(App.Vector(4,-1,0),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Placement = App.Placement(App.Vector(4,-1,4),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Placement = App.Placement(App.Vector(4,-1,9),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box001").Placement = App.Placement(App.Vector(4,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box002").Placement = App.Placement(App.Vector(8,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box003").Placement = App.Placement(App.Vector(1,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box003").Placement = App.Placement(App.Vector(12,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box004").Placement = App.Placement(App.Vector(1,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box004").Placement = App.Placement(App.Vector(16,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box005").Placement = App.Placement(App.Vector(2,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box005").Placement = App.Placement(App.Vector(20,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box006").Placement = App.Placement(App.Vector(2,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box006").Placement = App.Placement(App.Vector(24,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box007").Placement = App.Placement(App.Vector(2,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box007").Placement = App.Placement(App.Vector(28,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box008").Placement = App.Placement(App.Vector(3,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box008").Placement = App.Placement(App.Vector(32,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box009").Placement = App.Placement(App.Vector(3,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box009").Placement = App.Placement(App.Vector(36,-1,8),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Box010").Placement = App.Placement(App.Vector(40,-1,8),App.Rotation(App.Vector(0,0,1),0))
+App.activeDocument().addObject("Part::MultiFuse","Fusion")
+App.activeDocument().Fusion.Shapes = [App.activeDocument().Box010,App.activeDocument().Box005,App.activeDocument().Box009,App.activeDocument().Box007,App.activeDocument().Box006,App.activeDocument().Box001,App.activeDocument().Box004,App.activeDocument().Box008,App.activeDocument().Box003,App.activeDocument().Box002,]
+#Gui.activeDocument().Box010.Visibility=False
+#Gui.activeDocument().Box005.Visibility=False
+#Gui.activeDocument().Box009.Visibility=False
+#Gui.activeDocument().Box007.Visibility=False
+#Gui.activeDocument().Box006.Visibility=False
+#Gui.activeDocument().Box001.Visibility=False
+#Gui.activeDocument().Box004.Visibility=False
+#Gui.activeDocument().Box008.Visibility=False
+#Gui.activeDocument().Box003.Visibility=False
+#Gui.activeDocument().Box002.Visibility=False
+#Gui.ActiveDocument.Fusion.ShapeColor=Gui.ActiveDocument.Box010.ShapeColor
+#Gui.ActiveDocument.Fusion.DisplayMode=Gui.ActiveDocument.Box010.DisplayMode
+App.ActiveDocument.recompute()
+FreeCAD.getDocument("Unnamed1").getObject("Fusion001").Placement = App.Placement(App.Vector(4,0,0),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Fusion001").Placement = App.Placement(App.Vector(44,0,0),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Fusion001").Placement = App.Placement(App.Vector(4,0,0),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Fusion001").Placement = App.Placement(App.Vector(40,0,0),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Fusion002").Placement = App.Placement(App.Vector(8,0,0),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Fusion002").Placement = App.Placement(App.Vector(80,0,0),App.Rotation(App.Vector(0,0,1),0))
+#Gui.getDocument("Unnamed1").getObject("Box030").Visibility=True
+#Gui.getDocument("Unnamed1").getObject("Box030").Visibility=False
+#Gui.getDocument("Unnamed1").getObject("Fusion002").Visibility=False
+#Gui.getDocument("Unnamed1").getObject("Box030").Visibility=True
+#Gui.getDocument("Unnamed1").getObject("Box029").Visibility=True
+#Gui.getDocument("Unnamed1").getObject("Box030").Visibility=False
+#Gui.getDocument("Unnamed1").getObject("Box029").Visibility=False
+#Gui.getDocument("Unnamed1").getObject("Fusion002").Visibility=True
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box030")
+App.getDocument("Unnamed1").removeObject("Box029")
+App.getDocument("Unnamed1").removeObject("Box028")
+App.getDocument("Unnamed1").removeObject("Box027")
+App.getDocument("Unnamed1").removeObject("Box026")
+App.getDocument("Unnamed1").removeObject("Box025")
+App.getDocument("Unnamed1").recompute()
+App.activeDocument().recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box030")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box024")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box021")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box022")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box025")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box027")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box028")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box029")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box021")
+App.getDocument("Unnamed1").recompute()
+App.getDocument("Unnamed").recompute()
+App.getDocument("Unnamed1").removeObject("Box023")
+App.getDocument("Unnamed1").recompute()
+App.activeDocument().addObject("Part::MultiFuse","Fusion003")
+App.activeDocument().Fusion003.Shapes = [App.activeDocument().Fusion,App.activeDocument().Fusion002,App.activeDocument().Fusion001,]
+#Gui.activeDocument().Fusion.Visibility=False
+#Gui.activeDocument().Fusion002.Visibility=False
+#Gui.activeDocument().Fusion001.Visibility=False
+#Gui.ActiveDocument.Fusion003.ShapeColor=Gui.ActiveDocument.Fusion.ShapeColor
+#Gui.ActiveDocument.Fusion003.DisplayMode=Gui.ActiveDocument.Fusion.DisplayMode
+App.ActiveDocument.recompute()
+FreeCAD.getDocument("Unnamed1").getObject("Fusion003").Placement = App.Placement(App.Vector(2,0,0),App.Rotation(App.Vector(0,0,1),0))
+FreeCAD.getDocument("Unnamed1").getObject("Fusion003").Placement = App.Placement(App.Vector(1,0,0),App.Rotation(App.Vector(0,0,1),0))
+App.activeDocument().addObject("Part::Cut","Cut")
+App.activeDocument().Cut.Base = App.activeDocument().Wedge002
+App.activeDocument().Cut.Tool = App.activeDocument().Fusion003
+#Gui.activeDocument().Wedge002.Visibility=False
+#Gui.activeDocument().Fusion003.Visibility=False
+#Gui.ActiveDocument.Cut.ShapeColor=Gui.ActiveDocument.Wedge002.ShapeColor
+#Gui.ActiveDocument.Cut.DisplayMode=Gui.ActiveDocument.Wedge002.DisplayMode
+App.ActiveDocument.recompute()
+# Macro End: /home/shved/Projects/3D/FCMacros/wall.FCMacro +++++++++++++++++++++++++++++++++++++++++++++++++
