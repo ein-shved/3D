@@ -1,7 +1,7 @@
-# Инструкции для агентов
+# Agent instructions
 
-В проекте настроен git-autocommit: изменения любых файлов автоматически отслеживаются, сохраняются в Git и синхронизируются.
+This project uses git-autocommit: changes to all files are automatically tracked, committed, and synced.
 
-Агентам не нужно самостоятельно работать с Git. Не выполняйте Git-команды, включая проверку статуса, добавление файлов, коммиты, работу с ветками, pull и push. Не изменяйте `.git` и настройки git-autocommit. Просто редактируйте и сохраняйте нужные файлы — остальное выполняется автоматически.
+Agents do not need to manage Git. Do not run Git commands, including status checks, staging, commits, branch operations, pull, or push. Do not modify `.git` or the git-autocommit configuration. Simply edit and save the required files; everything else happens automatically.
 
-Исключение — явное поручение пользователя выполнить конкретную Git-операцию.
+The only exception is an explicit user instruction to perform a specific Git operation.
