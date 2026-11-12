@@ -6,6 +6,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Part
 import Sketcher
+import MeshPart
 
 ROOT=Path(__file__).resolve().parent
 doc=App.getDocument("LaptopDeskMount")
@@ -73,3 +74,78 @@ body.ViewObject.Visibility=True
 pad.ViewObject.ShapeColor=(.94,.47,.13)
 print("Unified cheek valid; constrained:",sk.FullyConstrained)
 print("Vertices:",[(round(v.x,3),round(v.y,3)) for v in vertices])
+
+def rounded_corner(name,label,y,z,radius,min_length=0):
+    previous=body.Tip
+    edge_names=[]
+    for i,edge in enumerate(previous.Shape.Edges,1):
+        if len(edge.Vertexes)!=2 or edge.Length<=min_length:
+            continue
+        a,b=[v.Point for v in edge.Vertexes]
+        if abs(a.y-y)<1e-4 and abs(a.z-z)<1e-4 and abs(a.y-b.y)<1e-6 and abs(a.z-b.z)<1e-6:
+            edge_names.append("Edge%d"%i)
+    if not edge_names:
+        raise RuntimeError("Missing cosmetic corner: "+name)
+    obj=body.newObject("PartDesign::Fillet",name)
+    obj.Label=label
+    obj.Base=(previous,edge_names)
+    obj.Radius=radius
+    obj.Refine=True
+    doc.recompute()
+    if obj.Shape.isNull() or not obj.Shape.isValid() or len(obj.Shape.Solids)!=1:
+        raise RuntimeError("Invalid cosmetic fillet: "+name)
+    previous.ViewObject.Visibility=False
+    return obj
+
+def evaluated(expr):
+    return body.evalExpression(expr).Value
+
+rounded_corner("UpperContourRound","Верхний переход боковой стенки R4",vertices[1].x,vertices[1].y,4)
+rounded_corner("UpperClampRounds","Наружные торцы верхнего обхвата R2",
+               P.BeamWidth.Value+P.BeamClearance.Value,evaluated(top),2)
+rounded_corner("LowerClampRound","Наружный торец нижней полки R1.2",
+               P.BeamWidth.Value+P.BeamClearance.Value,evaluated(bottom),1.2)
+rounded_corner("LowerElbowRound","Нижний наружный переход R1.2",
+               evaluated(back),evaluated(bottom),1.2,P.ClampWidth.Value-6)
+
+for name,label,plane in (("BedRimChamfer","Наружные фаски общей плоскости 0.6",doc.OuterLaptopCheek.Placement.Base.x),
+                         ("InnerRimChamfer","Фаски свободных внутренних торцов 0.6",doc.UpperLaptopRail.Shape.BoundBox.XMax)):
+    previous=body.Tip
+    # Long rim edges avoid the tiny tangent fragments at the existing R1.2
+    # insertion lips. Tangent rounded sections are handled by OCCT itself.
+    names=["Edge%d"%i for i,e in enumerate(previous.Shape.Edges,1)
+           if e.Length>5 and all(abs(v.Point.x-plane)<1e-5 for v in e.Vertexes)]
+    obj=body.newObject("PartDesign::Chamfer",name)
+    obj.Label=label
+    obj.Base=(previous,names)
+    obj.Size=.6
+    obj.Refine=True
+    doc.recompute()
+    if obj.Shape.isNull() or not obj.Shape.isValid() or len(obj.Shape.Solids)!=1:
+        raise RuntimeError("Invalid cosmetic chamfer: "+name)
+    previous.ViewObject.Visibility=False
+
+finish=body.Tip
+finish.ViewObject.ShapeColor=(.94,.47,.13)
+finish.ViewObject.LineColor=(.27,.15,.07)
+user.ViewObject.Visibility=False
+doc.recompute()
+
+# Reuse the existing assembly, parameter, bed-plane, STL and STEP checks
+# without rebuilding the document or replacing the user's sketch.
+right=doc.HolderRight
+felt=doc.FeltPads
+sample=doc.ClampFitSample
+def v(alias):
+    return getattr(P,alias).Value
+source=(ROOT/"build_holders.py").read_text()
+export_code=source[source.index('report = {"status"'):]
+exec(compile(export_code,str(ROOT/"build_holders.py"),"exec"),globals())
+report["revision"]="User-sketched unified cheek, diagonal mouth, rounded external transitions and 0.6 mm rim chamfers"
+report["styling"]={"user_sketch_preserved":user.Name,"contour_sketch_fully_constrained":sk.FullyConstrained,
+                   "upper_transition_radius_mm":4,"clamp_top_corner_radius_mm":2,
+                   "bottom_corner_radius_mm":1.2,"external_chamfer_mm":.6,
+                   "native_final_feature":finish.Name}
+(ROOT/"validation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
+doc.save()
+print("Styled model saved; user's sketch preserved:",user.Name)

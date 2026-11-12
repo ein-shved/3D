@@ -16,7 +16,10 @@ d.LaptopScreen.ViewObject.Visibility = False
 d.TabletopDetail.ViewObject.Transparency = 78
 d.PrintedParts.ViewObject.Visibility = True
 d.HolderLeft.ViewObject.Visibility = True
-d.InsertionFillets.ViewObject.Visibility = True
+for feature in d.HolderLeft.Group:
+    if feature.TypeId.startswith("PartDesign::") or feature.TypeId == "Sketcher::SketchObject":
+        feature.ViewObject.Visibility = feature == d.HolderLeft.Tip
+d.HolderLeft.Tip.ViewObject.Visibility = True
 d.HolderRight.ViewObject.Visibility = True
 d.FeltPads.ViewObject.Visibility = True
 for o in d.FeltPads.Group:
