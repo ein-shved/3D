@@ -86,5 +86,8 @@
     "STL and STEP are snapshots. Re-export after changing native parameters."
   ],
   "laptop_channel_mm": 22.6,
-  "vent_clearance_along_laptop_mm": 7.0
+  "vent_clearance_along_laptop_mm": 7.0,
+  "native_parameter_update_checked": "Felt: 4 -> 3.5 -> 4 mm; both solids valid, original geometry restored",
+  "assumed_fasteners_clear_holders": true,
+  "invalid_document_objects": []
 }
