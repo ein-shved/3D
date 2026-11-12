@@ -43,7 +43,7 @@ def primitive(kind, name, label, dims, pos, rotated=False):
     return obj
 
 CX = "-Parameters.MountSpacing / 2"
-X0 = CX + " - Parameters.ClampWidth / 2"
+X0 = CX + " + Parameters.ClampInnerReach - Parameters.ClampWidth"
 Y0 = "-Parameters.BeamClearance - Parameters.ClampWall"
 ZLOW = "-Parameters.BeamHeight - Parameters.PlateThickness - Parameters.BeamClearance - Parameters.ClampShelf"
 TOP = "Parameters.BeamClearance"
@@ -76,7 +76,7 @@ clamp_snapshot = clamp.Shape.copy()
 clamp_source = clamp
 
 RAIL_X0 = "-Parameters.LaptopWidth / 2 - Parameters.SideSlack - Parameters.Felt - Parameters.SideWall"
-RAIL_WIDTH = CX + " + Parameters.ClampWidth / 2 - (" + RAIL_X0 + ")"
+RAIL_WIDTH = "Parameters.ClampWidth"
 
 def rail_position(d, t, xexpr=RAIL_X0):
     # d: away from table towards hinges. t: along upward normal to laptop.
@@ -189,7 +189,7 @@ for side,cx in (("Left","-Parameters.MountSpacing / 2"),("Right","Parameters.Mou
         obj.setExpression("Length",pad_length)
         obj.setExpression("Width",depth)
         obj.setExpression("Height","Parameters.Felt")
-        pad_x = RAIL_X0 + " + Parameters.SideWall" if side=="Left" else cx+" - Parameters.ClampWidth / 2 + 2 mm"
+        pad_x = RAIL_X0 + " + Parameters.SideWall" if side=="Left" else cx+" - Parameters.ClampInnerReach + 2 mm"
         for axis,expr in zip("xyz",rail_position("1 mm",t,pad_x)):
             obj.setExpression("Placement.Base."+axis,expr)
         obj.ViewObject.ShapeColor = (.40,.36,.29)
@@ -277,12 +277,25 @@ report["native_parameter_update_checked"] = "Felt: 4 -> 3.5 -> 4 mm; both solids
 report["assumed_fasteners_clear_holders"] = True
 report["invalid_document_objects"] = invalid
 
+# The outboard side is the bed face. The clamp, shared wall, rails and
+# laptop cheek must start on the same X plane before rotating for export.
+bed_x = doc.OuterLaptopCheek.Placement.Base.x
+for feature in (doc.ClampBottom,doc.ClampSpine,doc.ClampTop,doc.SharedWallSketch,
+                doc.UpperLaptopRail,doc.LaptopFrontStop,doc.LowerLaptopRail):
+    if abs(feature.Placement.Base.x-bed_x)>1e-7:
+        raise RuntimeError("Step in print bed face: "+feature.Name)
+report["common_outboard_print_plane_verified"] = True
+report["left_print_plane_x_mm"] = bed_x
+report["right_print_plane_x_mm"] = -bed_x
+
 (ROOT / "exports").mkdir(exist_ok=True)
 (ROOT / "previews").mkdir(exist_ok=True)
 for name,obj in (("holder_left",body),("holder_right",right),("clamp_fit_sample",sample)):
     sh = obj.Shape.copy()
     # Put an outer side of the U profiles on the bed, away from felt contact faces.
-    sh.rotate(App.Vector(),App.Vector(0,1,0),90)
+    # Left and right need opposite rotations to put the OUTBOARD cheek
+    # on Z=0; using +90 for both would print the left cheek as a roof.
+    sh.rotate(App.Vector(),App.Vector(0,1,0),90 if name=="holder_right" else -90)
     bb = sh.BoundBox
     sh.translate(App.Vector(-bb.XMin,-bb.YMin,-bb.ZMin))
     mesh = MeshPart.meshFromShape(Shape=sh,LinearDeflection=.08,AngularDeflection=.12,Relative=False)
@@ -290,15 +303,19 @@ for name,obj in (("holder_left",body),("holder_right",right),("clamp_fit_sample"
     sh.exportStep(str(ROOT / "exports" / (name+".step")))
     bb=sh.BoundBox
     dims=[bb.XLength,bb.YLength,bb.ZLength]
+    bed_faces=[f for f in sh.Faces if all(abs(vertex.Point.z)<1e-6 for vertex in f.Vertexes)]
+    if not bed_faces:
+        raise RuntimeError("No planar bed contact: "+name)
     if any(z>225 for z in dims[:2]) or dims[2]>265:
         raise RuntimeError("Print envelope exceeds Neptune 4 Pro: "+name)
     if not mesh.isSolid():
         raise RuntimeError("Non-watertight STL: "+name)
     report["geometry"]["left" if name=="holder_left" else "right" if name=="holder_right" else "clamp_sample"]["print_bounds_mm"] = dims
     report["geometry"]["left" if name=="holder_left" else "right" if name=="holder_right" else "clamp_sample"]["mesh_solid"] = True
+    report["geometry"]["left" if name=="holder_left" else "right" if name=="holder_right" else "clamp_sample"]["bed_contact_area_mm2"] = sum(f.Area for f in bed_faces)
 report["laptop_channel_mm"] = v("LaptopThickness")+2*v("Felt")+v("LaptopClearance")
 report["vent_clearance_along_laptop_mm"] = v("VentStart")-v("LowerGrip")
-report["revision"] = "Compact shared back wall from user's sketch; two outboard laptop cheeks; reinforced beam clamp"
+report["revision"] = "Compact shared wall, reinforced clamp, outboard cheek and clamp aligned to a single flat print bed face"
 report["clamp_wall_mm"] = v("ClampWall")
 report["clamp_top_mm"] = v("ClampTop")
 report["clamp_under_bolts_mm"] = v("ClampShelf")
