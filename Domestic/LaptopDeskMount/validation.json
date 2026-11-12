@@ -4,7 +4,7 @@
     "left": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 216334.2315454245,
+      "volume_mm3": 240594.23270771772,
       "assembly_bounds_mm": [
         113.00000000000006,
         161.79991107630485,
@@ -12,15 +12,16 @@
       ],
       "print_bounds_mm": [
         72.42198359714521,
-        161.80010666362728,
-        113.00000000000007
+        161.8001066636273,
+        113.00000000000006
       ],
-      "mesh_solid": true
+      "mesh_solid": true,
+      "bed_contact_area_mm2": 4103.822785320765
     },
     "right": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 216334.2315454247,
+      "volume_mm3": 240594.23270771778,
       "assembly_bounds_mm": [
         113.00000000000006,
         161.79991107630485,
@@ -29,25 +30,27 @@
       "print_bounds_mm": [
         72.42198359714524,
         161.80010666362728,
-        113.00000000000006
+        113.00000000000007
       ],
-      "mesh_solid": true
+      "mesh_solid": true,
+      "bed_contact_area_mm2": 4103.8227853207645
     },
     "clamp_sample": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 88853.05156647117,
+      "volume_mm3": 111684.54626647117,
       "assembly_bounds_mm": [
-        96.0,
+        113.0,
         71.52,
         48.199999999999996
       ],
       "print_bounds_mm": [
-        48.20000000000002,
+        48.20000000000001,
         71.52,
-        96.0
+        113.0
       ],
-      "mesh_solid": true
+      "mesh_solid": true,
+      "bed_contact_area_mm2": 1343.0290999999997
     }
   },
   "collisions_mm3": {
@@ -94,9 +97,12 @@
   "native_parameter_update_checked": "Felt: 4 -> 3.5 -> 4 mm; both solids valid, original geometry restored",
   "assumed_fasteners_clear_holders": true,
   "invalid_document_objects": [],
+  "common_outboard_print_plane_verified": true,
+  "left_print_plane_x_mm": -185.0,
+  "right_print_plane_x_mm": 185.0,
   "laptop_channel_mm": 22.6,
   "vent_clearance_along_laptop_mm": 7.0,
-  "revision": "Compact shared back wall from user's sketch; two outboard laptop cheeks; reinforced beam clamp",
+  "revision": "Compact shared wall, reinforced clamp, outboard cheek and clamp aligned to a single flat print bed face",
   "clamp_wall_mm": 10.51,
   "clamp_top_mm": 9.709999999999999,
   "clamp_under_bolts_mm": 4.0,
