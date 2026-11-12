@@ -102,10 +102,19 @@
   "right_print_plane_x_mm": 185.0,
   "laptop_channel_mm": 22.6,
   "vent_clearance_along_laptop_mm": 7.0,
-  "revision": "Compact shared wall, reinforced clamp, outboard cheek and clamp aligned to a single flat print bed face",
+  "revision": "User-sketched unified cheek, diagonal mouth, rounded external transitions and 0.6 mm rim chamfers",
   "clamp_wall_mm": 10.51,
   "clamp_top_mm": 9.709999999999999,
   "clamp_under_bolts_mm": 4.0,
   "top_to_tabletop_clearance_mm": 0.40000000000000036,
-  "side_clearance_after_felt_mm_per_side": 10.0
+  "side_clearance_after_felt_mm_per_side": 10.0,
+  "styling": {
+    "user_sketch_preserved": "Sketch",
+    "contour_sketch_fully_constrained": true,
+    "upper_transition_radius_mm": 4,
+    "clamp_top_corner_radius_mm": 2,
+    "bottom_corner_radius_mm": 1.2,
+    "external_chamfer_mm": 0.6,
+    "native_final_feature": "InnerRimChamfer"
+  }
 }
