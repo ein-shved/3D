@@ -2,8 +2,8 @@
   "decision": "keep",
   "material": "PETG",
   "printer": "Elegoo Neptune 4 Pro",
-  "model_layers": 561,
-  "support_layer_heights": 223,
+  "model_layers": 565,
+  "support_layer_heights": 224,
   "support_z_mm": [
     32.45,
     97.95
@@ -12,7 +12,7 @@
     "min": [
       65.36,
       20.681,
-      1
+      0.2
     ],
     "max": [
       159.63,
@@ -21,21 +21,21 @@
     ]
   },
   "extruded_filament_mm_by_path_type": {
-    "Skirt/Brim": 219.56748999999985,
-    "Perimeter": 54666.680570002754,
+    "Skirt/Brim": 218.16748999999987,
+    "Perimeter": 54218.00253000178,
     "External perimeter": 11477.000369999318,
-    "Solid infill": 2294.8244399999976,
-    "Internal infill": 16095.855560000879,
-    "Bridge infill": 484.7957799999975,
-    "Top solid infill": 288.4607300000013,
-    "Support material interface": 187.84706999999543,
-    "Support material": 1962.9587200000904,
+    "Solid infill": 2286.439550000002,
+    "Internal infill": 15985.95556000032,
+    "Bridge infill": 484.0806699999974,
+    "Top solid infill": 286.3607300000012,
+    "Support material interface": 171.8790299999963,
+    "Support material": 1774.5102000001277,
     "Overhang perimeter": 46.64824999999999
   },
-  "support_volume_cm3": 5.173294184202662,
-  "longest_continuous_bridge_toolpath_mm": 4680.8795567878215,
+  "support_volume_cm3": 4.68161473740218,
+  "bridge_volume_cm3": 1.1643504617847502,
   "notes": [
-    "Bridge path length is not a measurement of its unsupported span.",
+    "The G-code bridge role does not directly measure unsupported bridge span.",
     "Review uses actual G-code moves. It confirms support generation, part height and bed fit, not physical fit or strength.",
     "Supports sit in the open clamp region and are removable through the open side. Remove them before mounting.",
     "The one-piece print and its chosen side-on orientation are retained; no model or orientation was changed for slicing."

@@ -21,7 +21,7 @@ for(const line of text.split(/\r?\n/)){
   if(command==='M82'){absoluteE=true;continue;}
   if(command==='M83'){absoluteE=false;continue;}
   const fields={};
-  for(const m of code.matchAll(/([XYZEF])(-?\d+(?:\.\d+)?)/g))fields[m[1]]=Number(m[2]);
+  for(const m of code.matchAll(/([XYZEF])([+-]?(?:\d+(?:\.\d*)?|\.\d+))/g))fields[m[1]]=Number(m[2]);
   if(command==='G92'){
     if(fields.E!==undefined)e=fields.E;
     if(fields.X!==undefined)x=fields.X;
@@ -57,8 +57,8 @@ const review={decision:'keep',material:'PETG',printer:'Elegoo Neptune 4 Pro',
   model_layers:layers.size,support_layer_heights:supportLayers.size,support_z_mm:[supportMin,supportMax],
   extrusion_bounds_mm:bounds,extruded_filament_mm_by_path_type:extrusion,
   support_volume_cm3:Object.entries(extrusion).filter(([k])=>k.startsWith('Support material')).reduce((s,[,v])=>s+v*area/1000,0),
-  longest_continuous_bridge_toolpath_mm:longestBridgePath,
-  notes:['Bridge path length is not a measurement of its unsupported span.',
+  bridge_volume_cm3:(extrusion['Bridge infill']??0)*area/1000,
+  notes:['The G-code bridge role does not directly measure unsupported bridge span.',
     'Review uses actual G-code moves. It confirms support generation, part height and bed fit, not physical fit or strength.',
     'Supports sit in the open clamp region and are removable through the open side. Remove them before mounting.',
     'The one-piece print and its chosen side-on orientation are retained; no model or orientation was changed for slicing.']};
