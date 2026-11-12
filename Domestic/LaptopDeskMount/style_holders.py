@@ -175,6 +175,37 @@ finish.ViewObject.LineColor=(.27,.15,.07)
 user.ViewObject.Visibility=False
 doc.recompute()
 
+def _refresh_native_finishing():
+    # A dimensional change can invalidate FreeCAD's mapped edge references
+    # even when the edge order is unchanged. Resolve our geometric selectors
+    # again before validating/exporting the new dimensions.
+    point=doc.UnifiedCheekSketch.Geometry[1].StartPoint
+    targets=[("UpperContourRound",point.x,point.y,0),
+             ("UpperClampRounds",P.BeamWidth.Value+P.BeamClearance.Value,evaluated(top),0),
+             ("LowerClampRound",P.BeamWidth.Value+P.BeamClearance.Value,evaluated(bottom),0),
+             ("LowerElbowRound",evaluated(back),evaluated(bottom),P.ClampWidth.Value-6)]
+    for name,y,z,min_length in targets:
+        obj=doc.getObject(name)
+        base=obj.Base[0]
+        names=[]
+        for i,edge in enumerate(base.Shape.Edges,1):
+            if len(edge.Vertexes)==2 and edge.Length>min_length:
+                a,b=[v.Point for v in edge.Vertexes]
+                if abs(a.y-y)<1e-4 and abs(a.z-z)<1e-4 and abs(a.y-b.y)<1e-6 and abs(a.z-b.z)<1e-6:
+                    names.append("Edge%d"%i)
+        obj.Base=(base,names)
+        doc.recompute()
+    for name,plane in (("BedRimChamfer",doc.OuterLaptopCheek.Placement.Base.x),
+                       ("InnerRimChamfer",doc.UpperLaptopRail.Shape.BoundBox.XMax)):
+        obj=doc.getObject(name)
+        base=obj.Base[0]
+        names=["Edge%d"%i for i,e in enumerate(base.Shape.Edges,1)
+               if e.Length>5 and all(abs(v.Point.x-plane)<1e-5 for v in e.Vertexes)]
+        obj.Base=(base,names)
+        doc.recompute()
+
+_refresh_native_finishing()
+
 # Reuse the existing assembly, parameter, bed-plane, STL and STEP checks
 # without rebuilding the document or replacing the user's sketch.
 right=doc.HolderRight
@@ -192,6 +223,26 @@ report["styling"]={"user_sketch_preserved":user.Name,"contour_sketch_fully_const
                    "native_final_feature":finish.Name}
 report["styling"]["base_transition_depth_mm"]=P.ClampWidth.Value
 report["styling"]["mouth_common_tangent"]=True
+# Verify the tangent analytically against both actual insertion-round circles.
+a=math.radians(P.LaptopAngle.Value)
+def local_point(point):
+    dy=point.x-P.FrontY.Value
+    dz=point.y-P.FrontZ.Value
+    return App.Vector(-dy*math.cos(a)+dz*math.sin(a),dy*math.sin(a)+dz*math.cos(a),0)
+t1=local_point(doc.UnifiedCheekSketch.Geometry[3].StartPoint)
+t2=local_point(doc.UnifiedCheekSketch.Geometry[4].StartPoint)
+r=doc.InsertionFillets.Radius.Value
+c1=App.Vector(P.UpperGrip.Value-r,evaluated(upper)-r,0)
+c2=App.Vector(P.LowerGrip.Value-r,evaluated(lower)+P.RailWall.Value-r,0)
+direction=t2-t1
+direction.normalize()
+errors=[]
+for tangent,center in ((t1,c1),(t2,c2)):
+    radial=tangent-center
+    errors.extend([abs(radial.Length-r),abs(radial.dot(direction))])
+if max(errors)>1e-7:
+    raise RuntimeError("Mouth tangent verification failed: "+str(errors))
+report["styling"]["tangent_max_error_mm"]=max(errors)
 (ROOT/"validation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
 doc.save()
 print("Styled model saved; user's sketch preserved:",user.Name)

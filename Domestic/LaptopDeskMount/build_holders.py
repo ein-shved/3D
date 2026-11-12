@@ -259,11 +259,15 @@ original_volume = body.Shape.Volume
 try:
     P.set(felt_cell,"3.5 mm")
     doc.recompute()
+    if "_refresh_native_finishing" in globals():
+        _refresh_native_finishing()
     if not body.Shape.isValid() or not right.Shape.isValid() or abs(body.Shape.Volume-original_volume)<1:
         raise RuntimeError("Native felt parameter failed to update the holders")
 finally:
     P.set(felt_cell,"4 mm")
     doc.recompute()
+    if "_refresh_native_finishing" in globals():
+        _refresh_native_finishing()
 if abs(body.Shape.Volume-original_volume)>1e-4:
     raise RuntimeError("Original felt geometry was not restored")
 for h in (body,right):
