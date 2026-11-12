@@ -62,7 +62,7 @@ PARAMS = [
 ]
 for row, (alias, value, label, note) in enumerate(PARAMS, 2):
     P.set("A%d" % row, label)
-    P.set("B%d" % row, value)
+    P.set("B%d" % row, "=" + value if value.startswith("-") else value)
     P.setAlias("B%d" % row, alias)
     P.set("C%d" % row, note)
     if "ОЦЕНКА" in note or "ДОПУЩЕНИЕ" in note or "УСЛОВНО" in note:
