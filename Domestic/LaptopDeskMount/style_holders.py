@@ -40,11 +40,22 @@ bottom="-Parameters.BeamHeight - Parameters.PlateThickness - Parameters.BeamClea
 # Horizontal upper bridge, the diagonal mouth, and lower elbow follow
 # the three lines in the user's sketch. The mouth joins the existing R1.2 entries.
 upper_join="((%s) - Parameters.FrontZ - (%s) * cos(Parameters.LaptopAngle)) / sin(Parameters.LaptopAngle)"%(top,upper)
+# Equal-radius external tangent to the upper and lower insertion rounds.
+# Use the actual native fillet radius so the cheek's mouth has G1 joins.
+radius="InsertionFillets.Radius"
+delta_d="Parameters.LowerGrip - Parameters.UpperGrip"
+delta_t="(%s) - (%s) - Parameters.RailWall"%(upper,lower)
+center_distance="sqrt((%s)^2 + (%s)^2)"%(delta_d,delta_t)
+normal_d="(%s) / (%s)"%(delta_t,center_distance)
+normal_t="(%s) / (%s)"%(delta_d,center_distance)
+top_tangent=yz("Parameters.UpperGrip - (%s) + (%s) * (%s)"%(radius,radius,normal_d),
+               "(%s) - (%s) + (%s) * (%s)"%(upper,radius,radius,normal_t))
+bottom_tangent=yz("Parameters.LowerGrip - (%s) + (%s) * (%s)"%(radius,radius,normal_d),
+                  "(%s) + Parameters.RailWall - (%s) + (%s) * (%s)"%(lower,radius,radius,normal_t))
 points=[(back,top),yz(upper_join,upper),
-        yz("Parameters.UpperGrip - 1.2 mm",upper),
-        yz("Parameters.UpperGrip",upper+" - 1.2 mm"),
-        yz("Parameters.LowerGrip",lower+" + Parameters.RailWall - 1.2 mm"),
-        yz("Parameters.LowerGrip - 1.2 mm",lower),
+        yz("Parameters.UpperGrip - (%s)"%radius,upper),
+        top_tangent,bottom_tangent,
+        yz("Parameters.LowerGrip - (%s)"%radius,lower),
         yz("-7 mm",lower),(back,bottom)]
 sk=body.newObject("Sketcher::SketchObject","UnifiedCheekSketch")
 sk.Label="Цельный контур щеки по эскизу пользователя"
@@ -74,6 +85,39 @@ body.ViewObject.Visibility=True
 pad.ViewObject.ShapeColor=(.94,.47,.13)
 print("Unified cheek valid; constrained:",sk.FullyConstrained)
 print("Vertices:",[(round(v.x,3),round(v.y,3)) for v in vertices])
+
+def blend_pad(name,label,expressions):
+    previous=body.Tip
+    profile=body.newObject("Sketcher::SketchObject",name+"Sketch")
+    profile.Label=label+" — сечение"
+    profile.Placement=doc.SharedWallSketch.Placement
+    profile.setExpression("Placement.Base.x","OuterLaptopCheek.Placement.Base.x")
+    coords=[App.Vector(body.evalExpression(y).Value,body.evalExpression(z).Value,0) for y,z in expressions]
+    for i in range(len(coords)):
+        profile.addGeometry(Part.LineSegment(coords[i],coords[(i+1)%len(coords)]),False)
+    for i,point in enumerate(coords):
+        profile.addConstraint(Sketcher.Constraint("Coincident",i,2,(i+1)%len(coords),1))
+        for kind,expr,value in (("DistanceX",expressions[i][0],point.x),("DistanceY",expressions[i][1],point.y)):
+            index=profile.addConstraint(Sketcher.Constraint(kind,i,1,value))
+            profile.setExpression("Constraints[%d]"%index,expr)
+    feature=body.newObject("PartDesign::Pad",name)
+    feature.Label=label
+    feature.Profile=profile
+    feature.setExpression("Length","Parameters.ClampWidth")
+    feature.Refine=True
+    doc.recompute()
+    if feature.Shape.isNull() or not feature.Shape.isValid() or len(feature.Shape.Solids)!=1:
+        raise RuntimeError("Invalid full-width blend: "+name)
+    previous.ViewObject.Visibility=False
+    profile.ViewObject.Visibility=False
+    return feature
+
+upper_at_back="(Parameters.FrontY + (%s) * sin(Parameters.LaptopAngle) - (%s)) / cos(Parameters.LaptopAngle)"%(upper,back)
+upper_base=blend_pad("UpperBaseBlend","Верхний переход обхвата — на всю ширину",
+                    [(back,top),yz(upper_join,upper),yz(upper_at_back,upper)])
+lower_root=yz("-7 mm",lower)
+lower_base=blend_pad("LowerBaseBlend","Нижний переход обхвата — на всю ширину",
+                    [lower_root,(back,bottom),(back,lower_root[1])])
 
 def rounded_corner(name,label,y,z,radius,min_length=0):
     previous=body.Tip
@@ -141,11 +185,13 @@ def v(alias):
 source=(ROOT/"build_holders.py").read_text()
 export_code=source[source.index('report = {"status"'):]
 exec(compile(export_code,str(ROOT/"build_holders.py"),"exec"),globals())
-report["revision"]="User-sketched unified cheek, diagonal mouth, rounded external transitions and 0.6 mm rim chamfers"
+report["revision"]="Full-width base transitions; cheek mouth is an exact common tangent to the insertion rounds"
 report["styling"]={"user_sketch_preserved":user.Name,"contour_sketch_fully_constrained":sk.FullyConstrained,
                    "upper_transition_radius_mm":4,"clamp_top_corner_radius_mm":2,
                    "bottom_corner_radius_mm":1.2,"external_chamfer_mm":.6,
                    "native_final_feature":finish.Name}
+report["styling"]["base_transition_depth_mm"]=P.ClampWidth.Value
+report["styling"]["mouth_common_tangent"]=True
 (ROOT/"validation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
 doc.save()
 print("Styled model saved; user's sketch preserved:",user.Name)
