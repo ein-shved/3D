@@ -4,36 +4,36 @@
     "left": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 241941.79829721057,
+      "volume_mm3": 259611.0838092125,
       "assembly_bounds_mm": [
-        113.00000000000011,
-        161.79991107630482,
-        72.42178800982276
+        113.00000000000006,
+        161.79991107630494,
+        72.42178800982279
       ],
       "print_bounds_mm": [
         72.42198359714521,
-        161.80010666362728,
+        161.8001066636274,
         113.00000000000007
       ],
       "mesh_solid": true,
-      "bed_contact_area_mm2": 4126.110786537915
+      "bed_contact_area_mm2": 4128.189626330371
     },
     "right": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 241941.7982972105,
+      "volume_mm3": 259611.08380921255,
       "assembly_bounds_mm": [
-        113.00000000000011,
-        161.79991107630482,
-        72.42178800982282
+        113.00000000000006,
+        161.79991107630494,
+        72.42178800982285
       ],
       "print_bounds_mm": [
         72.42198359714524,
-        161.80010666362728,
+        161.8001066636274,
         113.00000000000006
       ],
       "mesh_solid": true,
-      "bed_contact_area_mm2": 4126.110786537915
+      "bed_contact_area_mm2": 4128.189626330371
     },
     "clamp_sample": {
       "valid": true,
@@ -41,8 +41,8 @@
       "volume_mm3": 111684.54626647117,
       "assembly_bounds_mm": [
         113.0,
-        71.52000000000008,
-        48.2
+        71.52,
+        48.199999999999996
       ],
       "print_bounds_mm": [
         48.20000000000001,
@@ -102,7 +102,7 @@
   "right_print_plane_x_mm": 185.0,
   "laptop_channel_mm": 22.6,
   "vent_clearance_along_laptop_mm": 7.0,
-  "revision": "User-sketched unified cheek, diagonal mouth, rounded external transitions and 0.6 mm rim chamfers",
+  "revision": "Full-width base transitions; cheek mouth is an exact common tangent to the insertion rounds",
   "clamp_wall_mm": 10.51,
   "clamp_top_mm": 9.709999999999999,
   "clamp_under_bolts_mm": 4.0,
@@ -115,6 +115,9 @@
     "clamp_top_corner_radius_mm": 2,
     "bottom_corner_radius_mm": 1.2,
     "external_chamfer_mm": 0.6,
-    "native_final_feature": "InnerRimChamfer"
+    "native_final_feature": "InnerRimChamfer",
+    "base_transition_depth_mm": 113.0,
+    "mouth_common_tangent": true,
+    "tangent_max_error_mm": 2.9976021664879227e-15
   }
 }
