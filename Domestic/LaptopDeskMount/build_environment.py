@@ -7,7 +7,7 @@ import Part
 
 ROOT = Path(__file__).resolve().parent
 DOC_NAME = "LaptopDeskMount"
-if App.getDocument(DOC_NAME):
+if DOC_NAME in App.listDocuments():
     raise RuntimeError("LaptopDeskMount is already open; use a fresh document to rebuild.")
 doc = App.newDocument(DOC_NAME)
 doc.Label = "Ноутбук у стола — окружение и держатели"
