@@ -1,0 +1,90 @@
+{
+  "status": "prototype_requires_fit_sample",
+  "geometry": {
+    "left": {
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 143860.78238249538,
+      "assembly_bounds_mm": [
+        96.00000000000001,
+        152.4327332498137,
+        72.95403625519542
+      ],
+      "print_bounds_mm": [
+        72.95403625519542,
+        152.43292883713616,
+        96.00000000000001
+      ],
+      "mesh_solid": true
+    },
+    "right": {
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 143860.78238249547,
+      "assembly_bounds_mm": [
+        96.00000000000001,
+        152.4327332498137,
+        72.95403625519542
+      ],
+      "print_bounds_mm": [
+        72.95403625519542,
+        152.43292883713613,
+        96.00000000000001
+      ],
+      "mesh_solid": true
+    },
+    "clamp_sample": {
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 50374.3868264711,
+      "assembly_bounds_mm": [
+        96.0,
+        66.00999999999999,
+        42.489999999999995
+      ],
+      "print_bounds_mm": [
+        42.49000000000001,
+        66.00999999999999,
+        96.0
+      ],
+      "mesh_solid": true
+    }
+  },
+  "collisions_mm3": {
+    "HolderLeft / Beam": 0.0,
+    "HolderLeft / SpacerLeft": 0.0,
+    "HolderLeft / SpacerRight": 0.0,
+    "HolderLeft / PlateLeft": 0.0,
+    "HolderLeft / PlateRight": 0.0,
+    "HolderLeft / TabletopDetail": 0.0,
+    "HolderLeft / LaptopBase": 0.0,
+    "HolderRight / Beam": 0.0,
+    "HolderRight / SpacerLeft": 0.0,
+    "HolderRight / SpacerRight": 0.0,
+    "HolderRight / PlateLeft": 0.0,
+    "HolderRight / PlateRight": 0.0,
+    "HolderRight / TabletopDetail": 0.0,
+    "HolderRight / LaptopBase": 0.0,
+    "FeltLeftUpper / HolderLeft": 0.0,
+    "FeltLeftUpper / HolderRight": 0.0,
+    "FeltLeftUpper / LaptopBase": 0.0,
+    "FeltLeftLower / HolderLeft": 0.0,
+    "FeltLeftLower / HolderRight": 0.0,
+    "FeltLeftLower / LaptopBase": 0.0,
+    "FeltRightUpper / HolderLeft": 0.0,
+    "FeltRightUpper / HolderRight": 0.0,
+    "FeltRightUpper / LaptopBase": 0.0,
+    "FeltRightLower / HolderLeft": 0.0,
+    "FeltRightLower / HolderRight": 0.0,
+    "FeltRightLower / LaptopBase": 0.0
+  },
+  "notes": [
+    "No structural FEA or physical load test was performed.",
+    "Existing screw length and M6 thread are unverified. Clamp adds 4.4 mm below the steel plate including clearance.",
+    "Plate outline and bolt positions are provisional; print the clamp sample first.",
+    "Full table dimensions, laptop depth and screen geometry are illustrative.",
+    "STL and STEP are snapshots. Re-export after changing native parameters."
+  ],
+  "laptop_channel_mm": 22.6,
+  "vent_clearance_along_laptop_mm": 7.0
+}
