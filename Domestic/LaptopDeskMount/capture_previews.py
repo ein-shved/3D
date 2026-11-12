@@ -15,6 +15,9 @@ def capture(name):
     QtCore.QTimer.singleShot(600,loop.quit)
     loop.exec()
     v.fitAll()
+    if name == "side.png":
+        camera = v.getCameraNode()
+        camera.height = camera.height.getValue() / 1.65
     Gui.updateGui()
     v.saveImage(str(root / "previews" / name),1600,1100,"Current")
 
