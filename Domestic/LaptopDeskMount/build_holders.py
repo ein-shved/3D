@@ -6,6 +6,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Part
 import MeshPart
+import Sketcher
 
 ROOT = Path(__file__).resolve().parent
 doc = App.getDocument("LaptopDeskMount")
@@ -51,12 +52,12 @@ primitive("AdditiveBox", "ClampBottom", "Обхват — нижняя полк�
     "Length":"Parameters.ClampWidth", "Width":DEPTH, "Height":"Parameters.ClampShelf"}, (X0,Y0,ZLOW))
 primitive("AdditiveBox", "ClampSpine", "Обхват — наружная стенка", {
     "Length":"Parameters.ClampWidth", "Width":"Parameters.ClampWall",
-    "Height":"Parameters.BeamHeight + Parameters.PlateThickness + 2 * Parameters.BeamClearance + 2 * Parameters.ClampShelf"}, (X0,Y0,ZLOW))
+    "Height":"Parameters.BeamHeight + Parameters.PlateThickness + 2 * Parameters.BeamClearance + Parameters.ClampShelf + Parameters.ClampTop"}, (X0,Y0,ZLOW))
 primitive("AdditiveBox", "ClampTop", "Обхват — верхняя полка", {
-    "Length":"Parameters.ClampWidth", "Width":DEPTH, "Height":"Parameters.ClampShelf"}, (X0,Y0,TOP))
+    "Length":"Parameters.ClampWidth", "Width":DEPTH, "Height":"Parameters.ClampTop"}, (X0,Y0,TOP))
 primitive("SubtractiveBox", "SpacerNotch", "Прорезь под проставку 66 мм", {
     "Length":"Parameters.SpacerWidth + Parameters.SpacerClearance",
-    "Width":"Parameters.BeamWidth + 2 * Parameters.BeamClearance + 1 mm", "Height":"Parameters.ClampShelf + 2 mm"},
+    "Width":"Parameters.BeamWidth + 2 * Parameters.BeamClearance + 1 mm", "Height":"Parameters.ClampTop + 2 mm"},
     (CX+" - (Parameters.SpacerWidth + Parameters.SpacerClearance) / 2", "-Parameters.BeamClearance", "Parameters.BeamClearance - 1 mm"))
 
 # Two capsule-shaped through holes, with every dimension driven by the spreadsheet.
@@ -74,7 +75,10 @@ for i, sign in enumerate((-1,1),1):
 clamp_snapshot = clamp.Shape.copy()
 clamp_source = clamp
 
-def rail_position(d, t, xexpr=X0):
+RAIL_X0 = "-Parameters.LaptopWidth / 2 - Parameters.SideSlack - Parameters.Felt - Parameters.SideWall"
+RAIL_WIDTH = CX + " + Parameters.ClampWidth / 2 - (" + RAIL_X0 + ")"
+
+def rail_position(d, t, xexpr=RAIL_X0):
     # d: away from table towards hinges. t: along upward normal to laptop.
     return (xexpr,
         "Parameters.FrontY - (%s) * cos(Parameters.LaptopAngle) + (%s) * sin(Parameters.LaptopAngle)" % (d,t),
@@ -82,21 +86,55 @@ def rail_position(d, t, xexpr=X0):
 
 upper_t = "Parameters.LaptopThickness + Parameters.Felt + Parameters.LaptopClearance / 2 + Parameters.RailWall"
 lower_t = "-Parameters.Felt - Parameters.LaptopClearance / 2"
-primitive("AdditiveBox", "ProfileBridge", "Связь двух профилей — усиленная перемычка", {
-    "Length":"Parameters.ClampWidth",
-    "Width":"Parameters.BeamWidth / 2 - Parameters.BoltPitch / 2 - Parameters.HeadDiameter / 2 - 1 mm + Parameters.BeamClearance + Parameters.ClampWall",
-    "Height":"-Parameters.BeamHeight - Parameters.PlateThickness - Parameters.BeamClearance + 0.25 mm - Parameters.FrontZ + 9 mm"},
-    (X0,Y0,"Parameters.FrontZ - 9 mm"))
+
+# A compact shared back wall joins the U profiles at the same height.
+# A constrained YZ sketch fills the space behind the inclined laptop stop,
+# inside the existing vertical clamp wall; there is no pendant connector.
+back_low = rail_position("-7 mm", lower_t + " - Parameters.RailWall")
+back_high = rail_position("-7 mm", upper_t)
+points_expr = [(back_low[1],back_low[2]),
+               ("-Parameters.BeamClearance",ZLOW),
+               ("-Parameters.BeamClearance",back_high[2]),
+               (back_high[1],back_high[2])]
+previous = body.Tip
+sketch = body.newObject("Sketcher::SketchObject", "SharedWallSketch")
+sketch.Label = "Общая стенка двух П-профилей — сечение"
+sketch.Placement = App.Placement(App.Vector(),App.Rotation(
+    App.Vector(0,1,0),App.Vector(0,0,1),App.Vector(1,0,0),"ZXY"))
+sketch.setExpression("Placement.Base.x",X0)
+points = [App.Vector(body.evalExpression(y).Value,body.evalExpression(z).Value,0) for y,z in points_expr]
+for i in range(4):
+    sketch.addGeometry(Part.LineSegment(points[i],points[(i+1)%4]),False)
+for i in range(4):
+    sketch.addConstraint(Sketcher.Constraint("Coincident",i,2,(i+1)%4,1))
+    for kind,expr,numeric in (("DistanceX",points_expr[i][0],points[i].x),("DistanceY",points_expr[i][1],points[i].y)):
+        index=sketch.addConstraint(Sketcher.Constraint(kind,i,1,numeric))
+        sketch.setExpression("Constraints[%d]" % index,expr)
+shared = body.newObject("PartDesign::Pad", "SharedBackWall")
+shared.Label = "Общая силовая стенка — без нижнего выноса"
+shared.Profile = sketch
+shared.setExpression("Length","Parameters.ClampWidth")
+shared.Refine = True
+doc.recompute()
+if shared.Shape.isNull() or not shared.Shape.isValid() or len(shared.Shape.Solids)!=1:
+    raise RuntimeError("Invalid shared-wall pad: "+shared.getStatusString())
+previous.ViewObject.Visibility=False
+sketch.ViewObject.Visibility=False
+
 primitive("AdditiveBox", "UpperLaptopRail", "Ноутбук — верхний захват до 75 мм, 30°", {
-    "Length":"Parameters.ClampWidth", "Width":"Parameters.UpperGrip + 6 mm", "Height":"Parameters.RailWall"},
+    "Length":RAIL_WIDTH, "Width":"Parameters.UpperGrip + 6 mm", "Height":"Parameters.RailWall"},
     rail_position("-6 mm",upper_t),True)
 primitive("AdditiveBox", "LaptopFrontStop", "Ноутбук — упор переднего края", {
-    "Length":"Parameters.ClampWidth", "Width":"5 mm",
+    "Length":RAIL_WIDTH, "Width":"5 mm",
     "Height":"Parameters.LaptopThickness + 2 * Parameters.Felt + Parameters.LaptopClearance + 2 * Parameters.RailWall"},
     rail_position("-7 mm",upper_t),True)
-tip = primitive("AdditiveBox", "LowerLaptopRail", "Ноутбук — нижняя опора до 85 мм", {
-    "Length":"Parameters.ClampWidth", "Width":"Parameters.LowerGrip + 6 mm", "Height":"Parameters.RailWall"},
+primitive("AdditiveBox", "LowerLaptopRail", "Ноутбук — нижняя опора до 85 мм", {
+    "Length":RAIL_WIDTH, "Width":"Parameters.LowerGrip + 6 mm", "Height":"Parameters.RailWall"},
     rail_position("-6 mm",lower_t),True)
+tip = primitive("AdditiveBox", "OuterLaptopCheek", "Ноутбук — наружная боковая стенка", {
+    "Length":"Parameters.SideWall", "Width":"Parameters.UpperGrip + 4 mm",
+    "Height":"Parameters.LaptopThickness + 2 * Parameters.Felt + Parameters.LaptopClearance + 2 * Parameters.RailWall"},
+    rail_position("-6 mm",upper_t),True)
 
 # Round the four exposed longitudinal edges at the insertion ends.
 a = math.radians(v("LaptopAngle"))
@@ -105,7 +143,7 @@ for i,e in enumerate(tip.Shape.Edges,1):
     if len(e.Vertexes) != 2:
         continue
     p,q = [z.Point for z in e.Vertexes]
-    if abs(p.y-q.y)>1e-6 or abs(p.z-q.z)>1e-6 or abs(abs(p.x-q.x)-v("ClampWidth"))>1e-5:
+    if abs(p.y-q.y)>1e-6 or abs(p.z-q.z)>1e-6 or abs(abs(p.x-q.x)-doc.UpperLaptopRail.Length.Value)>1e-5:
         continue
     depth = -(p.y-v("FrontY"))*math.cos(a)+(p.z-v("FrontZ"))*math.sin(a)
     if min(abs(depth-v("UpperGrip")),abs(depth-v("LowerGrip")))<1e-5:
@@ -138,7 +176,7 @@ body.ViewObject.Visibility = True
 finish.ViewObject.Visibility = True
 
 felt = doc.addObject("App::DocumentObjectGroup", "FeltPads")
-felt.Label = "03 Войлок 4 мм — четыре накладки"
+felt.Label = "03 Войлок 4 мм — шесть накладок"
 for side,cx in (("Left","-Parameters.MountSpacing / 2"),("Right","Parameters.MountSpacing / 2")):
     for which,t,depth in (("Upper","Parameters.LaptopThickness + Parameters.Felt + Parameters.LaptopClearance / 2","Parameters.UpperGrip - 3 mm"),
                           ("Lower","-Parameters.LaptopClearance / 2","Parameters.LowerGrip - 3 mm")):
@@ -147,12 +185,26 @@ for side,cx in (("Left","-Parameters.MountSpacing / 2"),("Right","Parameters.Mou
         felt.addObject(obj)
         obj.Placement = App.Placement(App.Vector(),App.Rotation(App.Vector(1,0,0),150))
         obj.setExpression("Placement.Rotation.Angle","180 deg - Parameters.LaptopAngle")
-        obj.setExpression("Length","Parameters.ClampWidth - 4 mm")
+        pad_length = RAIL_WIDTH + " - Parameters.SideWall - 2 mm"
+        obj.setExpression("Length",pad_length)
         obj.setExpression("Width",depth)
         obj.setExpression("Height","Parameters.Felt")
-        for axis,expr in zip("xyz",rail_position("1 mm",t,cx+" - Parameters.ClampWidth / 2 + 2 mm")):
+        pad_x = RAIL_X0 + " + Parameters.SideWall" if side=="Left" else cx+" - Parameters.ClampWidth / 2 + 2 mm"
+        for axis,expr in zip("xyz",rail_position("1 mm",t,pad_x)):
             obj.setExpression("Placement.Base."+axis,expr)
         obj.ViewObject.ShapeColor = (.40,.36,.29)
+    side_pad=doc.addObject("Part::Box","Felt"+side+"Side")
+    side_pad.Label="Войлок — "+side+" / боковая стенка"
+    felt.addObject(side_pad)
+    side_pad.Placement=App.Placement(App.Vector(),App.Rotation(App.Vector(1,0,0),150))
+    side_pad.setExpression("Placement.Rotation.Angle","180 deg - Parameters.LaptopAngle")
+    side_pad.setExpression("Length","Parameters.Felt")
+    side_pad.setExpression("Width","Parameters.UpperGrip - 3 mm")
+    side_pad.setExpression("Height","Parameters.LaptopThickness")
+    sx="-Parameters.LaptopWidth / 2 - Parameters.SideSlack - Parameters.Felt" if side=="Left" else "Parameters.LaptopWidth / 2 + Parameters.SideSlack"
+    for axis,expr in zip("xyz",rail_position("1 mm","Parameters.LaptopThickness",sx)):
+        side_pad.setExpression("Placement.Base."+axis,expr)
+    side_pad.ViewObject.ShapeColor=(.40,.36,.29)
 
 coupons = doc.addObject("App::DocumentObjectGroup", "FitSamples")
 coupons.Label = "04 Пробник — только обхват стола"
@@ -246,6 +298,12 @@ for name,obj in (("holder_left",body),("holder_right",right),("clamp_fit_sample"
     report["geometry"]["left" if name=="holder_left" else "right" if name=="holder_right" else "clamp_sample"]["mesh_solid"] = True
 report["laptop_channel_mm"] = v("LaptopThickness")+2*v("Felt")+v("LaptopClearance")
 report["vent_clearance_along_laptop_mm"] = v("VentStart")-v("LowerGrip")
+report["revision"] = "Compact shared back wall from user's sketch; two outboard laptop cheeks; reinforced beam clamp"
+report["clamp_wall_mm"] = v("ClampWall")
+report["clamp_top_mm"] = v("ClampTop")
+report["clamp_under_bolts_mm"] = v("ClampShelf")
+report["top_to_tabletop_clearance_mm"] = v("SpacerHeight")-v("BeamClearance")-v("ClampTop")
+report["side_clearance_after_felt_mm_per_side"] = v("SideSlack")
 (ROOT / "validation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
 Gui.activeDocument().activeView().viewAxonometric()
 Gui.activeDocument().activeView().fitAll()
