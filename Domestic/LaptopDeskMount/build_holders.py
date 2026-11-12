@@ -82,6 +82,11 @@ def rail_position(d, t, xexpr=X0):
 
 upper_t = "Parameters.LaptopThickness + Parameters.Felt + Parameters.LaptopClearance / 2 + Parameters.RailWall"
 lower_t = "-Parameters.Felt - Parameters.LaptopClearance / 2"
+primitive("AdditiveBox", "ProfileBridge", "Связь двух профилей — усиленная перемычка", {
+    "Length":"Parameters.ClampWidth",
+    "Width":"Parameters.BeamWidth / 2 - Parameters.BoltPitch / 2 - Parameters.HeadDiameter / 2 - 1 mm + Parameters.BeamClearance + Parameters.ClampWall",
+    "Height":"-Parameters.BeamHeight - Parameters.PlateThickness - Parameters.BeamClearance + 0.25 mm - Parameters.FrontZ + 9 mm"},
+    (X0,Y0,"Parameters.FrontZ - 9 mm"))
 primitive("AdditiveBox", "UpperLaptopRail", "Ноутбук — верхний захват до 75 мм, 30°", {
     "Length":"Parameters.ClampWidth", "Width":"Parameters.UpperGrip + 6 mm", "Height":"Parameters.RailWall"},
     rail_position("-6 mm",upper_t),True)
@@ -195,6 +200,30 @@ for pad in felt.Group:
         report["collisions_mm3"][pad.Name+" / "+obj.Name] = overlap
         if overlap>1e-5:
             raise RuntimeError("Felt collision: %s / %s" % (pad.Name,obj.Name))
+
+# Verify native parameter propagation, then restore the user's 4 mm felt.
+felt_cell = P.getCellFromAlias("Felt")
+original_volume = body.Shape.Volume
+try:
+    P.set(felt_cell,"3.5 mm")
+    doc.recompute()
+    if not body.Shape.isValid() or not right.Shape.isValid() or abs(body.Shape.Volume-original_volume)<1:
+        raise RuntimeError("Native felt parameter failed to update the holders")
+finally:
+    P.set(felt_cell,"4 mm")
+    doc.recompute()
+if abs(body.Shape.Volume-original_volume)>1e-4:
+    raise RuntimeError("Original felt geometry was not restored")
+for h in (body,right):
+    for name in ("BoltLeft1","BoltLeft2","BoltRight1","BoltRight2","HeadLeft1","HeadLeft2","HeadRight1","HeadRight2"):
+        if h.Shape.common(doc.getObject(name).Shape).Volume>1e-5:
+            raise RuntimeError("Fastener interference: "+h.Name+" / "+name)
+invalid = [(o.Name,o.getStatusString()) for o in doc.Objects if "Invalid" in o.State]
+if invalid:
+    raise RuntimeError("Document contains invalid objects: "+str(invalid))
+report["native_parameter_update_checked"] = "Felt: 4 -> 3.5 -> 4 mm; both solids valid, original geometry restored"
+report["assumed_fasteners_clear_holders"] = True
+report["invalid_document_objects"] = invalid
 
 (ROOT / "exports").mkdir(exist_ok=True)
 (ROOT / "previews").mkdir(exist_ok=True)

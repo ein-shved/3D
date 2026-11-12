@@ -1,6 +1,7 @@
 from pathlib import Path
 import FreeCAD as App
 import FreeCADGui as Gui
+from PySide import QtCore
 
 root = Path(__file__).resolve().parent
 d = App.getDocument("LaptopDeskMount")
@@ -9,7 +10,12 @@ def run(name):
     p = root / name
     exec(compile(p.read_text(), str(p), "exec"), {"__file__":str(p),"__name__":"__main__"})
 def capture(name):
+    # Named-view changes are animated; wait for rendering on the GUI event loop.
+    loop = QtCore.QEventLoop()
+    QtCore.QTimer.singleShot(600,loop.quit)
+    loop.exec()
     v.fitAll()
+    Gui.updateGui()
     v.saveImage(str(root / "previews" / name),1600,1100,"Current")
 
 run("view_whole_table.FCMacro")
