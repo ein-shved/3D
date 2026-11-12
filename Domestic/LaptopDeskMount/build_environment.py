@@ -157,8 +157,10 @@ base = box("LaptopBase", "Основание ноутбука", laptop,
 # Local Y points towards the front edge; local Z is the upward normal.
 base.setExpression("Placement.Base.y", "Parameters.FrontY - Parameters.LaptopDepth * cos(Parameters.LaptopAngle)")
 base.setExpression("Placement.Base.z", "Parameters.FrontZ + Parameters.LaptopDepth * sin(Parameters.LaptopAngle)")
+placement = base.Placement
+placement.Rotation = App.Rotation(App.Vector(1,0,0), -30)
+base.Placement = placement
 base.setExpression("Placement.Rotation.Angle", "-Parameters.LaptopAngle")
-base.Placement.Rotation.Axis = App.Vector(1,0,0)
 
 # Screen is a visual reference. Hinge angle and screen height were not measured.
 screen = box("LaptopScreen", "Экран — условная геометрия", laptop,
