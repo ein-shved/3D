@@ -4,47 +4,47 @@
     "left": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 161355.99758539523,
+      "volume_mm3": 216334.2315454245,
       "assembly_bounds_mm": [
-        96.0,
-        152.43273324981368,
-        72.95403625519542
+        113.00000000000006,
+        161.79991107630485,
+        72.42178800982276
       ],
       "print_bounds_mm": [
-        72.95403625519542,
-        152.4329288371361,
-        96.00000000000003
+        72.42198359714521,
+        161.80010666362728,
+        113.00000000000007
       ],
       "mesh_solid": true
     },
     "right": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 161355.99758539532,
+      "volume_mm3": 216334.2315454247,
       "assembly_bounds_mm": [
-        96.0,
-        152.43273324981368,
-        72.95403625519542
+        113.00000000000006,
+        161.79991107630485,
+        72.42178800982282
       ],
       "print_bounds_mm": [
-        72.95403625519542,
-        152.4329288371361,
-        96.0
+        72.42198359714524,
+        161.80010666362728,
+        113.00000000000006
       ],
       "mesh_solid": true
     },
     "clamp_sample": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 50374.3868264711,
+      "volume_mm3": 88853.05156647117,
       "assembly_bounds_mm": [
         96.0,
-        66.00999999999999,
-        42.489999999999995
+        71.52,
+        48.199999999999996
       ],
       "print_bounds_mm": [
-        42.49000000000001,
-        66.00999999999999,
+        48.20000000000002,
+        71.52,
         96.0
       ],
       "mesh_solid": true
@@ -71,12 +71,18 @@
     "FeltLeftLower / HolderLeft": 0.0,
     "FeltLeftLower / HolderRight": 0.0,
     "FeltLeftLower / LaptopBase": 0.0,
+    "FeltLeftSide / HolderLeft": 0.0,
+    "FeltLeftSide / HolderRight": 0.0,
+    "FeltLeftSide / LaptopBase": 0.0,
     "FeltRightUpper / HolderLeft": 0.0,
     "FeltRightUpper / HolderRight": 0.0,
     "FeltRightUpper / LaptopBase": 0.0,
     "FeltRightLower / HolderLeft": 0.0,
     "FeltRightLower / HolderRight": 0.0,
-    "FeltRightLower / LaptopBase": 0.0
+    "FeltRightLower / LaptopBase": 0.0,
+    "FeltRightSide / HolderLeft": 0.0,
+    "FeltRightSide / HolderRight": 0.0,
+    "FeltRightSide / LaptopBase": 0.0
   },
   "notes": [
     "No structural FEA or physical load test was performed.",
@@ -89,5 +95,11 @@
   "assumed_fasteners_clear_holders": true,
   "invalid_document_objects": [],
   "laptop_channel_mm": 22.6,
-  "vent_clearance_along_laptop_mm": 7.0
+  "vent_clearance_along_laptop_mm": 7.0,
+  "revision": "Compact shared back wall from user's sketch; two outboard laptop cheeks; reinforced beam clamp",
+  "clamp_wall_mm": 10.51,
+  "clamp_top_mm": 9.709999999999999,
+  "clamp_under_bolts_mm": 4.0,
+  "top_to_tabletop_clearance_mm": 0.40000000000000036,
+  "side_clearance_after_felt_mm_per_side": 10.0
 }
