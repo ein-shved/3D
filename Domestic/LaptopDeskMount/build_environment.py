@@ -153,10 +153,8 @@ laptop = group("Laptop", "Ноутбук — основание 332 × 14, на�
 env.addObject(laptop)
 base = box("LaptopBase", "Основание ноутбука", laptop,
            ("Parameters.LaptopWidth", "Parameters.LaptopDepth", "Parameters.LaptopThickness"),
-           ("-Parameters.LaptopWidth / 2","Parameters.FrontY + Parameters.LaptopDepth * cos(Parameters.LaptopAngle)","Parameters.FrontZ - Parameters.LaptopDepth * sin(Parameters.LaptopAngle)"), silver)
+           ("-Parameters.LaptopWidth / 2","Parameters.FrontY - Parameters.LaptopDepth * cos(Parameters.LaptopAngle)","Parameters.FrontZ + Parameters.LaptopDepth * sin(Parameters.LaptopAngle)"), silver)
 # Local Y points towards the front edge; local Z is the upward normal.
-base.setExpression("Placement.Base.y", "Parameters.FrontY - Parameters.LaptopDepth * cos(Parameters.LaptopAngle)")
-base.setExpression("Placement.Base.z", "Parameters.FrontZ + Parameters.LaptopDepth * sin(Parameters.LaptopAngle)")
 placement = base.Placement
 placement.Rotation = App.Rotation(App.Vector(1,0,0), -30)
 base.Placement = placement
