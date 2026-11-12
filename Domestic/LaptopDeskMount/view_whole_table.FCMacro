@@ -1,0 +1,28 @@
+import FreeCAD as App
+import FreeCADGui as Gui
+
+d = App.getDocument("LaptopDeskMount")
+d.Environment.ViewObject.Visibility = True
+d.TableDetail.ViewObject.Visibility = True
+for o in d.TableDetail.Group:
+    o.ViewObject.Visibility = True
+d.Beam.ViewObject.Visibility = False
+d.TabletopDetail.ViewObject.Visibility = False
+d.WholeTable.ViewObject.Visibility = True
+for o in d.WholeTable.Group:
+    o.ViewObject.Visibility = True
+d.Laptop.ViewObject.Visibility = True
+d.LaptopBase.ViewObject.Visibility = True
+d.LaptopBase.ViewObject.Transparency = 0
+d.LaptopScreen.ViewObject.Visibility = True
+d.PrintedParts.ViewObject.Visibility = True
+d.HolderLeft.ViewObject.Visibility = True
+d.InsertionFillets.ViewObject.Visibility = True
+d.HolderRight.ViewObject.Visibility = True
+d.FeltPads.ViewObject.Visibility = True
+for o in d.FeltPads.Group:
+    o.ViewObject.Visibility = True
+d.FitSamples.ViewObject.Visibility = False
+d.ClampFitSample.ViewObject.Visibility = False
+Gui.activeDocument().activeView().viewAxonometric()
+Gui.activeDocument().activeView().fitAll()
