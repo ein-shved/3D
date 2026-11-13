@@ -105,10 +105,22 @@
   "laptop_wall_thickness_mm": 7.8,
   "outboard_cheek_thickness_mm": 7.8,
   "vent_clearance_along_laptop_mm": 7.0,
-  "revision": "Compact shared wall, reinforced clamp, outboard cheek and clamp aligned to a single flat print bed face",
+  "revision": "Full-width base transitions; cheek mouth is an exact common tangent to the insertion rounds",
   "clamp_wall_mm": 10.51,
   "clamp_top_mm": 9.709999999999999,
   "clamp_under_bolts_mm": 4.0,
   "top_to_tabletop_clearance_mm": 0.40000000000000036,
-  "side_clearance_after_felt_mm_per_side": 10.0
+  "side_clearance_after_felt_mm_per_side": 10.0,
+  "styling": {
+    "user_sketch_preserved": "Sketch",
+    "contour_sketch_fully_constrained": true,
+    "upper_transition_radius_mm": 4,
+    "clamp_top_corner_radius_mm": 2,
+    "bottom_corner_radius_mm": 1.2,
+    "external_chamfer_mm": 0.6,
+    "native_final_feature": "InnerRimChamfer",
+    "base_transition_depth_mm": 113.0,
+    "mouth_common_tangent": true,
+    "tangent_max_error_mm": 1.2212453270876722e-14
+  }
 }
