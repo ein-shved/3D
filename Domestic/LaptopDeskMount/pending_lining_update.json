@@ -1,0 +1,45 @@
+{
+  "status": "prepared_not_applied_to_cad_or_slices",
+  "requested_on": "2026-11-13",
+  "lining": {
+    "material": "felt",
+    "felt_mm": 1.0,
+    "adhesive_tape_mm": 0.2,
+    "total_uncompressed_mm": 1.2,
+    "previous_total_mm": 4.0
+  },
+  "parameter_updates_mm": {
+    "Felt": { "old": 4.0, "new": 1.2 },
+    "RailWall": { "old": 5.0, "new": 7.8 },
+    "SideWall": { "old": 5.0, "new": 7.8 }
+  },
+  "intent": "Thicken the upper, lower and outboard laptop walls inward by 2.8 mm each, replacing lost lining thickness with PETG.",
+  "expected_dimensions_mm": {
+    "plastic_laptop_slot": { "old": 22.6, "new": 17.0 },
+    "slot_after_lining": { "old": 14.6, "new": 14.6 },
+    "laptop_thickness": 14.0,
+    "total_vertical_fit_clearance": 0.6,
+    "lateral_clearance_after_lining_per_side": 10.0,
+    "bracket_width": 113.0,
+    "clamp_spine_thickness": 10.51,
+    "clamp_top_thickness": 9.71,
+    "clamp_under_bolts_thickness": 4.0
+  },
+  "invariants": [
+    "Felt + RailWall remains 9 mm: laptop pose and main external rail surfaces stay fixed.",
+    "Felt + SideWall remains 9 mm: common outboard print plane, bracket width and lateral space after lining stay fixed.",
+    "Desk clamp, bolt holes, upper spacer cutout and clamp fit sample remain unchanged.",
+    "Keep nominal laptop angle 30 degrees and upper/lower capture lengths 75/85 mm."
+  ],
+  "implementation_when_freecad_is_available": [
+    "Inspect and preserve the current document and any user edits before changing parameters.",
+    "Apply Felt=1.2 mm, RailWall=7.8 mm, SideWall=7.8 mm together, then recompute.",
+    "Describe Felt as the combined 1 mm felt plus 0.2 mm tape, including pad group labels.",
+    "Fix the build_holders.py parameter check: save and restore the actual Felt value, rather than hard-coding a return to 4 mm.",
+    "Refresh cosmetic edge links. Recalculate and verify the mouth tangent because the inner lower fillet moves with the thicker rail.",
+    "Verify all solids, lining clearances, full-width base blends, common print plane and unchanged mounting interface.",
+    "Update CAD, STL, STEP, lining cut sizes, previews and validation report.",
+    "Re-slice the full holder with the accepted gyroid settings and review supports again; do not label the old G-code as the updated design."
+  ],
+  "existing_files": "FCStd, meshes, PrusaSlicer project and G-code still represent the previous 4 mm lining. No CAD connection, recomputation or slicing was performed for this preparation."
+}
