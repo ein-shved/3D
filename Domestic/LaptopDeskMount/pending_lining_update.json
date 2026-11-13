@@ -1,5 +1,5 @@
 {
-  "status": "prepared_not_applied_to_cad_or_slices",
+  "status": "applied_to_cad_exports_and_right_slice",
   "requested_on": "2026-11-13",
   "lining": {
     "material": "felt",
@@ -9,14 +9,29 @@
     "previous_total_mm": 4.0
   },
   "parameter_updates_mm": {
-    "Felt": { "old": 4.0, "new": 1.2 },
-    "RailWall": { "old": 5.0, "new": 7.8 },
-    "SideWall": { "old": 5.0, "new": 7.8 }
+    "Felt": {
+      "old": 4.0,
+      "new": 1.2
+    },
+    "RailWall": {
+      "old": 5.0,
+      "new": 7.8
+    },
+    "SideWall": {
+      "old": 5.0,
+      "new": 7.8
+    }
   },
   "intent": "Thicken the upper, lower and outboard laptop walls inward by 2.8 mm each, replacing lost lining thickness with PETG.",
   "expected_dimensions_mm": {
-    "plastic_laptop_slot": { "old": 22.6, "new": 17.0 },
-    "slot_after_lining": { "old": 14.6, "new": 14.6 },
+    "plastic_laptop_slot": {
+      "old": 22.6,
+      "new": 17.0
+    },
+    "slot_after_lining": {
+      "old": 14.6,
+      "new": 14.6
+    },
     "laptop_thickness": 14.0,
     "total_vertical_fit_clearance": 0.6,
     "lateral_clearance_after_lining_per_side": 10.0,
@@ -41,5 +56,8 @@
     "Update CAD, STL, STEP, lining cut sizes, previews and validation report.",
     "Re-slice the full holder with the accepted gyroid settings and review supports again; do not label the old G-code as the updated design."
   ],
-  "existing_files": "FCStd, meshes, PrusaSlicer project and G-code still represent the previous 4 mm lining. No CAD connection, recomputation or slicing was performed for this preparation."
+  "existing_files": "FCStd, STL, STEP, PrusaSlicer projects and right-holder G-code now use 1.2 mm combined lining and 7.8 mm laptop walls. The desk-clamp sample is unchanged.",
+  "applied_on": "2026-11-13",
+  "verification_report": "validation.json",
+  "slicing_report": "slicing/right_petg/slice_summary.json"
 }
