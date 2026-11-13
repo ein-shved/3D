@@ -4,11 +4,11 @@
     "left": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 259611.0838092125,
+      "volume_mm3": 313262.8072276665,
       "assembly_bounds_mm": [
         113.00000000000006,
-        161.79991107630494,
-        72.42178800982279
+        161.79991107630497,
+        72.42182653507999
       ],
       "print_bounds_mm": [
         72.42198359714521,
@@ -16,16 +16,16 @@
         113.00000000000007
       ],
       "mesh_solid": true,
-      "bed_contact_area_mm2": 4128.189626330371
+      "bed_contact_area_mm2": 4142.300316040564
     },
     "right": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 259611.08380921255,
+      "volume_mm3": 313262.80722766655,
       "assembly_bounds_mm": [
         113.00000000000006,
-        161.79991107630494,
-        72.42178800982285
+        161.79991107630497,
+        72.42182653508004
       ],
       "print_bounds_mm": [
         72.42198359714524,
@@ -33,7 +33,7 @@
         113.00000000000006
       ],
       "mesh_solid": true,
-      "bed_contact_area_mm2": 4128.189626330371
+      "bed_contact_area_mm2": 4142.300316040564
     },
     "clamp_sample": {
       "valid": true,
@@ -94,30 +94,21 @@
     "Full table dimensions, laptop depth and screen geometry are illustrative.",
     "STL and STEP are snapshots. Re-export after changing native parameters."
   ],
-  "native_parameter_update_checked": "Felt: 4 -> 3.5 -> 4 mm; both solids valid, original geometry restored",
+  "native_parameter_update_checked": "Felt: 1.2 -> 1 -> 1.2 mm; both solids valid, original geometry restored",
   "assumed_fasteners_clear_holders": true,
   "invalid_document_objects": [],
   "common_outboard_print_plane_verified": true,
   "left_print_plane_x_mm": -185.0,
   "right_print_plane_x_mm": 185.0,
-  "laptop_channel_mm": 22.6,
+  "laptop_channel_mm": 17.0,
+  "lining_thickness_mm": 1.2,
+  "laptop_wall_thickness_mm": 7.8,
+  "outboard_cheek_thickness_mm": 7.8,
   "vent_clearance_along_laptop_mm": 7.0,
-  "revision": "Full-width base transitions; cheek mouth is an exact common tangent to the insertion rounds",
+  "revision": "Compact shared wall, reinforced clamp, outboard cheek and clamp aligned to a single flat print bed face",
   "clamp_wall_mm": 10.51,
   "clamp_top_mm": 9.709999999999999,
   "clamp_under_bolts_mm": 4.0,
   "top_to_tabletop_clearance_mm": 0.40000000000000036,
-  "side_clearance_after_felt_mm_per_side": 10.0,
-  "styling": {
-    "user_sketch_preserved": "Sketch",
-    "contour_sketch_fully_constrained": true,
-    "upper_transition_radius_mm": 4,
-    "clamp_top_corner_radius_mm": 2,
-    "bottom_corner_radius_mm": 1.2,
-    "external_chamfer_mm": 0.6,
-    "native_final_feature": "InnerRimChamfer",
-    "base_transition_depth_mm": 113.0,
-    "mouth_common_tangent": true,
-    "tangent_max_error_mm": 2.9976021664879227e-15
-  }
+  "side_clearance_after_felt_mm_per_side": 10.0
 }
