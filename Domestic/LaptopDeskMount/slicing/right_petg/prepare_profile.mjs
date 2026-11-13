@@ -43,6 +43,7 @@ const model=path.join(root,'exports/holder_right.stl');
 const provenance={printer:'Elegoo Neptune 4 Pro',material:'PETG',nozzle_mm:0.4,
   source_profiles:inputs.map(p=>path.join(profiles,p)),overrides,
   source_stl:model,source_stl_sha256:crypto.createHash('sha256').update(fs.readFileSync(model)).digest('hex'),
+  lining_mm:1.2,laptop_wall_mm:7.8,outboard_wall_mm:7.8,
   orientation:'Original exported orientation: common outboard face on Z=0; no auto-orient or rescale.',
   temperatures:'230 C nozzle; 90 C bed first layer / 80 C later, inherited from user PETG preset.',
   mass:'Unknown: filament_density is 0 in the user preset; report length/volume, not a zero-gram mass.',

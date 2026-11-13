@@ -2,6 +2,7 @@
 from pathlib import Path
 import hashlib
 import json
+import re
 import zipfile
 
 root=Path(__file__).resolve().parent
@@ -28,7 +29,9 @@ summary={'project':str(ready),'gcode':str(gcode),
          'gcode_sha256':hashlib.sha256(gcode.read_bytes()).hexdigest(),
          'project_configuration':'Exact effective PrusaSlicer configuration embedded, including supports.',
          'support_material':True,'perimeters':6,'infill':'40% gyroid','layer_height_mm':.2,
-         'slicer_time_estimate':'13h 41m 32s','filament_length_mm':86969.05,'filament_volume_cm3':209.19,
+         'slicer_time_estimate':re.search(r'^; estimated printing time \(normal mode\) = (.+)$',text,re.M).group(1),
+         'filament_length_mm':float(re.search(r'^; filament used \[mm\] = ([\d.]+)',text,re.M).group(1)),
+         'filament_volume_cm3':float(re.search(r'^; filament used \[cm3\] = ([\d.]+)',text,re.M).group(1)),
          'filament_mass_g':None,'reason_mass_unknown':'The user filament preset specifies density 0.',
          'nozzle_temperature_C':230,'bed_temperature_C':[90,80]}
 (root/'slice_summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n')
