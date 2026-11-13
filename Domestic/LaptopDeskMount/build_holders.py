@@ -176,12 +176,12 @@ body.ViewObject.Visibility = True
 finish.ViewObject.Visibility = True
 
 felt = doc.addObject("App::DocumentObjectGroup", "FeltPads")
-felt.Label = "03 Войлок 4 мм — шесть накладок"
+felt.Label = "03 Фетр со скотчем — шесть накладок"
 for side,cx in (("Left","-Parameters.MountSpacing / 2"),("Right","Parameters.MountSpacing / 2")):
     for which,t,depth in (("Upper","Parameters.LaptopThickness + Parameters.Felt + Parameters.LaptopClearance / 2","Parameters.UpperGrip - 3 mm"),
                           ("Lower","-Parameters.LaptopClearance / 2","Parameters.LowerGrip - 3 mm")):
         obj = doc.addObject("Part::Box", "Felt"+side+which)
-        obj.Label = "Войлок — "+side+" / "+which
+        obj.Label = "Фетр со скотчем — "+side+" / "+which
         felt.addObject(obj)
         obj.Placement = App.Placement(App.Vector(),App.Rotation(App.Vector(1,0,0),150))
         obj.setExpression("Placement.Rotation.Angle","180 deg - Parameters.LaptopAngle")
@@ -194,7 +194,7 @@ for side,cx in (("Left","-Parameters.MountSpacing / 2"),("Right","Parameters.Mou
             obj.setExpression("Placement.Base."+axis,expr)
         obj.ViewObject.ShapeColor = (.40,.36,.29)
     side_pad=doc.addObject("Part::Box","Felt"+side+"Side")
-    side_pad.Label="Войлок — "+side+" / боковая стенка"
+    side_pad.Label="Фетр со скотчем — "+side+" / боковая стенка"
     felt.addObject(side_pad)
     side_pad.Placement=App.Placement(App.Vector(),App.Rotation(App.Vector(1,0,0),150))
     side_pad.setExpression("Placement.Rotation.Angle","180 deg - Parameters.LaptopAngle")
@@ -253,18 +253,21 @@ for pad in felt.Group:
         if overlap>1e-5:
             raise RuntimeError("Felt collision: %s / %s" % (pad.Name,obj.Name))
 
-# Verify native parameter propagation, then restore the user's 4 mm felt.
+# Verify parameter propagation, then restore the actual lining value/formula.
 felt_cell = P.getCellFromAlias("Felt")
+original_felt_contents = P.getContents(felt_cell)
+original_felt_mm = v("Felt")
+test_felt_mm = max(0.1, original_felt_mm - 0.2)
 original_volume = body.Shape.Volume
 try:
-    P.set(felt_cell,"3.5 mm")
+    P.set(felt_cell,"%.9g mm" % test_felt_mm)
     doc.recompute()
     if "_refresh_native_finishing" in globals():
         _refresh_native_finishing()
     if not body.Shape.isValid() or not right.Shape.isValid() or abs(body.Shape.Volume-original_volume)<1:
         raise RuntimeError("Native felt parameter failed to update the holders")
 finally:
-    P.set(felt_cell,"4 mm")
+    P.set(felt_cell,original_felt_contents)
     doc.recompute()
     if "_refresh_native_finishing" in globals():
         _refresh_native_finishing()
@@ -277,7 +280,7 @@ for h in (body,right):
 invalid = [(o.Name,o.getStatusString()) for o in doc.Objects if "Invalid" in o.State]
 if invalid:
     raise RuntimeError("Document contains invalid objects: "+str(invalid))
-report["native_parameter_update_checked"] = "Felt: 4 -> 3.5 -> 4 mm; both solids valid, original geometry restored"
+report["native_parameter_update_checked"] = "Felt: %.9g -> %.9g -> %.9g mm; both solids valid, original geometry restored" % (original_felt_mm,test_felt_mm,original_felt_mm)
 report["assumed_fasteners_clear_holders"] = True
 report["invalid_document_objects"] = invalid
 
@@ -318,6 +321,9 @@ for name,obj in (("holder_left",body),("holder_right",right),("clamp_fit_sample"
     report["geometry"]["left" if name=="holder_left" else "right" if name=="holder_right" else "clamp_sample"]["mesh_solid"] = True
     report["geometry"]["left" if name=="holder_left" else "right" if name=="holder_right" else "clamp_sample"]["bed_contact_area_mm2"] = sum(f.Area for f in bed_faces)
 report["laptop_channel_mm"] = v("LaptopThickness")+2*v("Felt")+v("LaptopClearance")
+report["lining_thickness_mm"] = v("Felt")
+report["laptop_wall_thickness_mm"] = v("RailWall")
+report["outboard_cheek_thickness_mm"] = v("SideWall")
 report["vent_clearance_along_laptop_mm"] = v("VentStart")-v("LowerGrip")
 report["revision"] = "Compact shared wall, reinforced clamp, outboard cheek and clamp aligned to a single flat print bed face"
 report["clamp_wall_mm"] = v("ClampWall")

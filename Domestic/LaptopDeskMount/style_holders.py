@@ -179,6 +179,21 @@ def _refresh_native_finishing():
     # A dimensional change can invalidate FreeCAD's mapped edge references
     # even when the edge order is unchanged. Resolve our geometric selectors
     # again before validating/exporting the new dimensions.
+    # Re-resolve the four original insertion edges as the inner rail faces move.
+    raw=doc.OuterLaptopCheek.Shape
+    angle=math.radians(P.LaptopAngle.Value)
+    names=[]
+    for i,edge in enumerate(raw.Edges,1):
+        if len(edge.Vertexes)!=2 or abs(edge.Length-P.ClampWidth.Value)>1e-5:
+            continue
+        a,b=[v.Point for v in edge.Vertexes]
+        depth=-(a.y-P.FrontY.Value)*math.cos(angle)+(a.z-P.FrontZ.Value)*math.sin(angle)
+        if abs(a.y-b.y)<1e-6 and abs(a.z-b.z)<1e-6 and min(abs(depth-P.UpperGrip.Value),abs(depth-P.LowerGrip.Value))<1e-5:
+            names.append("Edge%d"%i)
+    if len(names)!=4:
+        raise RuntimeError("Cannot resolve insertion edges after changing lining")
+    doc.InsertionFillets.Base=(doc.OuterLaptopCheek,names)
+    doc.recompute()
     point=doc.UnifiedCheekSketch.Geometry[1].StartPoint
     targets=[("UpperContourRound",point.x,point.y,0),
              ("UpperClampRounds",P.BeamWidth.Value+P.BeamClearance.Value,evaluated(top),0),
