@@ -39,7 +39,10 @@
     "binary_gcode": "0"
   },
   "source_stl": "/home/shved/Projects/3D/Domestic/LaptopDeskMount/exports/holder_right.stl",
-  "source_stl_sha256": "4d7d286f06772d237683fbd2002ef1424ba28da50eaf3f0fb0147cd16f8eaaae",
+  "source_stl_sha256": "e391ec80d6377d8a5010cb0a2321e334e19fdbd4d9d45752fd071633540c6382",
+  "lining_mm": 1.2,
+  "laptop_wall_mm": 7.8,
+  "outboard_wall_mm": 7.8,
   "orientation": "Original exported orientation: common outboard face on Z=0; no auto-orient or rescale.",
   "temperatures": "230 C nozzle; 90 C bed first layer / 80 C later, inherited from user PETG preset.",
   "mass": "Unknown: filament_density is 0 in the user preset; report length/volume, not a zero-gram mass.",

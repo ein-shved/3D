@@ -122,5 +122,16 @@
     "base_transition_depth_mm": 113.0,
     "mouth_common_tangent": true,
     "tangent_max_error_mm": 1.2212453270876722e-14
+  },
+  "lining_update": {
+    "felt_mm": 1,
+    "tape_mm": 0.2,
+    "combined_mm": 1.2,
+    "inward_thickening_mm": 2.8,
+    "effective_slot_mm": 14.6,
+    "mounting_sample_unchanged": true,
+    "laptop_pose_unchanged": true,
+    "user_sketch_preserved": true,
+    "user_sketch_note": "Original constraints and attachment retained; the endpoint constrained to the lower inner fillet follows its 2.8 mm inward movement."
   }
 }
