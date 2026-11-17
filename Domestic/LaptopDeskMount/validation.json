@@ -4,36 +4,36 @@
     "left": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 313262.8072276665,
+      "volume_mm3": 313909.371209021,
       "assembly_bounds_mm": [
         113.00000000000006,
-        161.79991107630497,
-        72.42182653507999
+        161.7999110763051,
+        72.42182653508002
       ],
       "print_bounds_mm": [
-        72.42198359714521,
-        161.8001066636274,
-        113.00000000000007
+        72.42172706741312,
+        161.79994602911898,
+        113.0000000000001
       ],
       "mesh_solid": true,
-      "bed_contact_area_mm2": 4142.300316040564
+      "bed_contact_area_mm2": 4142.300316040568
     },
     "right": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 313262.80722766655,
+      "volume_mm3": 313909.3712090211,
       "assembly_bounds_mm": [
         113.00000000000006,
-        161.79991107630497,
-        72.42182653508004
+        161.79991107630514,
+        72.42182653508009
       ],
       "print_bounds_mm": [
-        72.42198359714524,
-        161.8001066636274,
+        72.42172706741314,
+        161.79994602911904,
         113.00000000000006
       ],
       "mesh_solid": true,
-      "bed_contact_area_mm2": 4142.300316040564
+      "bed_contact_area_mm2": 4142.3003160405715
     },
     "clamp_sample": {
       "valid": true,
@@ -85,7 +85,19 @@
     "FeltRightLower / LaptopBase": 0.0,
     "FeltRightSide / HolderLeft": 0.0,
     "FeltRightSide / HolderRight": 0.0,
-    "FeltRightSide / LaptopBase": 0.0
+    "FeltRightSide / LaptopBase": 0.0,
+    "HolderLeft / FeltLeftUpper": 0.0,
+    "HolderLeft / FeltLeftLower": 0.0,
+    "HolderLeft / FeltLeftSide": 0.0,
+    "HolderLeft / FeltRightUpper": 0.0,
+    "HolderLeft / FeltRightLower": 0.0,
+    "HolderLeft / FeltRightSide": 0.0,
+    "HolderRight / FeltLeftUpper": 0.0,
+    "HolderRight / FeltLeftLower": 0.0,
+    "HolderRight / FeltLeftSide": 0.0,
+    "HolderRight / FeltRightUpper": 0.0,
+    "HolderRight / FeltRightLower": 0.0,
+    "HolderRight / FeltRightSide": 0.0
   },
   "notes": [
     "No structural FEA or physical load test was performed.",
@@ -105,7 +117,7 @@
   "laptop_wall_thickness_mm": 7.8,
   "outboard_cheek_thickness_mm": 7.8,
   "vent_clearance_along_laptop_mm": 7.0,
-  "revision": "Full-width base transitions; cheek mouth is an exact common tangent to the insertion rounds",
+  "revision": "Tangent inner upper lip following Sketch001; both mirrored halves",
   "clamp_wall_mm": 10.51,
   "clamp_top_mm": 9.709999999999999,
   "clamp_under_bolts_mm": 4.0,
@@ -118,7 +130,7 @@
     "clamp_top_corner_radius_mm": 2,
     "bottom_corner_radius_mm": 1.2,
     "external_chamfer_mm": 0.6,
-    "native_final_feature": "InnerRimChamfer",
+    "native_final_feature": "UpperLipBlend",
     "base_transition_depth_mm": 113.0,
     "mouth_common_tangent": true,
     "tangent_max_error_mm": 1.2212453270876722e-14
@@ -133,5 +145,24 @@
     "laptop_pose_unchanged": true,
     "user_sketch_preserved": true,
     "user_sketch_note": "Original constraints and attachment retained; the endpoint constrained to the lower inner fillet follows its 2.8 mm inward movement."
+  },
+  "upper_lip_finish": {
+    "date": "2026-11-17",
+    "both_halves": true,
+    "reference_sketch": "Sketch001",
+    "radius_mm": 2.669778421751669,
+    "tangent_error_mm": 1.7541523789077473e-14,
+    "flat_tangent_error_mm": 1.4210854715202004e-14,
+    "fully_constrained": true,
+    "extent_across_laptop_slot_mm": 105.2,
+    "original_material_preserved": true,
+    "mounting_sample_unchanged": true,
+    "nominal_plastic_slot_mm": 17.0
+  },
+  "physical_fit_feedback": {
+    "date": "2026-11-17",
+    "source": "user",
+    "report": "One half printed, lined, mounted and tested; user reports perfect fit.",
+    "scope": "User-reported fit of one manufactured half; no destructive or controlled load test."
   }
 }
