@@ -126,6 +126,9 @@ if max(tangent_error,flat_error)>1e-7:
     raise RuntimeError("Upper lip tangent is not continuous")
 if before.cut(blend.Shape).Volume>1e-5:
     raise RuntimeError("The cosmetic blend unexpectedly removed original material")
+removed=before.cut(body.Shape).Volume
+if removed>1e-5:
+    raise RuntimeError("The reordered chamfers unexpectedly removed original material")
 if probe_before.cut(doc.ClampFitSample.Shape).Volume+doc.ClampFitSample.Shape.cut(probe_before).Volume>1e-5:
     raise RuntimeError("The proven mounting interface changed")
 
@@ -159,9 +162,10 @@ report["upper_lip_finish"]={"date":"2026-11-17","both_halves":True,"reference_sk
     "radius_mm":arc.Radius,"tangent_error_mm":tangent_error,"flat_tangent_error_mm":flat_error,
     "fully_constrained":profile.FullyConstrained,"extent_across_laptop_slot_mm":blend.Length.Value,
     "original_material_preserved":True,"mounting_sample_unchanged":True,
+    "final_material_removed_mm3":removed,
     "feature_order":"UpperLipBlend -> BedRimChamfer -> InnerRimChamfer",
     "nominal_plastic_slot_mm":P.LaptopThickness.Value+2*P.Felt.Value+P.LaptopClearance.Value}
-report["physical_fit_feedback"]={"date":"2026-11-17","source":"user",
+report["physical_fit_feedback"]={**report.get("physical_fit_feedback",{}),"date":"2026-11-17","source":"user",
     "report":"One half printed, lined, mounted and tested; user reports perfect fit.",
     "scope":"User-reported fit of one manufactured half; no destructive or controlled load test."}
 report["status"]="user_reported_fit_preserved_after_cosmetic_update"
