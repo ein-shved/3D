@@ -1,0 +1,20 @@
+{
+  "project": "/home/shved/Projects/3D/Domestic/LaptopDeskMount/slicing/left_petg/holder_left_petg_ready.3mf",
+  "gcode": "/home/shved/Projects/3D/Domestic/LaptopDeskMount/slicing/left_petg/holder_left_petg.gcode",
+  "gcode_sha256": "d670ea0be3a34870c43ead3dc4102ca213c1f1cf6e2120c4a9cf116c8bf2776c",
+  "project_configuration": "Exact effective PrusaSlicer configuration embedded, including supports.",
+  "support_material": true,
+  "perimeters": 6,
+  "infill": "40% gyroid",
+  "layer_height_mm": 0.2,
+  "slicer_time_estimate": "16h 49m 22s",
+  "filament_length_mm": 97202.33,
+  "filament_volume_cm3": 233.8,
+  "filament_mass_g": null,
+  "reason_mass_unknown": "The user filament preset specifies density 0.",
+  "nozzle_temperature_C": 230,
+  "bed_temperature_C": [
+    90,
+    80
+  ]
+}

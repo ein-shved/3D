@@ -10,30 +10,30 @@
   ],
   "extrusion_bounds_mm": {
     "min": [
-      65.36,
-      20.681,
+      65.361,
+      20.672,
       0.2
     ],
     "max": [
-      159.628,
+      159.626,
       204.329,
       113
     ]
   },
   "extruded_filament_mm_by_path_type": {
-    "Skirt/Brim": 218.24433999999985,
-    "Perimeter": 53424.66943999932,
-    "External perimeter": 11400.83104999982,
-    "Solid infill": 2289.808040000038,
-    "Internal infill": 26889.249299992633,
-    "Bridge infill": 500.73394999999897,
-    "Top solid infill": 277.2463800000032,
-    "Support material interface": 171.8790299999963,
-    "Support material": 1774.5103900001302,
-    "Overhang perimeter": 46.64824999999999
+    "Skirt/Brim": 218.24412999999984,
+    "Perimeter": 53547.49367999915,
+    "External perimeter": 11420.93623999984,
+    "Solid infill": 2290.601040000045,
+    "Internal infill": 26957.605859992556,
+    "Bridge infill": 499.14527000000226,
+    "Top solid infill": 277.3889900000034,
+    "Support material interface": 168.36942999999678,
+    "Support material": 1771.4037300001964,
+    "Overhang perimeter": 46.653360000000035
   },
-  "support_volume_cm3": 4.681615194405742,
-  "bridge_volume_cm3": 1.2044062943347933,
+  "support_volume_cm3": 4.665701224144938,
+  "bridge_volume_cm3": 1.2005850711249835,
   "notes": [
     "The G-code bridge role does not directly measure unsupported bridge span.",
     "Review uses actual G-code moves. It confirms support generation, part height and bed fit, not physical fit or strength.",
