@@ -4,36 +4,36 @@
     "left": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 313909.371209021,
+      "volume_mm3": 313907.4713165781,
       "assembly_bounds_mm": [
         113.00000000000006,
-        161.7999110763051,
-        72.42182653508002
+        161.79991107630497,
+        72.42182653507999
       ],
       "print_bounds_mm": [
-        72.42172706741312,
-        161.79994602911898,
-        113.0000000000001
+        72.42172706741306,
+        161.79994602911887,
+        113.00000000000007
       ],
       "mesh_solid": true,
-      "bed_contact_area_mm2": 4142.300316040568
+      "bed_contact_area_mm2": 4142.300316040567
     },
     "right": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 313909.3712090211,
+      "volume_mm3": 313907.4713165781,
       "assembly_bounds_mm": [
         113.00000000000006,
-        161.79991107630514,
-        72.42182653508009
+        161.79991107630497,
+        72.42182653508004
       ],
       "print_bounds_mm": [
-        72.42172706741314,
-        161.79994602911904,
+        72.4217270674131,
+        161.79994602911884,
         113.00000000000006
       ],
       "mesh_solid": true,
-      "bed_contact_area_mm2": 4142.3003160405715
+      "bed_contact_area_mm2": 4142.300316040567
     },
     "clamp_sample": {
       "valid": true,
@@ -130,7 +130,7 @@
     "clamp_top_corner_radius_mm": 2,
     "bottom_corner_radius_mm": 1.2,
     "external_chamfer_mm": 0.6,
-    "native_final_feature": "UpperLipBlend",
+    "native_final_feature": "InnerRimChamfer",
     "base_transition_depth_mm": 113.0,
     "mouth_common_tangent": true,
     "tangent_max_error_mm": 1.2212453270876722e-14
@@ -157,13 +157,13 @@
     "extent_across_laptop_slot_mm": 105.2,
     "original_material_preserved": true,
     "mounting_sample_unchanged": true,
+    "feature_order": "UpperLipBlend -> BedRimChamfer -> InnerRimChamfer",
     "nominal_plastic_slot_mm": 17.0
   },
   "physical_fit_feedback": {
     "date": "2026-11-17",
     "source": "user",
     "report": "One half printed, lined, mounted and tested; user reports perfect fit.",
-    "scope": "User-reported fit of one manufactured half; no destructive or controlled load test.",
-    "prepared_print_gcode_sha256": "8ea5ed87e76ce2b0607f2ccb796db34a63353eadbfa18bae6e64dc4ced067529"
+    "scope": "User-reported fit of one manufactured half; no destructive or controlled load test."
   }
 }

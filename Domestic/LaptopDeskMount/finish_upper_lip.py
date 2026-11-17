@@ -83,6 +83,7 @@ profile.setExpression("Constraints[%d]"%index,ue)
 blend=body.newObject("PartDesign::Pad","UpperLipBlend")
 blend.Label="Внутренний край верхнего упора — плавный выход к стенке"
 blend.Profile=profile
+blend.BaseFeature=doc.LowerElbowRound
 blend.setExpression("Length","Parameters.ClampWidth - Parameters.SideWall")
 blend.Refine=True
 doc.recompute()
@@ -91,10 +92,25 @@ if blend.Shape.isNull() or not blend.Shape.isValid() or len(blend.Shape.Solids)!
 previous.ViewObject.Visibility=False
 profile.ViewObject.Visibility=False
 guide.ViewObject.Visibility=False
-body.Tip=blend
+# Apply the existing rim chamfers AFTER the new lip, so the new arc and
+# cheek transition have the same edge treatment as the rest of the model.
+base=blend
+for name,plane in (("BedRimChamfer",doc.OuterLaptopCheek.Placement.Base.x),
+                   ("InnerRimChamfer",doc.UpperLaptopRail.Shape.BoundBox.XMax)):
+    feature=doc.getObject(name)
+    names=["Edge%d"%i for i,e in enumerate(base.Shape.Edges,1)
+           if e.Length>5 and all(abs(v.Point.x-plane)<1e-5 for v in e.Vertexes)]
+    feature.Base=(base,names)
+    doc.recompute()
+    if feature.Shape.isNull() or not feature.Shape.isValid() or len(feature.Shape.Solids)!=1:
+        raise RuntimeError("Invalid chamfer after upper lip: "+name)
+    base.ViewObject.Visibility=False
+    base=feature
+body.Tip=base
 body.ViewObject.Visibility=True
-blend.ViewObject.ShapeColor=(.94,.47,.13)
-blend.ViewObject.LineColor=(.27,.15,.07)
+base.ViewObject.Visibility=True
+base.ViewObject.ShapeColor=(.94,.47,.13)
+base.ViewObject.LineColor=(.27,.15,.07)
 doc.HolderRight.ViewObject.Visibility=True
 doc.recompute()
 
@@ -108,7 +124,7 @@ tangent_error=abs(normal.dot(direction))
 flat_error=abs(arc.EndPoint.x-arc.Center.x)
 if max(tangent_error,flat_error)>1e-7:
     raise RuntimeError("Upper lip tangent is not continuous")
-if before.cut(body.Shape).Volume>1e-5:
+if before.cut(blend.Shape).Volume>1e-5:
     raise RuntimeError("The cosmetic blend unexpectedly removed original material")
 if probe_before.cut(doc.ClampFitSample.Shape).Volume+doc.ClampFitSample.Shape.cut(probe_before).Volume>1e-5:
     raise RuntimeError("The proven mounting interface changed")
@@ -143,12 +159,13 @@ report["upper_lip_finish"]={"date":"2026-11-17","both_halves":True,"reference_sk
     "radius_mm":arc.Radius,"tangent_error_mm":tangent_error,"flat_tangent_error_mm":flat_error,
     "fully_constrained":profile.FullyConstrained,"extent_across_laptop_slot_mm":blend.Length.Value,
     "original_material_preserved":True,"mounting_sample_unchanged":True,
+    "feature_order":"UpperLipBlend -> BedRimChamfer -> InnerRimChamfer",
     "nominal_plastic_slot_mm":P.LaptopThickness.Value+2*P.Felt.Value+P.LaptopClearance.Value}
 report["physical_fit_feedback"]={"date":"2026-11-17","source":"user",
     "report":"One half printed, lined, mounted and tested; user reports perfect fit.",
     "scope":"User-reported fit of one manufactured half; no destructive or controlled load test."}
 report["status"]="user_reported_fit_preserved_after_cosmetic_update"
-report["styling"]["native_final_feature"]=blend.Name
+report["styling"]["native_final_feature"]=body.Tip.Name
 report["revision"]="Tangent inner upper lip following Sketch001; both mirrored halves"
 report["invalid_document_objects"]=[(o.Name,o.getStatusString()) for o in doc.Objects if "Invalid" in o.State]
 if report["invalid_document_objects"]:
