@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-const dir=path.dirname(fileURLToPath(import.meta.url));
-const file=path.join(dir,'holder_right_petg.gcode');
+const dir=process.argv[2]?path.resolve(process.argv[2]):path.dirname(fileURLToPath(import.meta.url));
+const side=path.basename(dir).split('_')[0];
+if(!['left','right'].includes(side))throw Error('Expected left_petg or right_petg directory');
+const file=path.join(dir,`holder_${side}_petg.gcode`);
 const text=fs.readFileSync(file,'utf8');
 const chosen=[.2,32,60,98.4];
 const panels=chosen.map(z=>({z,segments:[]}));

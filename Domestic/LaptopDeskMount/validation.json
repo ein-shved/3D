@@ -1,5 +1,5 @@
 {
-  "status": "prototype_requires_fit_sample",
+  "status": "user_reported_fit_preserved_after_cosmetic_update",
   "geometry": {
     "left": {
       "valid": true,
@@ -163,6 +163,7 @@
     "date": "2026-11-17",
     "source": "user",
     "report": "One half printed, lined, mounted and tested; user reports perfect fit.",
-    "scope": "User-reported fit of one manufactured half; no destructive or controlled load test."
+    "scope": "User-reported fit of one manufactured half; no destructive or controlled load test.",
+    "prepared_print_gcode_sha256": "8ea5ed87e76ce2b0607f2ccb796db34a63353eadbfa18bae6e64dc4ced067529"
   }
 }

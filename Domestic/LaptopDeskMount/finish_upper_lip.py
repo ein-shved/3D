@@ -147,6 +147,7 @@ report["upper_lip_finish"]={"date":"2026-11-17","both_halves":True,"reference_sk
 report["physical_fit_feedback"]={"date":"2026-11-17","source":"user",
     "report":"One half printed, lined, mounted and tested; user reports perfect fit.",
     "scope":"User-reported fit of one manufactured half; no destructive or controlled load test."}
+report["status"]="user_reported_fit_preserved_after_cosmetic_update"
 report["styling"]["native_final_feature"]=blend.Name
 report["revision"]="Tangent inner upper lip following Sketch001; both mirrored halves"
 report["invalid_document_objects"]=[(o.Name,o.getStatusString()) for o in doc.Objects if "Invalid" in o.State]
