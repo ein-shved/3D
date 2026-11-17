@@ -177,6 +177,11 @@ report["physical_fit_feedback"]={**report.get("physical_fit_feedback",{}),"date"
 report["status"]="user_reported_fit_preserved_after_cosmetic_update"
 report["styling"]["native_final_feature"]=body.Tip.Name
 report["revision"]="Tangent inner upper lip following Sketch001; both mirrored halves"
+guide_name=guide.Name
+doc.removeObject(guide_name)
+doc.recompute()
+report["upper_lip_finish"]["reference_sketch_removed"]=True
+report["upper_lip_finish"]["reference_snapshot"]="references/upper_lip_sketch.json"
 report["invalid_document_objects"]=[(o.Name,o.getStatusString()) for o in doc.Objects if "Invalid" in o.State]
 if report["invalid_document_objects"]:
     raise RuntimeError("Document contains invalid features: "+str(report["invalid_document_objects"]))

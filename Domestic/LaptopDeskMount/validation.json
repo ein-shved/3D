@@ -159,7 +159,9 @@
     "mounting_sample_unchanged": true,
     "feature_order": "UpperLipBlend -> BedRimChamfer -> InnerRimChamfer",
     "nominal_plastic_slot_mm": 17.0,
-    "final_material_removed_mm3": 0.0
+    "final_material_removed_mm3": 0.0,
+    "reference_sketch_removed": true,
+    "reference_snapshot": "references/upper_lip_sketch.json"
   },
   "physical_fit_feedback": {
     "date": "2026-11-17",
