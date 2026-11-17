@@ -8,7 +8,7 @@
     "/home/shved/.config/PrusaSlicer/filament/Neptune 4 - PETG.ini"
   ],
   "overrides": {
-    "printer_settings_id": "Elegoo Neptune 4 Pro",
+    "printer_settings_id": "Neptune 4 Pro",
     "print_settings_id": "Laptop holder right - PETG 0.20 / 6 walls / 40% gyroid",
     "filament_settings_id": "Neptune 4 - PETG",
     "layer_height": "0.2",
@@ -36,7 +36,8 @@
     "brim_width": "5",
     "brim_separation": "0.15",
     "gcode_comments": "1",
-    "binary_gcode": "0"
+    "binary_gcode": "0",
+    "physical_printer_settings_id": "Home Neptune 4 Pro"
   },
   "source_stl": "/home/shved/Projects/3D/Domestic/LaptopDeskMount/exports/holder_right.stl",
   "source_stl_sha256": "5795e61c73956f382ee6ca4d68d0805ae33d24135b5b65b0b5baa8587839cd83",
@@ -47,5 +48,6 @@
   "temperatures": "230 C nozzle; 90 C bed first layer / 80 C later, inherited from user PETG preset.",
   "mass": "Unknown: filament_density is 0 in the user preset; report length/volume, not a zero-gram mass.",
   "supports": "Automatic snug supports with 0.25 mm contact gap. Local requirement: upper clamp ear after the spacer slot; inspect removal access after slicing.",
-  "cosmetic_revision": "2026-11-17 tangent inner upper lip BEFORE rim chamfers"
+  "cosmetic_revision": "2026-11-17 tangent inner upper lip BEFORE rim chamfers",
+  "local_physical_printer": "Home Neptune 4 Pro"
 }

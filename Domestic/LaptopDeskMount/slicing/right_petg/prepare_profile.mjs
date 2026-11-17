@@ -19,7 +19,8 @@ for(const relative of inputs){
   }
 }
 const overrides={
-  printer_settings_id:'Elegoo Neptune 4 Pro',
+  printer_settings_id:'Neptune 4 Pro',
+  physical_printer_settings_id:'Home Neptune 4 Pro',
   print_settings_id:'Laptop holder right - PETG 0.20 / 6 walls / 40% gyroid',
   filament_settings_id:'Neptune 4 - PETG',
   layer_height:'0.2',first_layer_height:'0.2',
