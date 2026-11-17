@@ -39,7 +39,7 @@
     "binary_gcode": "0"
   },
   "source_stl": "/home/shved/Projects/3D/Domestic/LaptopDeskMount/exports/holder_right.stl",
-  "source_stl_sha256": "b130edca5f2aa76603b8f8b37a161cae57e3ab2a2baac3b530d9743bb019d03c",
+  "source_stl_sha256": "5795e61c73956f382ee6ca4d68d0805ae33d24135b5b65b0b5baa8587839cd83",
   "lining_mm": 1.2,
   "laptop_wall_mm": 7.8,
   "outboard_wall_mm": 7.8,
@@ -47,5 +47,5 @@
   "temperatures": "230 C nozzle; 90 C bed first layer / 80 C later, inherited from user PETG preset.",
   "mass": "Unknown: filament_density is 0 in the user preset; report length/volume, not a zero-gram mass.",
   "supports": "Automatic snug supports with 0.25 mm contact gap. Local requirement: upper clamp ear after the spacer slot; inspect removal access after slicing.",
-  "cosmetic_revision": "2026-11-17 tangent inner upper lip"
+  "cosmetic_revision": "2026-11-17 tangent inner upper lip BEFORE rim chamfers"
 }

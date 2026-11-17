@@ -158,12 +158,14 @@
     "original_material_preserved": true,
     "mounting_sample_unchanged": true,
     "feature_order": "UpperLipBlend -> BedRimChamfer -> InnerRimChamfer",
-    "nominal_plastic_slot_mm": 17.0
+    "nominal_plastic_slot_mm": 17.0,
+    "final_material_removed_mm3": 0.0
   },
   "physical_fit_feedback": {
     "date": "2026-11-17",
     "source": "user",
     "report": "One half printed, lined, mounted and tested; user reports perfect fit.",
-    "scope": "User-reported fit of one manufactured half; no destructive or controlled load test."
+    "scope": "User-reported fit of one manufactured half; no destructive or controlled load test.",
+    "prepared_print_gcode_sha256": "8ea5ed87e76ce2b0607f2ccb796db34a63353eadbfa18bae6e64dc4ced067529"
   }
 }
