@@ -107,6 +107,12 @@ for name,plane in (("BedRimChamfer",doc.OuterLaptopCheek.Placement.Base.x),
     base.ViewObject.Visibility=False
     base=feature
 body.Tip=base
+# Keep the feature tree in the same order as the actual dependency chain.
+members=[obj for obj in body.Group if obj not in (profile,blend)]
+index=members.index(doc.BedRimChamfer)
+members[index:index]=[profile,blend]
+body.Group=members
+body.Tip=base
 body.ViewObject.Visibility=True
 base.ViewObject.Visibility=True
 base.ViewObject.ShapeColor=(.94,.47,.13)
