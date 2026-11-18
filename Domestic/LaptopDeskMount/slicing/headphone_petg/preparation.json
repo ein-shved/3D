@@ -38,7 +38,7 @@
     "binary_gcode": "0"
   },
   "parts": {
-    "headphone_hook_upper.stl": "c5ad6a359a69e4cb14a764b96248ef46e731ed0cf6fa386dda35ae2db6d42b05",
+    "headphone_hook_upper.stl": "d4173906e009a4eae37f3a97a7acd4ec019896887cd142344af201e4717934de",
     "headphone_hook_lower.stl": "75c5c85598f66b69859ce3532a32ea46d75de7ac11f1b6d0cbd8508ff10a6e8c"
   },
   "orientation": "Upper: flat assembly underside. Lower: side plane. No rescaling.",

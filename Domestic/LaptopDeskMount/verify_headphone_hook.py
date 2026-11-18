@@ -82,6 +82,7 @@ if D.getObject("Sketch001"):
 exports = ROOT / "exports"
 report["exports"] = {}
 for body, name in ((upper, "headphone_hook_upper"), (lower, "headphone_hook_lower")):
+    report['bodies'][body.Name]['volume_mm3']=body.Shape.Volume
     Part.export([body], str(exports / (name + ".step")))
     shape = body.Shape.copy()
     is_upper = body == upper
