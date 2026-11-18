@@ -182,11 +182,19 @@ def round_joint(doc):
     order.insert(order.index(doc.HookClampRounds),nose)
     lower.Group=order
     lower.Tip=doc.HookClampHeadPocket
+    upper.Tip=doc.HookInsertLeadIn
     doc.recompute()
 
 
 def add_oval_loop(doc):
     H=doc.HookParameters;body=doc.HeadphoneHookUpper
+    pocket=doc.getObject("HookInsertPocket")
+    body.Tip=doc.HookInsertLeadIn if pocket else doc.HookStopRim
+    existing=[doc.getObject(n) for n in ("HookCableSketch","HookCablePad","HookCableInnerRounds","HookCableRim") if doc.getObject(n)]
+    if existing and pocket:
+        order=[o for o in body.Group if o not in existing]
+        index=order.index(pocket)
+        body.Group=order[:index]+existing+order[index:]
     sk=doc.getObject("HookCableSketch")
     if sk is None:
         sk=body.newObject("Sketcher::SketchObject","HookCableSketch")
