@@ -94,7 +94,7 @@ if len(rim_edges)!=6:
     raise RuntimeError("Unable to identify rectangle rim: " + str(rim_edges))
 doc.HookStopRim.Base = (corners,rim_edges)
 doc.HookStopRim.BaseFeature = corners
-doc.HookStopRim.Radius = 2.5
+doc.HookStopRim.setExpression("Radius","HookParameters.StopEdgeRadius")
 doc.HookStopRim.Label = "Мягкие кромки прямоугольного верха R2.5"
 if doc.getObject("HookStopCap"):
     doc.removeObject("HookStopCap")
@@ -106,8 +106,12 @@ order=[o for o in upper.Group if o!=corners]
 order.insert(order.index(doc.HookStopRim),corners)
 upper.Group=order
 upper.Tip=doc.HookInsertLeadIn
-details["rebind_user_guides"](doc,guide_placements)
 details["add_oval_loop"](doc)
+p = ROOT / "finish_headphone_walls.py"
+walls={"__file__":str(p),"__name__":"hook_walls"}
+exec(compile(p.read_text(),str(p),"exec"),walls)
+walls["finish_lower"](doc)
+details["rebind_user_guides"](doc,guide_placements)
 upper.Label="Верхний ограничитель с овальной петлёй — PETG"
 lower.Label="Нижний захват — PETG, M4×15"
 for o in upper.Group:
@@ -150,6 +154,7 @@ report["material_beyond_right_edge_mm3"] = upper.Shape.common(outside).Volume
 assert report["material_beyond_right_edge_mm3"]<1e-5
 report["cable_ring"] = {"present":True,"shape":"vertical_oval_loop","passage_mm":q("CableGap"),"wall_mm":q("CableWall"),"top_z_mm":q("CableTop")}
 report["equal_rear_joint"]={"upper_mm":q("ShelfTop")-q("ChannelRoof"),"opening_mm":q("ChannelRoof")-q("RearLipTop"),"lower_mm":q("RearLipTop")-q("ShelfBottom"),"inner_radius_mm":q("JointInsideRadius"),"tongue_thickness_mm":q("TongueTop")-q("TongueBottom")}
+report["wall_finishing"]={"merged_sidewalls":True,"upper_bottom_radius_mm":q("BottomEdgeRadius"),"lower_side_radius_mm":q("LowerSideRadius"),"entry_radius_mm":q("EntryCornerRadius"),"deep_back_rounds_rolled_back":doc.getObject("HookChannelInnerRounds") is None and doc.getObject("HookTongueRounds") is None}
 report["bolt"]["material_under_head_mm"]=q("LowerBossTop")-q("HeadSeatZ")
 zmin = upper.Shape.BoundBox.ZMin
 base_area = sum(f.Area for f in upper.Shape.Faces if f.BoundBox.ZLength<1e-5 and abs(f.BoundBox.ZMin-zmin)<1e-5)

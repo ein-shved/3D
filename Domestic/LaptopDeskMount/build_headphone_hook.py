@@ -29,7 +29,7 @@ parameters = [
     ("ShelfTop", "=TopGap - FitClearance", "Верх верхней полки", "В зазоре под столешницей"),
     ("ShelfThickness", "=ShelfTop - ShelfBottom", "Толщина верхней полки", "Максимально использован зазор под столешницей"),
     ("JointThird", "=ShelfThickness / 3", "Три равных участка заднего узла", "По эскизу пользователя"),
-    ("JointInsideRadius", "0.8 mm", "Внутренние скругления зацепа", "Согласованы с нижним зацепом"),
+    ("JointInsideRadius", "0 mm", "Задние углы без скругления", "Отменено по уточнению пользователя"),
     ("BeamBack", "=ProfileWidth + FitClearance", "Задняя грань обхвата Y", "Боковой зазор от перекладины"),
     ("RearStemEnd", "=BeamBack + Wall", "Задняя стойка: торец Y", "Стойка нижнего обхвата"),
     ("TongueEnd", "=RearStemEnd + Wall", "Задний зацеп: торец Y", "Заходит в канал верхней детали"),
@@ -156,10 +156,6 @@ primitive(upper, "SubtractiveBox", "HookRearChannel", "Боковой вход �
 box(upper, "HookRearLip", "Удерживающий борт заднего паза",
     (expr("StopWidth"), expr("UpperBackEnd") + "-" + expr("RearLipFront"), expr("RearLipTop") + "-" + expr("RearLipBottom")),
     (expr("ClampX"), expr("RearLipFront"), expr("RearLipBottom")))
-inner_edges=["Edge%d" % i for i,e in enumerate(upper.Tip.Shape.Edges,1)
-             if abs(e.BoundBox.XLength-q("StopWidth"))<1e-5 and e.BoundBox.YLength<1e-6 and e.BoundBox.ZLength<1e-6
-             and abs(e.BoundBox.YMin-q("UpperBackInner"))<1e-5 and min(abs(e.BoundBox.ZMin-z) for z in (q("ChannelRoof"),q("RearLipTop")))<1e-5]
-fillet(upper,"HookChannelInnerRounds","Внутренние углы паза R0.8",inner_edges,q("JointInsideRadius"))
 outline = ["Edge%d" % i for i,e in enumerate(upper.Tip.Shape.Edges,1)
            if abs(e.BoundBox.ZLength-q("ShelfThickness"))<1e-5
            and e.BoundBox.XLength<1e-6 and e.BoundBox.YLength<1e-6]
@@ -202,10 +198,6 @@ box(lower, "HookClampRear", "Задняя стойка обхвата",
 box(lower, "HookClampTongue", "Задний зацеп входит в паз верхней части",
     (expr("ClipWidth"), expr("TongueEnd") + "-" + expr("BeamBack"), expr("TongueTop") + "-" + expr("TongueBottom")),
     (expr("ClampX"), expr("BeamBack"), expr("TongueBottom")))
-nose_edges=["Edge%d" % i for i,e in enumerate(lower.Tip.Shape.Edges,1)
-            if abs(e.BoundBox.XLength-q("ClipWidth"))<1e-5 and e.BoundBox.YLength<1e-6 and e.BoundBox.ZLength<1e-6
-            and abs(e.BoundBox.YMin-q("TongueEnd"))<1e-5 and min(abs(e.BoundBox.ZMin-z) for z in (q("TongueTop"),q("TongueBottom")))<1e-5]
-fillet(lower,"HookTongueRounds","Скруглённый конец нижнего зацепа R0.8",nose_edges,q("JointInsideRadius"))
 # Round the exterior side outline, leaving the planar crossbar bearing surfaces intact.
 outer_edges = []
 for i, e in enumerate(lower.Tip.Shape.Edges, 1):
@@ -220,6 +212,10 @@ cylinder(lower, "Subtractive", "HookClampScrewHole", "Сквозной прох�
 cylinder(lower, "Subtractive", "HookClampHeadPocket", "Скрытая цилиндрическая головка Ø7.5 × 4.5",
          expr("HeadPocketDiameter") + "/2", expr("HeadPocketDepth") + "+1 mm",
          (expr("ClampX") + "+" + expr("ClipWidth") + "/2", expr("BoltY"), expr("BottomZ") + "-1 mm"))
+p=ROOT/"finish_headphone_walls.py"
+walls={"__file__":str(p),"__name__":"hook_walls"}
+exec(compile(p.read_text(),str(p),"exec"),walls)
+walls["finish_lower"](doc)
 
 for body, color, label in ((upper, (.92, .48, .16), "Верхний ограничитель с овальной петлёй — PETG"),
                             (lower, (.25, .62, .76), "Нижний захват — PETG, M4×15")):

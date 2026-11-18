@@ -89,19 +89,25 @@ def rebind_user_guides(doc,placements):
             if backup.exists():
                 saved=json.loads(backup.read_text()).get(sk.Name,{})
                 values=[(c["type"],c["first"],c["first_pos"],c["second"],c["second_pos"]) for c in saved.get("constraints",[])]
+            if sk.Name=="Sketch004":
+                backup=Path(doc.FileName).parent/"references"/"wall_merge_user_sketch.json"
+                if backup.exists():
+                    saved=json.loads(backup.read_text())
+                    values=[(c["type"],c["first"],c["first_pos"],c["second"],c["second_pos"]) for c in saved["constraints"]]
         for i in reversed(range(sk.ConstraintCount)):sk.delConstraint(i)
         # Recompute each removal: FreeCAD updates the projected-geometry indices lazily.
         while sk.ExternalGeometry:
             sk.delExternal(0)
             doc.recompute()
         for name in names:
-            sk.addExternal(source.Name,name)
+            target,element=(source,name) if isinstance(name,str) else name
+            sk.addExternal(target.Name,element)
             doc.recompute()
         return values
     def rebuild_constraints(sk,replacements,values):
         for i in reversed(range(sk.ConstraintCount)):sk.delConstraint(i)
         for typ,a,ap,b,bp in values:
-            if typ=="Coincident":
+            if typ in ("Coincident","Tangent"):
                 if b in replacements:bp=replacements[b]
                 c=Sketcher.Constraint(typ,a,ap,b,bp)
             elif typ in ("Vertical","Horizontal"):c=Sketcher.Constraint(typ,a)
@@ -137,6 +143,26 @@ def rebind_user_guides(doc,placements):
             return max(result)[1]
         values=replace_external(sk,source,[edge_at("y",H.BossY.Value),edge_at("x",H.ClampX.Value),edge_at("x",H.CornerX.Value)])
         rebuild_constraints(sk,{-4:endpoint(sk,-4,False),-5:endpoint(sk,-5,False)},values)
+    if "Sketch004" in placements:
+        sk=doc.Sketch004
+        attach(sk,"z",H.ShelfBottom.Value)
+        side=[]
+        for i,e in enumerate(source.Shape.Edges,1):
+            b=e.BoundBox
+            if b.XLength<1e-6 and b.ZLength<1e-6 and abs(b.XMin-H.CornerX.Value)<1e-5 and abs(b.ZMin-H.ShelfBottom.Value)<1e-5 and b.YLength>10 and b.YMin<0:
+                side.append((e.Length,"Edge%d"%i))
+        pad=doc.HookCablePad;arc=[];front=[]
+        for i,e in enumerate(pad.Shape.Edges,1):
+            b=e.BoundBox
+            if b.ZLength>1e-6 or abs(b.ZMin-H.ShelfBottom.Value)>1e-5:continue
+            if isinstance(e.Curve,Part.Circle) and abs(e.Curve.Radius-H.CableOuterRadius.Value)<1e-5 and b.XMin>=H.CableRightCenter.Value-1e-5 and b.YMax<=H.CableCenterY.Value+1e-5:
+                arc.append("Edge%d"%i)
+            if b.YLength<1e-6 and abs(b.YMin-(H.CableCenterY.Value-H.CableOuterRadius.Value))<1e-5 and b.XLength>10:
+                front.append("Edge%d"%i)
+        if not side or not arc or not front:raise RuntimeError("Unable to preserve Sketch004 references")
+        values=replace_external(sk,None,[(source,max(side)[1]),(pad,arc[0]),(pad,front[0])])
+        right=max((sk.Placement.multVec(sk.getPoint(-5,p)).x,p) for p in (1,2))[1]
+        rebuild_constraints(sk,{-3:endpoint(sk,-3,False),-5:right},values)
     for name in placements:
         sk=doc.getObject(name)
         sk.ViewObject.Visibility=False
