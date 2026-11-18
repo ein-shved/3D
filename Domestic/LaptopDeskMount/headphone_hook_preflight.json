@@ -53,10 +53,113 @@
   "unresolved": [
     "corner",
     "headband_width_mm",
-    "headphones_mass_g",
-    "insert_spec",
-    "bolt_spec",
-    "cable_eye_passage"
+    "headphones_mass_g"
+  ],
+  "specified_parameters": [
+    {
+      "alias": "BoltDiameter",
+      "value": "4 mm",
+      "label": "Номинальный диаметр резьбы M4",
+      "note": "Задано пользователем: болт с цилиндрической головкой и внутренним шестигранником"
+    },
+    {
+      "alias": "HeadDiameter",
+      "value": "7 mm",
+      "label": "Диаметр головки болта",
+      "note": "Задано пользователем; карман делать с отдельным посадочным запасом"
+    },
+    {
+      "alias": "InsertOuterDiameter",
+      "value": "6 mm",
+      "label": "Наружный диаметр термовставки M4",
+      "note": "Подтверждено пользователем: наружный диаметр 6 мм, вставки разной длины доступны"
+    },
+    {
+      "alias": "CableEyeFactor",
+      "value": "4",
+      "label": "Ширина прохода в диаметрах джека",
+      "note": "Задано пользователем: через кольцо должен проходить джек"
+    },
+    {
+      "alias": "CableEyeWidth",
+      "expression": "=CableEyeFactor * JackDiameter",
+      "label": "Минимальная свободная ширина прохода",
+      "note": "4 диаметра джека; при принятом джеке 3.5 мм получится 14 мм; не сужать проход скруглениями"
+    }
+  ],
+  "provisional_parameters": [
+    {
+      "alias": "JackDiameter",
+      "value": "3.5 mm",
+      "label": "Диаметр металлической части джека",
+      "note": "ДОПУЩЕНИЕ: обычный джек 3.5 мм; пользователь номинал не называл"
+    },
+    {
+      "alias": "BoltHoleDiameter",
+      "value": "4.5 mm",
+      "label": "Сквозное отверстие под M4",
+      "note": "Конструктивный зазор для свободного прохода болта"
+    },
+    {
+      "alias": "HeadPocketDiameter",
+      "value": "7.5 mm",
+      "label": "Диаметр кармана головки",
+      "note": "7 мм по пользователю + 0.5 мм суммарного посадочного запаса"
+    },
+    {
+      "alias": "HeadHeight",
+      "value": "4 mm",
+      "label": "Рабочая высота головки",
+      "note": "ДОПУЩЕНИЕ для компоновки, проверить по выбранному болту"
+    },
+    {
+      "alias": "HeadPocketDepth",
+      "value": "4.5 mm",
+      "label": "Исходная глубина кармана головки",
+      "note": "ДОПУЩЕНИЕ: запас 0.5 мм к рабочей высоте головки; оставить доступ шестиграннику"
+    },
+    {
+      "alias": "Wall",
+      "value": "6 mm",
+      "label": "Исходная толщина силовой стенки",
+      "note": "ЭСКИЗНО, выбрать по сечению и нагрузке; не подтверждение прочности"
+    },
+    {
+      "alias": "JointClearance",
+      "value": "0.3 mm",
+      "label": "Зазор зацепа на сторону",
+      "note": "ЭСКИЗНО для PETG, зацеп должен собираться без упругого защёлкивания"
+    },
+    {
+      "alias": "EdgeRadius",
+      "value": "2 mm",
+      "label": "Малые наружные скругления",
+      "note": "ЭСКИЗНО; крупный радиус опоры оголовья назначить отдельно"
+    }
+  ],
+  "pending_environment_updates": [
+    {
+      "alias": "Overhang",
+      "content": "0 mm",
+      "note": "Уточнение пользователя 18.11.2026: угол столешницы точно над углом ноги, свеса нет"
+    },
+    {
+      "alias": "LegInset",
+      "content": "=BeamWidth / 2",
+      "note": "Уточнение пользователя 18.11.2026: наружная грань ноги совпадает с торцом столешницы; параметр задаёт отступ ОСИ ноги"
+    }
+  ],
+  "pending_environment_expression_updates": [
+    {
+      "object": "LegFarLeft",
+      "property": "Placement.Base.y",
+      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
+    },
+    {
+      "object": "LegFarRight",
+      "property": "Placement.Base.y",
+      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
+    }
   ],
   "checks_not_run": [
     "FreeCAD recompute",
