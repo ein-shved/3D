@@ -151,7 +151,7 @@
         66.04000091552734
       ],
       "base_plane": "Assembly Z-min on print Z=0",
-      "sliced": false
+      "sliced": true
     },
     "headphone_hook_lower": {
       "stl_closed": true,
@@ -162,9 +162,10 @@
         24.0
       ],
       "base_plane": "Assembly X-min on print Z=0",
-      "sliced": false
+      "sliced": true
     }
   },
   "physical_fit_tested": false,
-  "sliced": false
+  "sliced": true,
+  "slicing_summary": "slicing/headphone_petg/slice_summary.json"
 }

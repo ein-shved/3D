@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "merged_sidewalls_entry_bottom_side_rounds_geometry_and_exports_checked",
+  "status": "geometry_exports_and_light_PETG_slice_checked",
   "document": "LaptopDeskMount.FCStd",
   "document_name": "LaptopDeskMount",
   "reference": "references/headphone_hook_sketch.jpg",
@@ -391,5 +391,13 @@
     "lower_side_radius_mm": 1.0,
     "entry_radius_mm": 1.0,
     "deep_back_rounds_rolled_back": true
+  },
+  "slicing": {
+    "summary": "slicing/headphone_petg/slice_summary.json",
+    "project": "slicing/headphone_petg/headphone_hook_petg_ready.3mf",
+    "perimeters": 3,
+    "infill": "15% gyroid",
+    "estimated_time": "3h 56m 22s",
+    "physically_printed": false
   }
 }
