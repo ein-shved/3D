@@ -107,5 +107,20 @@
     }
   },
   "physical_fit_tested": false,
-  "sliced": false
+  "sliced": false,
+  "parameter_check": {
+    "StopRise_10_to_11_to_10_mm": true,
+    "restored": true
+  },
+  "insert_fit_sample": {
+    "native_body": "HookInsertFitSample",
+    "valid": true,
+    "hole_diameters_mm": [
+      5.4,
+      5.6,
+      5.8
+    ],
+    "pocket_depth_mm": 6.4,
+    "stl_closed": true
+  }
 }
