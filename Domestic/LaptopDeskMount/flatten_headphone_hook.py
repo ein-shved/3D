@@ -45,8 +45,8 @@ def apply_flat_base(doc):
                 idx=profile.addConstraint(Sketcher.Constraint(kind,i,1,value))
                 profile.setExpression("Constraints[%d]" % idx,expression)
     profile.Label = "Прямоугольная полка на всю ширину основной детали"
-    doc.HookShelfRounds.Label = "Скругления прямоугольной полки R2"
-    doc.HookRearChannel.BaseFeature = doc.HookShelfRounds
+    doc.HookShelfRounds.Label = "Скругления полки и заднего бортика R2"
+    doc.HookRearChannel.BaseFeature = doc.HookShelf
     doc.HookRearChannel.setExpression("Length","HookParameters.StopWidth + 2 mm")
     doc.HookRearLip.setExpression("Length","HookParameters.StopWidth")
     if doc.getObject("HookFrontBoss"):
@@ -56,13 +56,18 @@ def apply_flat_base(doc):
         H.setAlias(cell,"")
         for col in "ABC": H.clear(col+cell[1:])
     doc.recompute()
-    shelf = doc.HookShelf
-    edges = ["Edge%d" % i for i,e in enumerate(shelf.Shape.Edges,1)
+    rounded_source = doc.HookRearLip
+    edges = ["Edge%d" % i for i,e in enumerate(rounded_source.Shape.Edges,1)
              if abs(e.BoundBox.ZLength-H.ShelfThickness.Value)<1e-5
              and e.BoundBox.XLength<1e-6 and e.BoundBox.YLength<1e-6]
     if len(edges)!=4:
         raise RuntimeError("Expected four rectangular shelf corners")
-    doc.HookShelfRounds.Base = (shelf,edges)
+    doc.HookShelfRounds.Base = (rounded_source,edges)
+    doc.HookShelfRounds.BaseFeature = rounded_source
+    doc.HookStopStem.BaseFeature = doc.HookShelfRounds
+    order = [o for o in upper.Group if o != doc.HookShelfRounds]
+    order.insert(order.index(doc.HookStopStem),doc.HookShelfRounds)
+    upper.Group = order
     doc.recompute()
     if not doc.HookShelfRounds.Shape.isValid():
         raise RuntimeError("Invalid rectangular shelf rounds")

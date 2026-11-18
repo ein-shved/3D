@@ -143,9 +143,6 @@ shelf.setExpression("Length", expr("ShelfThickness"))
 shelf.Refine = True
 check(shelf)
 profile.ViewObject.Visibility = False
-outline = ["Edge%d" % i for i, e in enumerate(shelf.Shape.Edges, 1)
-           if abs(e.BoundBox.ZLength - q("ShelfThickness")) < 1e-5 and e.BoundBox.XLength < 1e-6 and e.BoundBox.YLength < 1e-6]
-fillet(upper, "HookShelfRounds", "Скругления прямоугольной полки R2", outline, 2)
 primitive(upper, "SubtractiveBox", "HookRearChannel", "Боковой вход заднего зацепа — над перекладиной",
           {"Length": expr("StopWidth") + "+2 mm", "Width": expr("UpperBackInner") + "-" + expr("BeamBack") + "+" + expr("JointClearance"),
            "Height": expr("ChannelRoof") + "-" + expr("ShelfBottom") + "+1 mm"},
@@ -153,6 +150,10 @@ primitive(upper, "SubtractiveBox", "HookRearChannel", "Боковой вход �
 box(upper, "HookRearLip", "Удерживающий борт заднего паза",
     (expr("StopWidth"), expr("UpperBackEnd") + "-" + expr("RearLipFront"), expr("RearLipTop") + "-" + expr("RearLipBottom")),
     (expr("ClampX"), expr("RearLipFront"), expr("RearLipBottom")))
+outline = ["Edge%d" % i for i,e in enumerate(upper.Tip.Shape.Edges,1)
+           if abs(e.BoundBox.ZLength-q("ShelfThickness"))<1e-5
+           and e.BoundBox.XLength<1e-6 and e.BoundBox.YLength<1e-6]
+fillet(upper,"HookShelfRounds","Скругления полки и заднего бортика R2",outline,2)
 box(upper, "HookStopStem", "Ограничитель у правого угла",
     (expr("StopWidth"), expr("StopThickness"), expr("StopTop") + "-" + expr("ShelfBottom")),
     (expr("StopCenterX") + "-" + expr("StopWidth") + "/2", expr("FrontY") + "-" + expr("StopThickness"), expr("ShelfBottom")))
