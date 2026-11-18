@@ -23,13 +23,13 @@
   },
   "filament_mm_by_path_type": {
     "Skirt/Brim": 195.33023999999992,
-    "Perimeter": 8036.826100000083,
-    "External perimeter": 4061.956170000004,
-    "Solid infill": 3106.064290000002,
-    "Internal infill": 6500.554860000005,
-    "Bridge infill": 834.8042800000001,
-    "Top solid infill": 471.2444899999996,
-    "Overhang perimeter": 10.902170000000009
+    "Perimeter": 8099.919630000081,
+    "External perimeter": 4087.4136299999823,
+    "Solid infill": 3100.1849200000024,
+    "Internal infill": 6490.281990000009,
+    "Bridge infill": 839.0716799999998,
+    "Top solid infill": 471.2444899999995,
+    "Overhang perimeter": 11.700090000000014
   },
   "support_volume_cm3": 0.0,
   "rear_roof_bridge": {
