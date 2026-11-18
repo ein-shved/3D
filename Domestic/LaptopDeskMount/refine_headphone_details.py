@@ -1,4 +1,6 @@
 """Equal rear joint, rounded mating tips, oval cable guide, and sketch references."""
+from pathlib import Path
+import json
 import FreeCAD as App
 import Part
 import Sketcher
@@ -77,11 +79,19 @@ def rebind_user_guides(doc,placements):
         return min(result)[1]
     def replace_external(sk,source,names):
         values=[(c.Type,c.First,c.FirstPos,c.Second,c.SecondPos) for c in sk.Constraints]
+        if not values:
+            backup=Path(doc.FileName).parent/"references"/"joint_and_oval_user_sketches.json"
+            if backup.exists():
+                saved=json.loads(backup.read_text()).get(sk.Name,{})
+                values=[(c["type"],c["first"],c["first_pos"],c["second"],c["second_pos"]) for c in saved.get("constraints",[])]
         for i in reversed(range(sk.ConstraintCount)):sk.delConstraint(i)
-        count=sum(len(subs) for obj,subs in sk.ExternalGeometry)
-        for i in reversed(range(count)):sk.delExternal(i)
-        for name in names:sk.addExternal(source.Name,name)
-        doc.recompute()
+        # Recompute each removal: FreeCAD updates the projected-geometry indices lazily.
+        while sk.ExternalGeometry:
+            sk.delExternal(0)
+            doc.recompute()
+        for name in names:
+            sk.addExternal(source.Name,name)
+            doc.recompute()
         return values
     def rebuild_constraints(sk,replacements,values):
         for i in reversed(range(sk.ConstraintCount)):sk.delConstraint(i)
