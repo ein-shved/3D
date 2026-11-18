@@ -1,7 +1,7 @@
 {
   "status": "saved_document_inputs_checked_offline",
   "document": "LaptopDeskMount.FCStd",
-  "document_sha256": "3e942d7c511472267ddf62932315c52c4dcb62bf874d91fb0c2400b420042964",
+  "document_sha256": "0690a5628338bba1ecb990fdd8ce0a27dfea2291c430a079b510fd73f7dcc33a",
   "environment": {
     "BeamWidth": {
       "content": "=60.21 mm",
@@ -78,9 +78,9 @@
     },
     {
       "alias": "InsertOuterDiameter",
-      "value": "6 mm",
+      "value": "5.69 mm",
       "label": "Наружный диаметр термовставки M4",
-      "note": "Подтверждено пользователем: наружный диаметр 6 мм, вставки разной длины доступны"
+      "note": "Замер пользователя по фото 5.69 мм; отверстие не больше5.7"
     }
   ],
   "provisional_parameters": [
@@ -104,9 +104,9 @@
     },
     {
       "alias": "HeadPocketDepth",
-      "value": "22.68 mm",
+      "value": "27.68 mm",
       "label": "Глубина канала головки",
-      "note": "В построении пересчитывается по плоскому низу, длине M4×20 и зацеплению 5.8 мм"
+      "note": "Вычисляется под M4×15 и зацепление5.8 мм, под головкой8 мм материала"
     },
     {
       "alias": "Wall",
