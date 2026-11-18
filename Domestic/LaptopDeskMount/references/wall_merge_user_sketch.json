@@ -1,0 +1,68 @@
+{
+  "placement_position": [
+    307.12,
+    -7.4,
+    0.20000000000000004
+  ],
+  "placement_quaternion": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "external": [
+    [
+      "HookInsertLeadIn",
+      [
+        "Edge42",
+        "Edge46",
+        "Edge48"
+      ]
+    ]
+  ],
+  "geometry": [
+    "<Line segment (42.88,4.5,0) (42.88,14,0) >",
+    "ArcOfCircle (Radius : 11, Position : (31.88, 14, 0), Direction : (0, 0, 1), Parameter : (0, 1.5708))"
+  ],
+  "constraints": [
+    {
+      "type": "Coincident",
+      "first": 0,
+      "first_pos": 1,
+      "second": -3,
+      "second_pos": 1,
+      "value": 0.0
+    },
+    {
+      "type": "Vertical",
+      "first": 0,
+      "first_pos": 0,
+      "second": -2000,
+      "second_pos": 0,
+      "value": 0.0
+    },
+    {
+      "type": "Tangent",
+      "first": 1,
+      "first_pos": 1,
+      "second": 0,
+      "second_pos": 2,
+      "value": -1.5707963267948966
+    },
+    {
+      "type": "Tangent",
+      "first": 1,
+      "first_pos": 2,
+      "second": -5,
+      "second_pos": 1,
+      "value": -1.5707963267948966
+    }
+  ],
+  "fillet_example": {
+    "base": "HookInsertLeadIn",
+    "edges": [
+      "Edge73"
+    ],
+    "radius": 1.0
+  }
+}
