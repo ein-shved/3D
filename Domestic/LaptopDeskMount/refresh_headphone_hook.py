@@ -13,6 +13,10 @@ backup = ROOT / "archive" / "LaptopDeskMount_before_hook_25mm_and_leg_fit.FCStd"
 if not backup.exists():
     shutil.copy2(doc.FileName, backup)
 original_holders = {name: doc.getObject(name).Shape.copy() for name in ("HolderLeft", "HolderRight")}
+p = ROOT / "flatten_headphone_hook.py"
+module = {"__file__":str(p),"__name__":"hook_flat_base"}
+exec(compile(p.read_text(),str(p),"exec"),module)
+module["apply_flat_base"](doc)
 
 H.set(H.getCellFromAlias("LowerOffset"), "=ProfileHeight")
 H.set("C" + H.getCellFromAlias("LowerOffset")[1:],
@@ -132,6 +136,15 @@ outside = Part.makeBox(100,200,200,App.Vector(q("CornerX")+1e-5,-50,-80))
 report["material_beyond_right_edge_mm3"] = upper.Shape.common(outside).Volume
 assert report["material_beyond_right_edge_mm3"]<1e-5
 report["cable_ring"] = {"present":False,"removed_per_user_request":True}
+zmin = upper.Shape.BoundBox.ZMin
+base_area = sum(f.Area for f in upper.Shape.Faces if f.BoundBox.ZLength<1e-5 and abs(f.BoundBox.ZMin-zmin)<1e-5)
+report["flat_print_base"] = {"z_mm":zmin,"nominal_z_mm":q("ShelfBottom"),"contact_area_mm2":base_area,
+                            "shelf_width_mm":q("StopWidth"),"shelf_depth_mm":q("UpperBackEnd")-q("BossY"),
+                            "front_projection_removed":doc.getObject("HookFrontBoss") is None}
+assert abs(zmin-q("ShelfBottom"))<1e-5
+assert base_area>4000
+report["bolt"]["head_pocket_depth_mm"]=q("HeadPocketDepth")
+report["bolt"]["upper_insert_bottom_z_mm"]=q("UpperBossBottom")
 report["base_edge_alignment"] = {"stop_left_x_mm":q("StopCenterX")-q("StopWidth")/2,
                                 "base_left_x_mm":q("ClampX"),
                                 "stop_front_y_mm":q("FrontY")-q("StopThickness"),

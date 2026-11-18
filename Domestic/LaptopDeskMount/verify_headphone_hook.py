@@ -57,7 +57,8 @@ report["exports"] = {}
 for body, name in ((upper, "headphone_hook_upper"), (lower, "headphone_hook_lower")):
     Part.export([body], str(exports / (name + ".step")))
     shape = body.Shape.copy()
-    placement = App.Placement(App.Vector(), App.Rotation(App.Vector(0, 1, 0), -90))
+    is_upper = body == upper
+    placement = App.Placement(App.Vector(), App.Rotation() if is_upper else App.Rotation(App.Vector(0, 1, 0), -90))
     shape.Placement = placement.multiply(shape.Placement)
     bb = shape.BoundBox
     shape.translate(App.Vector(-bb.XMin, -bb.YMin, -bb.ZMin))
@@ -71,8 +72,9 @@ for body, name in ((upper, "headphone_hook_upper"), (lower, "headphone_hook_lowe
     mesh.write(str(exports / (name + ".stl")))
     report["exports"][name] = {"stl_closed": mesh.isSolid(), "facets": mesh.CountFacets,
                               "print_bounds_mm": [mesh.BoundBox.XLength, mesh.BoundBox.YLength, mesh.BoundBox.ZLength],
-                              "base_plane": "Assembly X-min on print Z=0", "sliced": False}
-    report["bodies"][body.Name]["bounds_mm"] = [mesh.BoundBox.ZLength, mesh.BoundBox.YLength, mesh.BoundBox.XLength]
+                              "base_plane": "Assembly Z-min on print Z=0" if is_upper else "Assembly X-min on print Z=0", "sliced": False}
+    report["bodies"][body.Name]["bounds_mm"] = ([mesh.BoundBox.XLength,mesh.BoundBox.YLength,mesh.BoundBox.ZLength] if is_upper
+                                               else [mesh.BoundBox.ZLength,mesh.BoundBox.YLength,mesh.BoundBox.XLength])
     report["bodies"][body.Name]["bounds_source"] = "tessellation dimensions mapped back to assembly axes"
 report["status"] = "geometry_installation_paths_and_exports_checked"
 report["physical_fit_tested"] = False

@@ -28,7 +28,6 @@ parameters = [
     ("ShelfBottom", "=VerticalClearance", "Низ верхней полки", "Над верхом перекладины"),
     ("ShelfTop", "=TopGap - FitClearance", "Верх верхней полки", "В зазоре под столешницей"),
     ("ShelfThickness", "=ShelfTop - ShelfBottom", "Толщина верхней полки", "Максимально использован зазор под столешницей"),
-    ("ArmDepth", "16 mm", "Глубина скрытого плеча", "Соединяет угол и смещённый обхват"),
     ("BeamBack", "=ProfileWidth + FitClearance", "Задняя грань обхвата Y", "Боковой зазор от перекладины"),
     ("RearStemEnd", "=BeamBack + Wall", "Задняя стойка: торец Y", "Стойка нижнего обхвата"),
     ("TongueEnd", "=RearStemEnd + Wall", "Задний зацеп: торец Y", "Заходит в канал верхней детали"),
@@ -42,13 +41,15 @@ parameters = [
     ("RearLipFront", "=RearStemEnd + JointClearance", "Передний торец заднего борта", "Зазор к стойке нижней части"),
     ("BottomInside", "=-ProfileHeight - VerticalClearance", "Внутреннее дно обхвата", "Под перекладиной"),
     ("BottomZ", "=BottomInside - Wall", "Низ нижнего обхвата", "Толщина дна 6 мм"),
-    ("UpperBossBottom", "-18 mm", "Низ стойки со вставкой", "Вставка устанавливается снизу до монтажа"),
+    ("UpperBossBottom", "=ShelfBottom", "Плоский низ основной детали", "Вставка расположена в основной полке без нижнего выступа"),
     ("FrontClosingGap", "1.2 mm", "Зазор стягивания передних стоек", "Больше суммарного вертикального зазора 0.4 мм"),
     ("LowerBossTop", "=UpperBossBottom - FrontClosingGap", "Верх нижней передней стойки", "Стягивание скрытым болтом"),
     ("InsertLength", "6 mm", "Выбранная длина вставки M4", "У пользователя есть вставки разной длины, выбрана 6 мм"),
     ("InsertPocketDiameter", "5.6 mm", "Отверстие для вплавления Ø6", "Исходная посадка, проверить на выбранной вставке; это не наружный диаметр вставки"),
     ("InsertPocketDepth", "6.4 mm", "Глубина отверстия вставки", "Вставка 6 мм + запас 0.4 мм"),
     ("BoltLength", "20 mm", "Болт M4 под головкой", "Подобран по сборке, пользователь подберёт M4×20"),
+    ("BoltEngagement", "=InsertLength - 0.2 mm", "Номинальное зацепление болта", "Вставка 6 мм, запас 0.2 мм до её заднего торца"),
+    ("HeadPocketDepth", "=UpperBossBottom - BottomZ - BoltLength + BoltEngagement", "Глубина канала головки", "Углублён, чтобы сохранить M4×20 при плоском низе основной детали"),
     ("HeadSeatZ", "=BottomZ + HeadPocketDepth", "Опорная плоскость головки", "Головка утоплена снизу"),
     ("TableTopZ", "=TopGap + DesktopThickness", "Верх столешницы Z", "Размеры из существующего окружения"),
     ("StopWidth", "=CornerX - ClampX", "Ширина округлого ограничителя", "Левый и правый края совпадают с краями основания"),
@@ -119,15 +120,13 @@ def fillet(body, name, label, edges, radius):
     base.ViewObject.Visibility = False
     return obj
 
-# Dimensioned L-shaped shelf occupies the existing gap above the crossbar.
+# A full-width rectangular shelf occupies the existing gap above the crossbar.
 profile = upper.newObject("Sketcher::SketchObject", "HookShelfSketch")
-profile.Label = "Скрытое плечо от правого угла к смещённому обхвату"
+profile.Label = "Прямоугольная полка на всю ширину основной детали"
 profile.setExpression("Placement.Base.z", expr("ShelfBottom"))
 xy = [(expr("ClampX"), expr("BossY")),
       (expr("CornerX"), expr("BossY")),
-      (expr("CornerX"), expr("ArmDepth")),
-      (expr("ClampX") + "+" + expr("ClipWidth"), expr("ArmDepth")),
-      (expr("ClampX") + "+" + expr("ClipWidth"), expr("UpperBackEnd")),
+      (expr("CornerX"), expr("UpperBackEnd")),
       (expr("ClampX"), expr("UpperBackEnd"))]
 vertices = [App.Vector(upper.evalExpression(x).Value, upper.evalExpression(y).Value, 0) for x, y in xy]
 for i, vertex in enumerate(vertices):
@@ -147,15 +146,12 @@ profile.ViewObject.Visibility = False
 outline = ["Edge%d" % i for i, e in enumerate(shelf.Shape.Edges, 1)
            if abs(e.BoundBox.ZLength - q("ShelfThickness")) < 1e-5 and e.BoundBox.XLength < 1e-6 and e.BoundBox.YLength < 1e-6]
 fillet(upper, "HookShelfRounds", "Скругления скрытого плеча R2", outline, 2)
-box(upper, "HookFrontBoss", "Передняя стойка под термовставку",
-    (expr("ClipWidth"), expr("BossDepth"), expr("ShelfTop") + "-" + expr("UpperBossBottom")),
-    (expr("ClampX"), expr("BossY"), expr("UpperBossBottom")))
 primitive(upper, "SubtractiveBox", "HookRearChannel", "Боковой вход заднего зацепа — над перекладиной",
-          {"Length": expr("ClipWidth") + "+2 mm", "Width": expr("UpperBackInner") + "-" + expr("BeamBack") + "+" + expr("JointClearance"),
+          {"Length": expr("StopWidth") + "+2 mm", "Width": expr("UpperBackInner") + "-" + expr("BeamBack") + "+" + expr("JointClearance"),
            "Height": expr("ChannelRoof") + "-" + expr("ShelfBottom") + "+1 mm"},
           (expr("ClampX") + "-1 mm", expr("BeamBack") + "-" + expr("JointClearance"), expr("ShelfBottom") + "-1 mm"))
 box(upper, "HookRearLip", "Удерживающий борт заднего паза",
-    (expr("ClipWidth"), expr("UpperBackEnd") + "-" + expr("RearLipFront"), expr("RearLipTop") + "-" + expr("RearLipBottom")),
+    (expr("StopWidth"), expr("UpperBackEnd") + "-" + expr("RearLipFront"), expr("RearLipTop") + "-" + expr("RearLipBottom")),
     (expr("ClampX"), expr("RearLipFront"), expr("RearLipBottom")))
 box(upper, "HookStopStem", "Ограничитель у правого угла",
     (expr("StopWidth"), expr("StopThickness"), expr("StopTop") + "-" + expr("ShelfBottom")),
