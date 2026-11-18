@@ -61,8 +61,8 @@ PARAMS = [
     ("TableAcross", "700 mm", "Стол: вдоль перекладины", "УСЛОВНО, общий вид без влияния на посадку"),
     ("TableAlong", "1400 mm", "Стол: длина", "УСЛОВНО, общий вид без влияния на посадку"),
     ("TableHeight", "740 mm", "Стол: высота", "УСЛОВНО, общий вид без влияния на посадку"),
-    ("Overhang", "10 mm", "Свес столешницы", "ОЦЕНКА по фото, относительно внешней грани перекладины"),
-    ("LegInset", "65 mm", "Отступ ног от торцов", "УСЛОВНО, вне зоны держателей"),
+    ("Overhang", "0 mm", "Свес столешницы", "Уточнение пользователя 18.11.2026: угол столешницы точно над углом ноги, свеса нет"),
+    ("LegInset", "=BeamWidth / 2", "Отступ оси ноги от торца", "Уточнение пользователя 18.11.2026: наружная грань ноги совпадает с торцом столешницы"),
 ]
 for row, (alias, value, label, note) in enumerate(PARAMS, 2):
     P.set("A%d" % row, label)
@@ -144,9 +144,10 @@ for k, y in (("Near", "0 mm"), ("Far", "Parameters.TableAlong - 2 * Parameters.O
         ("-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamWidth / 2",y,"-Parameters.BeamHeight"), steel)
     for j, x in (("Left","-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamWidth / 2"),
                  ("Right","Parameters.TableAcross / 2 - Parameters.LegInset - Parameters.BeamWidth / 2")):
+        leg_y = y if k == "Near" else "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
         box("Leg"+k+j,"Нога — "+k+" / "+j,full,
             ("Parameters.BeamWidth","Parameters.BeamHeight","Parameters.TableHeight - Parameters.TabletopThickness - Parameters.SpacerHeight - Parameters.BeamHeight"),
-            (x,y,"Parameters.SpacerHeight + Parameters.TabletopThickness - Parameters.TableHeight"),steel)
+            (x,leg_y,"Parameters.SpacerHeight + Parameters.TabletopThickness - Parameters.TableHeight"),steel)
 for j, x in (("Left","-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamHeight / 2"),
              ("Right","Parameters.TableAcross / 2 - Parameters.LegInset - Parameters.BeamHeight / 2")):
     box("LongRail"+j,"Продольная связь — "+j,full,

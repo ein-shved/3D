@@ -32,6 +32,7 @@ def inspect_saved_document(plan):
         root = ET.fromstring(archive.read("Document.xml"))
     objects = {o.attrib["name"]: o for o in root.findall("./ObjectData/Object")}
     missing = set(plan["environment_objects"]) - objects.keys()
+    missing |= {r["object"] for r in plan["environment_expression_updates"]} - objects.keys()
     if missing:
         raise ValueError("Missing environment objects: " + ", ".join(sorted(missing)))
     cells = {c.attrib["alias"]: c.attrib["content"]
@@ -51,6 +52,8 @@ def inspect_saved_document(plan):
         "unresolved": [u["key"] for u in plan["unresolved"] if u["value"] is None],
         "specified_parameters": plan["specified_parameters"],
         "provisional_parameters": plan["provisional_parameters"],
+        "pending_environment_updates": plan["environment_updates"],
+        "pending_environment_expression_updates": plan["environment_expression_updates"],
         "checks_not_run": ["FreeCAD recompute", "solid geometry", "collisions", "slicing"]
     }
 
@@ -63,7 +66,7 @@ def prepare_in_freecad(plan):
         raise RuntimeError("Open the existing LaptopDeskMount.FCStd document first")
     if Path(doc.FileName).resolve() != (ROOT / plan["document"]).resolve():
         raise RuntimeError("The open document has a different file path")
-    for name in plan["environment_objects"]:
+    for name in plan["environment_objects"] + [r["object"] for r in plan["environment_expression_updates"]]:
         if doc.getObject(name) is None:
             raise RuntimeError("Missing environment object: " + name)
     for alias in plan["environment_aliases"]:
@@ -77,6 +80,14 @@ def prepare_in_freecad(plan):
 
     doc.openTransaction("Подготовка крючка для наушников")
     try:
+        # User clarified corner alignment after the original environment was built.
+        for update in plan["environment_updates"]:
+            cell = doc.Parameters.getCellFromAlias(update["alias"])
+            doc.Parameters.set(cell, update["content"])
+            doc.Parameters.set("C" + cell[1:], update["note"])
+            doc.Parameters.setBackground("A%s:C%s" % (cell[1:], cell[1:]), (1.0, 1.0, 1.0))
+        for update in plan["environment_expression_updates"]:
+            doc.getObject(update["object"]).setExpression(update["property"], update["expression"])
         group = doc.addObject("App::DocumentObjectGroup", "HeadphoneHook")
         group.Label = "05 Крючок для наушников — подготовка"
         group.addProperty("App::PropertyString", "PreparationStatus", "Design")
@@ -101,7 +112,7 @@ def prepare_in_freecad(plan):
                 sheet.set("B%d" % row, param.get("expression", param.get("value")))
                 sheet.setAlias("B%d" % row, param["alias"])
                 sheet.set("C%d" % row, param["note"])
-                if kind == "provisional_parameters" or param["alias"].startswith("Corner"):
+                if kind == "provisional_parameters":
                     sheet.setBackground("A%d:C%d" % (row, row), (1.0, .92, .73))
                 row += 1
         for item in plan["unresolved"]:

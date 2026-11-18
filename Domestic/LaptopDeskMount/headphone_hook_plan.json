@@ -30,6 +30,14 @@
     "LegInset": "illustrative_now_fit_critical",
     "TableAcross": "illustrative"
   },
+  "environment_updates": [
+    {"alias": "Overhang", "content": "0 mm", "note": "Уточнение пользователя 18.11.2026: угол столешницы точно над углом ноги, свеса нет"},
+    {"alias": "LegInset", "content": "=BeamWidth / 2", "note": "Уточнение пользователя 18.11.2026: наружная грань ноги совпадает с торцом столешницы; параметр задаёт отступ ОСИ ноги"}
+  ],
+  "environment_expression_updates": [
+    {"object": "LegFarLeft", "property": "Placement.Base.y", "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"},
+    {"object": "LegFarRight", "property": "Placement.Base.y", "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"}
+  ],
   "linked_parameters": [
     {"alias": "ProfileWidth", "expression": "=Parameters.BeamWidth", "label": "Ширина перекладины / ноги", "note": "Замер из существующего окружения"},
     {"alias": "ProfileHeight", "expression": "=Parameters.BeamHeight", "label": "Высота перекладины", "note": "Замер из существующего окружения"},
@@ -37,13 +45,13 @@
     {"alias": "DesktopThickness", "expression": "=Parameters.TabletopThickness", "label": "Толщина столешницы", "note": "Считывание по фото, из существующего окружения"},
     {"alias": "FitClearance", "expression": "=Parameters.BeamClearance", "label": "Зазор обхвата на сторону", "note": "Исходный зазор 0.4 мм, отдельно от погрешности замеров"},
     {"alias": "LowerOffset", "expression": "=Parameters.BeamWidth", "label": "Начальное смещение нижнего захвата", "note": "По схеме: на ширину ноги; направление и полный габарит проверить в сборке"},
-    {"alias": "CornerOverhang", "expression": "=Parameters.Overhang", "label": "Свес края над перекладиной", "note": "ОЦЕНКА: сейчас 10 мм; для углового крючка влияет на посадку"},
-    {"alias": "CornerLegInset", "expression": "=Parameters.LegInset", "label": "Отступ оси ноги от торца", "note": "УСЛОВНО: сейчас 65 мм; для углового крючка влияет на посадку"}
+    {"alias": "CornerOverhang", "expression": "=Parameters.Overhang", "label": "Свес края над перекладиной", "note": "Подтверждено пользователем: 0 мм, наружные грани ноги и столешницы совпадают"},
+    {"alias": "CornerLegInset", "expression": "=Parameters.LegInset", "label": "Отступ оси ноги от торца", "note": "Половина ширины ноги, чтобы наружная грань совпадала с торцом столешницы"}
   ],
   "specified_parameters": [
     {"alias": "BoltDiameter", "value": "4 mm", "label": "Номинальный диаметр резьбы M4", "note": "Задано пользователем: болт с цилиндрической головкой и внутренним шестигранником"},
     {"alias": "HeadDiameter", "value": "7 mm", "label": "Диаметр головки болта", "note": "Задано пользователем; карман делать с отдельным посадочным запасом"},
-    {"alias": "InsertSizeGiven", "value": "6 mm", "label": "Указанный размер термовставки", "note": "Задано пользователем: M4, толщина 6 мм; уточняется, диаметр это или длина"},
+    {"alias": "InsertOuterDiameter", "value": "6 mm", "label": "Наружный диаметр термовставки M4", "note": "Подтверждено пользователем: наружный диаметр 6 мм, вставки разной длины доступны"},
     {"alias": "CableEyeFactor", "value": "4", "label": "Ширина прохода в диаметрах джека", "note": "Задано пользователем: через кольцо должен проходить джек"},
     {"alias": "CableEyeWidth", "expression": "=CableEyeFactor * JackDiameter", "label": "Минимальная свободная ширина прохода", "note": "4 диаметра джека; при принятом джеке 3.5 мм получится 14 мм; не сужать проход скруглениями"}
   ],
@@ -60,11 +68,11 @@
   "unresolved": [
     {"key": "corner", "label": "Выбор левого / правого ближнего угла и положение относительно реального края", "value": null},
     {"key": "headband_width_mm", "label": "Ширина оголовья в месте подвеса", "value": null},
-    {"key": "headphones_mass_g", "label": "Масса или модель наушников для выбора сечения", "value": null},
-    {"key": "insert_spec", "label": "M4, размер 6 мм: уточнить ось размера, второй габарит и посадочное отверстие", "value": null}
+    {"key": "headphones_mass_g", "label": "Масса или модель наушников для выбора сечения", "value": null}
   ],
   "derive_during_modeling": [
     "Длину болта M4 выбрать по толщине нижнего захвата, карману головки и глубине резьбового зацепления; пользователь подберёт болт.",
+    "Длину вставки M4 с наружным диаметром 6 мм выбрать по месту: у пользователя есть разные длины.",
     "Наружный диаметр вставки не равен диаметру отверстия под вплавление; подобрать отверстие под выбранную вставку.",
     "Кольцо: гарантировать свободный проход 4 диаметров джека в обоих поперечных направлениях; исходно круглое отверстие 14 мм при допущении 3.5 мм."
   ],
