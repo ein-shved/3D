@@ -1,7 +1,7 @@
 {
-  "status": "offline_inputs_checked_geometry_pending",
+  "status": "saved_document_inputs_checked_offline",
   "document": "LaptopDeskMount.FCStd",
-  "document_sha256": "0ed579af9674b1a9a9afffa8ebb8c30cfa98f773896a93af6531c476c0376179",
+  "document_sha256": "aaa95935456ea6bdd28af6a37fb9f53c8f6bf61eada7ff55a7ab49668388474e",
   "environment": {
     "BeamWidth": {
       "content": "=60.21 mm",
@@ -24,12 +24,12 @@
       "source": "existing_design_allowance"
     },
     "Overhang": {
-      "content": "=10 mm",
-      "source": "estimated_now_fit_critical"
+      "content": "=0 mm",
+      "source": "user_confirmed_zero_overhang_applied"
     },
     "LegInset": {
-      "content": "=65 mm",
-      "source": "illustrative_now_fit_critical"
+      "content": "=BeamWidth / 2",
+      "source": "user_confirmed_corner_alignment_applied"
     },
     "TableAcross": {
       "content": "=700 mm",
@@ -148,31 +148,9 @@
       "note": "ЭСКИЗНО; крупный радиус опоры оголовья назначить отдельно"
     }
   ],
-  "pending_environment_updates": [
-    {
-      "alias": "Overhang",
-      "content": "0 mm",
-      "note": "Уточнение пользователя 18.11.2026: угол столешницы точно над углом ноги, свеса нет"
-    },
-    {
-      "alias": "LegInset",
-      "content": "=BeamWidth / 2",
-      "note": "Уточнение пользователя 18.11.2026: наружная грань ноги совпадает с торцом столешницы; параметр задаёт отступ ОСИ ноги"
-    }
-  ],
-  "pending_environment_expression_updates": [
-    {
-      "object": "LegFarLeft",
-      "property": "Placement.Base.y",
-      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
-    },
-    {
-      "object": "LegFarRight",
-      "property": "Placement.Base.y",
-      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
-    }
-  ],
-  "checks_not_run": [
+  "pending_environment_updates": [],
+  "pending_environment_expression_updates": [],
+  "checks_not_run_by_offline_reader": [
     "FreeCAD recompute",
     "solid geometry",
     "collisions",
