@@ -8,7 +8,7 @@ D = App.getDocument("LaptopDeskMount")
 # Group visibility propagates to children: turn groups on first, then filter leaves.
 for n in ("Environment", "WholeTable", "HeadphoneHook", "HookHardware"):
     D.getObject(n).ViewObject.Visibility = True
-visible = {"Environment", "WholeTable", "TabletopFull", "BeamFullNear", "LegNearRight", "LongRailRight",
+visible = {"Environment", "WholeTable", "TabletopFull", "BeamFullNear", "LegNearRight",
            "HeadphoneHook", "HeadphoneHookUpper", "HeadphoneHookLower", "HookHardware", "HookInsertReference", "HookBoltReference"}
 visible.update(b.Tip.Name for b in (D.HeadphoneHookUpper, D.HeadphoneHookLower))
 # Hide unwanted groups before their children to prevent propagation from undoing the leaf filter.
@@ -31,7 +31,8 @@ loop = QtCore.QEventLoop()
 QtCore.QTimer.singleShot(600, loop.quit)
 loop.exec()
 camera = v.getCameraNode()
-position = App.Vector(310,22,5) + rotation.multVec(App.Vector(0,0,500))
+center_x = (D.HookParameters.ClampX.Value + D.HookParameters.CornerX.Value) / 2 + 5
+position = App.Vector(center_x,22,12) + rotation.multVec(App.Vector(0,0,500))
 camera.position.setValue(position.x,position.y,position.z)
 camera.height.setValue(175)
 camera.nearDistance.setValue(1)

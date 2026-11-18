@@ -12,7 +12,7 @@ def q(alias):
     return getattr(H, alias).Value
 upper, lower = D.HeadphoneHookUpper, D.HeadphoneHookLower
 report = json.loads((ROOT / "headphone_hook_validation.json").read_text())
-obstacle_names = ["TabletopFull", "BeamFullNear", "LegNearRight", "LongRailRight",
+obstacle_names = ["TabletopFull", "BeamFullNear", "LegNearRight",
                   "HolderLeft", "HolderRight", "LaptopBase", "SpacerLeft", "SpacerRight"]
 obstacles = [(name, D.getObject(name).Shape) for name in obstacle_names]
 

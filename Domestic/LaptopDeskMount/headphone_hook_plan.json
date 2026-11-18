@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "built_in_existing_document_geometry_and_installation_checked",
+  "status": "updating_to_approved_leg_environment_and_25mm_stop",
   "document": "LaptopDeskMount.FCStd",
   "document_name": "LaptopDeskMount",
   "reference": "references/headphone_hook_sketch.jpg",
@@ -12,7 +12,6 @@
     "corner_x_expression": "Parameters.TableAcross / 2",
     "corner_y_expression": "-Parameters.Overhang",
     "leg_object": "LegNearRight",
-    "rail_object": "LongRailRight",
     "lower_clamp_offset_direction": "Внутрь вдоль перекладины, в сторону отрицательного X"
   },
   "usage": {
@@ -39,8 +38,6 @@
     "BeamFullNear",
     "LegNearLeft",
     "LegNearRight",
-    "LongRailLeft",
-    "LongRailRight",
     "HolderLeft",
     "HolderRight",
     "LaptopBase"
@@ -63,20 +60,20 @@
     },
     {
       "alias": "LegInset",
-      "content": "=BeamWidth / 2",
-      "note": "Уточнение пользователя 18.11.2026: наружная грань ноги совпадает с торцом столешницы; параметр задаёт отступ ОСИ ноги"
+      "content": "=BeamHeight / 2",
+      "note": "Профиль ноги повёрнут на 90° к перекладине; отступ оси ноги равен половине толщины вдоль X, 15.24 мм"
     }
   ],
   "environment_expression_updates": [
     {
       "object": "LegFarLeft",
       "property": "Placement.Base.y",
-      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
+      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamWidth"
     },
     {
       "object": "LegFarRight",
       "property": "Placement.Base.y",
-      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
+      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamWidth"
     }
   ],
   "linked_parameters": [
@@ -112,9 +109,9 @@
     },
     {
       "alias": "LowerOffset",
-      "expression": "=Parameters.BeamWidth",
+      "expression": "=ProfileHeight",
       "label": "Начальное смещение нижнего захвата",
-      "note": "По схеме: на ширину ноги; направление и полный габарит проверить в сборке"
+      "note": "Толщина ноги вдоль перекладины после поворота профиля: 30.48 мм"
     },
     {
       "alias": "CornerOverhang",
@@ -126,7 +123,7 @@
       "alias": "CornerLegInset",
       "expression": "=Parameters.LegInset",
       "label": "Отступ оси ноги от торца",
-      "note": "Половина ширины ноги, чтобы наружная грань совпадала с торцом столешницы"
+      "note": "Половина толщины ноги вдоль X: BeamHeight / 2 = 15.24 мм"
     }
   ],
   "specified_parameters": [
@@ -238,7 +235,7 @@
     "bolt": "M4x20",
     "insert": "M4 OD6 length6",
     "insert_pocket_diameter_mm": 5.6,
-    "stop_rise_mm": 10,
+    "stop_rise_mm": 25,
     "ring_clear_diameter_mm": 14,
     "rear_channel": "entirely above crossbar; lateral tongue entry",
     "lower_inboard_installation_offset_mm": 28

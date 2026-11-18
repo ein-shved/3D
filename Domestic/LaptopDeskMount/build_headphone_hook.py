@@ -53,7 +53,7 @@ parameters = [
     ("TableTopZ", "=TopGap + DesktopThickness", "Верх столешницы Z", "Размеры из существующего окружения"),
     ("StopWidth", "24 mm", "Ширина округлого ограничителя", "Небольшая булька у самого угла"),
     ("StopThickness", "8 mm", "Толщина ограничителя", "Снаружи торца столешницы"),
-    ("StopRise", "10 mm", "Выступ над столешницей", "Оголовье лежит на столе, выступ удерживает от соскальзывания"),
+    ("StopRise", "25 mm", "Выступ над столешницей", "Задано пользователем: 25 мм; оголовье лежит на столе"),
     ("StopTop", "=TableTopZ + StopRise", "Верх ограничителя", "Плавный круглый верх"),
     ("StopCapZ", "=StopTop - StopWidth / 2", "Центр скругления ограничителя", "Полукруглый верх R12"),
     ("EyeWall", "4 mm", "Стенка кольца", "Проход сохраняется Ø14 мм"),
@@ -263,7 +263,7 @@ for body in (upper, lower):
     shape = body.Shape
     report["bodies"][body.Name] = {"valid": shape.isValid(), "solids": len(shape.Solids), "volume_mm3": shape.Volume,
                                    "bounds_mm": [shape.BoundBox.XLength, shape.BoundBox.YLength, shape.BoundBox.ZLength]}
-    for name in ("TabletopFull", "BeamFullNear", "LegNearRight", "LongRailRight", "HolderLeft", "HolderRight", "LaptopBase"):
+    for name in ("TabletopFull", "BeamFullNear", "LegNearRight", "HolderLeft", "HolderRight", "LaptopBase"):
         volume = shape.common(doc.getObject(name).Shape).Volume
         report["environment_collisions_mm3"][body.Name + ":" + name] = volume
         if volume > 1e-5:
