@@ -2,7 +2,7 @@
 from pathlib import Path
 import FreeCAD as App
 import FreeCADGui as Gui
-from PySide import QtCore
+from pivy import coin
 
 D = App.getDocument("LaptopDeskMount")
 # Group visibility propagates to children: turn groups on first, then filter leaves.
@@ -26,11 +26,8 @@ for b, color in ((D.HeadphoneHookUpper, (.92,.48,.16)), (D.HeadphoneHookLower, (
 v = Gui.activeDocument().activeView()
 v.setCameraType("Orthographic")
 rotation = App.Rotation(App.Vector(1,1,0), App.Vector(0,0,1), App.Vector(1,-1,.65), "ZXY")
-v.setCameraOrientation(rotation.Q)
-loop = QtCore.QEventLoop()
-QtCore.QTimer.singleShot(600, loop.quit)
-loop.exec()
 camera = v.getCameraNode()
+camera.orientation.setValue(coin.SbRotation(*rotation.Q))
 center_x = (D.HookParameters.ClampX.Value + D.HookParameters.CornerX.Value) / 2 + 5
 position = App.Vector(center_x,22,12) + rotation.multVec(App.Vector(0,0,500))
 camera.position.setValue(position.x,position.y,position.z)
