@@ -66,12 +66,18 @@ for body, name in ((upper, "headphone_hook_upper"), (lower, "headphone_hook_lowe
     bb = shape.BoundBox
     shape.translate(App.Vector(-bb.XMin, -bb.YMin, -bb.ZMin))
     mesh = MeshPart.meshFromShape(Shape=shape, LinearDeflection=.06, AngularDeflection=.15, Relative=False)
+    # OCCT's coarse curved-surface bounds can differ from the tessellation bounds.
+    # Put the actual STL triangles on Z=0, independently of the BRep bound cache.
+    bb = mesh.BoundBox
+    mesh.transform(App.Placement(App.Vector(-bb.XMin, -bb.YMin, -bb.ZMin), App.Rotation()).toMatrix())
     if not mesh.isSolid():
         raise RuntimeError("Non-closed hook STL: " + name)
     mesh.write(str(exports / (name + ".stl")))
     report["exports"][name] = {"stl_closed": mesh.isSolid(), "facets": mesh.CountFacets,
                               "print_bounds_mm": [mesh.BoundBox.XLength, mesh.BoundBox.YLength, mesh.BoundBox.ZLength],
                               "base_plane": "Assembly X-min on print Z=0", "sliced": False}
+    report["bodies"][body.Name]["bounds_mm"] = [mesh.BoundBox.ZLength, mesh.BoundBox.YLength, mesh.BoundBox.XLength]
+    report["bodies"][body.Name]["bounds_source"] = "tessellation dimensions mapped back to assembly axes"
 report["status"] = "geometry_installation_paths_and_exports_checked"
 report["physical_fit_tested"] = False
 report["sliced"] = False
