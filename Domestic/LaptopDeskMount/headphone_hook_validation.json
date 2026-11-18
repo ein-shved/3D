@@ -144,14 +144,14 @@
   "exports": {
     "headphone_hook_upper": {
       "stl_closed": true,
-      "facets": 20826,
+      "facets": 21666,
       "print_bounds_mm": [
         54.880001068115234,
         111.31000518798828,
         66.04000091552734
       ],
       "base_plane": "Assembly Z-min on print Z=0",
-      "sliced": true
+      "sliced": false
     },
     "headphone_hook_lower": {
       "stl_closed": true,
@@ -162,10 +162,20 @@
         24.0
       ],
       "base_plane": "Assembly X-min on print Z=0",
-      "sliced": true
+      "sliced": false
     }
   },
   "physical_fit_tested": false,
-  "sliced": true,
-  "slicing_summary": "slicing/headphone_petg/slice_summary.json"
+  "sliced": false,
+  "slicing_summary": "slicing/headphone_petg/slice_summary.json",
+  "symmetric_insert_seats": {
+    "count": 2,
+    "center_x_mm": 322.56,
+    "axes_x_mm": [
+      307.12,
+      338.0
+    ],
+    "bore_diameter_mm": 5.6,
+    "second_seat_unused": true
+  }
 }
