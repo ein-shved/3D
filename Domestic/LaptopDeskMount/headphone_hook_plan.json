@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "flat_print_base_full_width_shelf_geometry_and_exports_checked",
+  "status": "rear_R2_rounds_continuous_after_lip_geometry_and_exports_checked",
   "document": "LaptopDeskMount.FCStd",
   "document_name": "LaptopDeskMount",
   "reference": "references/headphone_hook_sketch.jpg",
@@ -32,7 +32,8 @@
     "Левый и передний со стороны ноутбука края крюка совпадают с краями основания; правый край остаётся у торца стола.",
     "Высота над столешницей 30 мм (единицы уточнены пользователем); смягчённый прямоугольник с плоским верхом, углами R10 и кромками R2.5.",
     "Основная деталь имеет плоский низ без выступа под вставкой; полка под столешницей прямоугольная на всю ширину, без ступеньки.",
-    "Задний канал и удерживающий борт продолжены по всей грани; болт остаётся M4×20 за счёт более глубокого канала головки в нижнем захвате."
+    "Задний канал и удерживающий борт продолжены по всей грани; болт остаётся M4×20 за счёт более глубокого канала головки в нижнем захвате.",
+    "Скругления R2 задних углов применяются после заднего бортика, непрерывно по всей высоте полки; посадочные плоскости зацепа сохраняются."
   ],
   "environment_objects": [
     "Parameters",
@@ -337,7 +338,7 @@
     "stop_flat_top_width_mm": 34.88,
     "stop_rim_radius_mm": 2.5,
     "main_flat_bottom_z_mm": 0.2,
-    "main_print_base_area_mm2": 4727.69,
+    "main_print_base_area_mm2": 4725.97,
     "shelf_width_mm": 54.88,
     "shelf_depth_mm": 93.31,
     "upper_insert_bottom_z_mm": 0.2,
@@ -348,7 +349,9 @@
       54.88,
       93.31,
       66.04
-    ]
+    ],
+    "rear_corner_radius_mm": 2,
+    "rear_corner_rounds_full_height_mm": 9.91
   },
   "environment_remove_objects": [
     "LongRailLeft",
