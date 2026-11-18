@@ -25,7 +25,12 @@ def set_dimensions(doc):
         ("RearLipTop","=ShelfBottom + JointThird","Верх нижнего борта","Толщина нижнего борта равна трети высоты"),
         ("TongueBottom","=RearLipTop + JointClearance","Низ нижнего зацепа","Зазор к нижнему борту 0.3 мм"),
         ("TongueTop","=ChannelRoof - 2 * JointClearance","Верх нижнего зацепа","Зазор 0.6 мм допускает подтяжку обхвата"),
-        ("JointInsideRadius","0.8 mm","Внутренние углы заднего паза","Скруглены вместе с сопряжённым концом нижнего зацепа"),
+        ("JointInsideRadius","0 mm","Задние углы паза без скругления","Прежнее R0.8 отменено по уточнению пользователя"),
+        ("EntryCornerRadius","1 mm","Входные углы зацепа","По примеру Fillet пользователя"),
+        ("BottomEdgeRadius","1 mm","Нижние кромки основной детали","Плоская опорная поверхность сохранена"),
+        ("LowerSideRadius","1 mm","Боковые кромки нижней детали","Скруглены по периметрам боковых плоскостей"),
+        ("StopEdgeRadius","2.5 mm","Кромки основного ограничителя","Сохраняют передний касательный участок"),
+        ("CableBackY","=BossY + StopEdgeRadius","Сопряжение стенок петли с основанием","По Sketch004: боковые грани в одной плоскости"),
         ("BoltLength","15 mm","Длина болта M4 под головкой","Самый длинный доступный болт пользователя: M4×15"),
         ("InsertOuterDiameter","5.69 mm","Наружный диаметр вставки","Фото пользователя 5.69 мм, отверстие не более 5.7 мм"),
         ("InsertPocketDiameter","5.6 mm","Отверстие для вплавления","Меньше заданного предела 5.7 мм"),
@@ -44,7 +49,7 @@ def set_dimensions(doc):
 
 
 def capture_guides(doc):
-    return {name:App.Placement(doc.getObject(name).Placement) for name in ("Sketch001","Sketch002","Sketch003")
+    return {name:App.Placement(doc.getObject(name).Placement) for name in ("Sketch001","Sketch002","Sketch003","Sketch004")
             if doc.getObject(name)}
 
 
@@ -154,45 +159,23 @@ def native_fillet(doc,body,name,label,base,edges,radius):
 
 
 def round_joint(doc):
+    """Undo the previous deep-back blends; entrance finishing follows the user's example."""
     H=doc.HookParameters
     upper,lower=doc.HeadphoneHookUpper,doc.HeadphoneHookLower
     base=doc.HookRearLip
-    edges=[]
-    for i,e in enumerate(base.Shape.Edges,1):
-        b=e.BoundBox
-        if abs(b.XLength-H.StopWidth.Value)<1e-5 and b.YLength<1e-6 and b.ZLength<1e-6:
-            if abs(b.YMin-H.UpperBackInner.Value)<1e-5 and min(abs(b.ZMin-z) for z in (H.ChannelRoof.Value,H.RearLipTop.Value))<1e-5:
-                edges.append("Edge%d" % i)
-    if len(edges)!=2:raise RuntimeError("Expected two internal channel corners: "+str(edges))
-    inner=native_fillet(doc,upper,"HookChannelInnerRounds","Внутренние углы паза R0.8",base,edges,"HookParameters.JointInsideRadius")
-    edges=["Edge%d" % i for i,e in enumerate(inner.Shape.Edges,1)
+    edges=["Edge%d"%i for i,e in enumerate(base.Shape.Edges,1)
            if abs(e.BoundBox.ZLength-H.ShelfThickness.Value)<1e-5 and e.BoundBox.XLength<1e-6 and e.BoundBox.YLength<1e-6]
-    doc.HookShelfRounds.BaseFeature=inner
-    doc.HookShelfRounds.Base=(inner,edges)
-    order=[o for o in upper.Group if o!=inner]
-    order.insert(order.index(doc.HookShelfRounds),inner)
-    upper.Group=order
+    doc.HookShelfRounds.BaseFeature=base;doc.HookShelfRounds.Base=(base,edges)
+    if doc.getObject("HookChannelInnerRounds"):doc.removeObject("HookChannelInnerRounds")
     base=doc.HookClampTongue
     edges=[]
     for i,e in enumerate(base.Shape.Edges,1):
         b=e.BoundBox
-        if abs(b.XLength-H.ClipWidth.Value)<1e-5 and b.YLength<1e-6 and b.ZLength<1e-6:
-            if abs(b.YMin-H.TongueEnd.Value)<1e-5 and min(abs(b.ZMin-z) for z in (H.TongueTop.Value,H.TongueBottom.Value))<1e-5:
-                edges.append("Edge%d" % i)
-    if len(edges)!=2:raise RuntimeError("Expected two tongue nose corners: "+str(edges))
-    nose=native_fillet(doc,lower,"HookTongueRounds","Скруглённый конец нижнего зацепа R0.8",base,edges,"HookParameters.JointInsideRadius")
-    edges=[]
-    for i,e in enumerate(nose.Shape.Edges,1):
-        b=e.BoundBox
         if b.XLength>H.ClipWidth.Value-1e-5 and b.YLength<1e-6 and b.ZLength<1e-6:
-            if abs(b.ZMin-H.BottomZ.Value)<1e-5 or abs(b.YMin-H.BossY.Value)<1e-5:edges.append("Edge%d" % i)
-    doc.HookClampRounds.BaseFeature=nose
-    doc.HookClampRounds.Base=(nose,edges)
-    order=[o for o in lower.Group if o!=nose]
-    order.insert(order.index(doc.HookClampRounds),nose)
-    lower.Group=order
-    lower.Tip=doc.HookClampHeadPocket
-    upper.Tip=doc.HookInsertLeadIn
+            if abs(b.ZMin-H.BottomZ.Value)<1e-5 or abs(b.YMin-H.BossY.Value)<1e-5:edges.append("Edge%d"%i)
+    doc.HookClampRounds.BaseFeature=base;doc.HookClampRounds.Base=(base,edges)
+    if doc.getObject("HookTongueRounds"):doc.removeObject("HookTongueRounds")
+    lower.Tip=doc.HookClampHeadPocket;upper.Tip=doc.HookInsertLeadIn
     doc.recompute()
 
 
@@ -208,37 +191,11 @@ def add_oval_loop(doc):
     sk=doc.getObject("HookCableSketch")
     if sk is None:
         sk=body.newObject("Sketcher::SketchObject","HookCableSketch")
-        sk.Label="Овальная петля по наброску пользователя — проход 14, стенка 4"
         sk.setExpression("Placement.Base.z","HookParameters.ShelfBottom")
-        cx1,cx2,cy=H.CableLeftCenter.Value,H.CableRightCenter.Value,H.CableCenterY.Value
-        for radius,radius_expr,reverse in ((H.CableOuterRadius.Value,"HookParameters.CableOuterRadius",False),
-                                            (H.CableGap.Value/2,"HookParameters.CableGap / 2",True)):
-            # Each capsule is dimensioned by line endpoints and arc centres/radii.
-            v=lambda x,y:App.Vector(x,y,0)
-            if not reverse:
-                data=[("line",v(cx1,cy+radius),v(cx2,cy+radius),"HookParameters.CableLeftCenter","HookParameters.CableRightCenter",1),
-                      ("arc",v(cx2,cy+radius),v(cx2+radius,cy),v(cx2,cy-radius),"HookParameters.CableRightCenter"),
-                      ("line",v(cx2,cy-radius),v(cx1,cy-radius),"HookParameters.CableRightCenter","HookParameters.CableLeftCenter",-1),
-                      ("arc",v(cx1,cy-radius),v(cx1-radius,cy),v(cx1,cy+radius),"HookParameters.CableLeftCenter")]
-            else:
-                data=[("line",v(cx2,cy+radius),v(cx1,cy+radius),"HookParameters.CableRightCenter","HookParameters.CableLeftCenter",1),
-                      ("arc",v(cx1,cy+radius),v(cx1-radius,cy),v(cx1,cy-radius),"HookParameters.CableLeftCenter"),
-                      ("line",v(cx1,cy-radius),v(cx2,cy-radius),"HookParameters.CableLeftCenter","HookParameters.CableRightCenter",-1),
-                      ("arc",v(cx2,cy-radius),v(cx2+radius,cy),v(cx2,cy+radius),"HookParameters.CableRightCenter")]
-            for item in data:
-                if item[0]=="line":
-                    _,p1,p2,x1,x2,sign=item
-                    idx=sk.addGeometry(Part.LineSegment(p1,p2),False)
-                    yexpr="HookParameters.CableCenterY %s (%s)" % ("+" if sign>0 else "-",radius_expr)
-                    for typ,pos,value,expression in (("DistanceX",1,p1.x,x1),("DistanceY",1,p1.y,yexpr),("DistanceX",2,p2.x,x2),("DistanceY",2,p2.y,yexpr)):
-                        c=sk.addConstraint(Sketcher.Constraint(typ,idx,pos,value));sk.setExpression("Constraints[%d]" % c,expression)
-                else:
-                    _,p1,mid,p2,xexpr=item
-                    idx=sk.addGeometry(Part.Arc(p1,mid,p2),False)
-                    center_x=cx1 if "Left" in xexpr else cx2
-                    for typ,pos,value,expression in (("DistanceX",3,center_x,xexpr),("DistanceY",3,cy,"HookParameters.CableCenterY"),("DistanceX",1,center_x,xexpr),("DistanceX",2,center_x,xexpr)):
-                        c=sk.addConstraint(Sketcher.Constraint(typ,idx,pos,value));sk.setExpression("Constraints[%d]" % c,expression)
-                    c=sk.addConstraint(Sketcher.Constraint("Radius",idx,radius));sk.setExpression("Constraints[%d]" % c,radius_expr)
+    p=Path(__file__).resolve().parent/"finish_headphone_walls.py"
+    walls={"__file__":str(p),"__name__":"hook_walls"}
+    exec(compile(p.read_text(),str(p),"exec"),walls)
+    walls["ensure_merged_profile"](doc,sk)
     doc.recompute()
     pad=doc.getObject("HookCablePad") or body.newObject("PartDesign::Pad","HookCablePad")
     pad.Label="Овальная петля до верхней поверхности столешницы"
@@ -255,22 +212,23 @@ def add_oval_loop(doc):
             b=e.BoundBox
             if b.ZLength>1e-6 or abs(b.ZMin-H.CableTop.Value)>1e-5 or e.CenterOfMass.y>=H.BossY.Value-.1:continue
             circular=isinstance(e.Curve,Part.Circle) and abs(e.Curve.Radius-radius)<1e-5
-            straight=isinstance(e.Curve,Part.Line) and abs(e.CenterOfMass.y-(H.CableCenterY.Value-radius))<1e-5
+            straight=isinstance(e.Curve,Part.Line) and (abs(e.CenterOfMass.y-(H.CableCenterY.Value-radius))<1e-5 or (not inside and b.XLength<1e-6 and min(abs(b.XMin-H.ClampX.Value),abs(b.XMin-H.CornerX.Value))<1e-5))
             if circular or straight:edges.append("Edge%d" % i)
         return edges
     # Separate inside/outside blends avoid an OCCT combined corner solution that closes the passage.
     inside=native_fillet(doc,body,"HookCableInnerRounds","Мягкий внутренний вход петли R1",pad,top_edges(pad.Shape,True),"HookParameters.CableRimRadius")
     rim=native_fillet(doc,body,"HookCableRim","Мягкие наружные кромки петли R1",inside,top_edges(inside.Shape,False),"HookParameters.CableRimRadius")
     if rim.Shape.Volume>pad.Shape.Volume+1e-5:raise RuntimeError("Cable rim unexpectedly added material")
+    mouth,bottom=walls["finish_upper"](doc,rim)
     pocket=doc.getObject("HookInsertPocket")
-    items=[sk,pad,inside,rim]
+    items=[sk,pad,inside,rim,mouth,bottom]
     if pocket:
-        pocket.BaseFeature=rim
+        pocket.BaseFeature=bottom
         order=[o for o in body.Group if o not in items]
         index=order.index(pocket)
         body.Group=order[:index]+items+order[index:]
         body.Tip=doc.HookInsertLeadIn
-    else:body.Tip=rim
+    else:body.Tip=bottom
     sk.ViewObject.Visibility=False
     doc.HookStopRim.ViewObject.Visibility=False
     pad.ViewObject.Visibility=False
