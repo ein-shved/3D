@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "status": "prepared_offline_geometry_not_built",
+  "document": "LaptopDeskMount.FCStd",
+  "document_name": "LaptopDeskMount",
+  "reference": "references/headphone_hook_sketch.jpg",
+  "material": "PETG",
+  "printer": "Elegoo Neptune 4 Pro",
+  "brief": [
+    "Небольшой округлый крюк выступает от самого угла стола в сторону ноутбука.",
+    "Замкнутое кольцо для провода входит в верхнюю деталь.",
+    "Две печатные детали: верхний крюк и нижний обхват перекладины.",
+    "Задний конец нижнего обхвата входит в паз верхней детали.",
+    "На противоположной стороне скрытый болт входит в термовставку верхней детали.",
+    "Нижний обхват смещён относительно верхней детали, чтобы обойти вертикальную ногу.",
+    "Использовать существующее окружение и тот же документ; держатели ноутбука сохраняются."
+  ],
+  "environment_objects": [
+    "Parameters", "Environment", "WholeTable", "TabletopFull", "BeamFullNear",
+    "LegNearLeft", "LegNearRight", "LongRailLeft", "LongRailRight",
+    "HolderLeft", "HolderRight", "LaptopBase"
+  ],
+  "environment_aliases": {
+    "BeamWidth": "measured",
+    "BeamHeight": "measured",
+    "SpacerHeight": "measured",
+    "TabletopThickness": "photo_reading",
+    "BeamClearance": "existing_design_allowance",
+    "Overhang": "estimated_now_fit_critical",
+    "LegInset": "illustrative_now_fit_critical",
+    "TableAcross": "illustrative"
+  },
+  "linked_parameters": [
+    {"alias": "ProfileWidth", "expression": "=Parameters.BeamWidth", "label": "Ширина перекладины / ноги", "note": "Замер из существующего окружения"},
+    {"alias": "ProfileHeight", "expression": "=Parameters.BeamHeight", "label": "Высота перекладины", "note": "Замер из существующего окружения"},
+    {"alias": "TopGap", "expression": "=Parameters.SpacerHeight", "label": "Зазор до столешницы", "note": "Замер из существующего окружения"},
+    {"alias": "DesktopThickness", "expression": "=Parameters.TabletopThickness", "label": "Толщина столешницы", "note": "Считывание по фото, из существующего окружения"},
+    {"alias": "FitClearance", "expression": "=Parameters.BeamClearance", "label": "Зазор обхвата на сторону", "note": "Исходный зазор 0.4 мм, отдельно от погрешности замеров"},
+    {"alias": "LowerOffset", "expression": "=Parameters.BeamWidth", "label": "Начальное смещение нижнего захвата", "note": "По схеме: на ширину ноги; направление и полный габарит проверить в сборке"},
+    {"alias": "CornerOverhang", "expression": "=Parameters.Overhang", "label": "Свес края над перекладиной", "note": "ОЦЕНКА: сейчас 10 мм; для углового крючка влияет на посадку"},
+    {"alias": "CornerLegInset", "expression": "=Parameters.LegInset", "label": "Отступ оси ноги от торца", "note": "УСЛОВНО: сейчас 65 мм; для углового крючка влияет на посадку"}
+  ],
+  "provisional_parameters": [
+    {"alias": "Wall", "value": "6 mm", "label": "Исходная толщина силовой стенки", "note": "ЭСКИЗНО, выбрать по сечению и нагрузке; не подтверждение прочности"},
+    {"alias": "JointClearance", "value": "0.3 mm", "label": "Зазор зацепа на сторону", "note": "ЭСКИЗНО для PETG, зацеп должен собираться без упругого защёлкивания"},
+    {"alias": "EdgeRadius", "value": "2 mm", "label": "Малые наружные скругления", "note": "ЭСКИЗНО; крупный радиус опоры оголовья назначить отдельно"}
+  ],
+  "unresolved": [
+    {"key": "corner", "label": "Выбор левого / правого ближнего угла и положение относительно реального края", "value": null},
+    {"key": "headband_width_mm", "label": "Ширина оголовья в месте подвеса", "value": null},
+    {"key": "headphones_mass_g", "label": "Масса или модель наушников для выбора сечения", "value": null},
+    {"key": "insert_spec", "label": "Резьба, наружный диаметр, длина и рекомендуемое отверстие термовставки", "value": null},
+    {"key": "bolt_spec", "label": "Резьба, длина под головкой и размеры головки доступного болта", "value": null},
+    {"key": "cable_eye_passage", "label": "Только провод или также разъём; его максимальный поперечный размер", "value": null}
+  ],
+  "assembly_order": [
+    "Вплавить вставку в верхнюю деталь до установки на стол, оставив доступ жалу.",
+    "Установить верхнюю деталь у угла стола.",
+    "Завести задний зацеп нижней детали в паз, затем подвести обхват под перекладину мимо ноги.",
+    "Вставить скрытый болт снизу и затянуть через доступный канал для инструмента.",
+    "Проверить свободный путь провода и подвешивания наушников при установленном ноутбуке."
+  ],
+  "validation_before_export": [
+    "По одному валидному твёрдому телу на печатную часть.",
+    "Нет пересечений пластика со столешницей, перекладиной, ногой, продольной связью, ноутбуком и его держателями.",
+    "Проверены промежуточные положения при сборке, доступ паяльника и ключа, извлечение болта.",
+    "Болт имеет достаточное зацепление с вставкой и не упирается в дно глухого отверстия.",
+    "Нагрузка передаётся через поверхности обхвата и зацепа; проверены корень крюка и материал вокруг вставки.",
+    "Ориентация печати выбирается отдельно для обеих деталей; опора оголовья гладкая, зацеп и паз очищаемы от поддержек.",
+    "В нарезке проверить замкнутость кольца, стенки у вставки, поддержки, габариты и длительность."
+  ]
+}
