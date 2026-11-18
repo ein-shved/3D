@@ -62,7 +62,7 @@ PARAMS = [
     ("TableAlong", "1400 mm", "Стол: длина", "УСЛОВНО, общий вид без влияния на посадку"),
     ("TableHeight", "740 mm", "Стол: высота", "УСЛОВНО, общий вид без влияния на посадку"),
     ("Overhang", "0 mm", "Свес столешницы", "Уточнение пользователя 18.11.2026: угол столешницы точно над углом ноги, свеса нет"),
-    ("LegInset", "=BeamWidth / 2", "Отступ оси ноги от торца", "Уточнение пользователя 18.11.2026: наружная грань ноги совпадает с торцом столешницы"),
+    ("LegInset", "=BeamHeight / 2", "Отступ оси ноги от торца", "Профиль ноги повёрнут относительно перекладины на 90°: толщина вдоль X равна высоте перекладины; наружная грань совпадает с торцом столешницы"),
 ]
 for row, (alias, value, label, note) in enumerate(PARAMS, 2):
     P.set("A%d" % row, label)
@@ -140,19 +140,13 @@ box("TabletopFull", "Столешница — условно 1400 × 700", full,
     ("-Parameters.TableAcross / 2", "-Parameters.Overhang", "Parameters.SpacerHeight"), white, 25)
 for k, y in (("Near", "0 mm"), ("Far", "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamWidth")):
     box("BeamFull"+k, "Перекладина — "+k, full,
-        ("Parameters.TableAcross - 2 * Parameters.LegInset + Parameters.BeamWidth", "Parameters.BeamWidth", "Parameters.BeamHeight"),
-        ("-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamWidth / 2",y,"-Parameters.BeamHeight"), steel)
-    for j, x in (("Left","-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamWidth / 2"),
-                 ("Right","Parameters.TableAcross / 2 - Parameters.LegInset - Parameters.BeamWidth / 2")):
-        leg_y = y if k == "Near" else "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
+        ("Parameters.TableAcross", "Parameters.BeamWidth", "Parameters.BeamHeight"),
+        ("-Parameters.TableAcross / 2",y,"-Parameters.BeamHeight"), steel)
+    for j, x in (("Left","-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamHeight / 2"),
+                 ("Right","Parameters.TableAcross / 2 - Parameters.LegInset - Parameters.BeamHeight / 2")):
         box("Leg"+k+j,"Нога — "+k+" / "+j,full,
-            ("Parameters.BeamWidth","Parameters.BeamHeight","Parameters.TableHeight - Parameters.TabletopThickness - Parameters.SpacerHeight - Parameters.BeamHeight"),
-            (x,leg_y,"Parameters.SpacerHeight + Parameters.TabletopThickness - Parameters.TableHeight"),steel)
-for j, x in (("Left","-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamHeight / 2"),
-             ("Right","Parameters.TableAcross / 2 - Parameters.LegInset - Parameters.BeamHeight / 2")):
-    box("LongRail"+j,"Продольная связь — "+j,full,
-        ("Parameters.BeamHeight","Parameters.TableAlong - 2 * Parameters.Overhang","Parameters.BeamWidth"),
-        (x,"0 mm","-Parameters.BeamWidth"),steel)
+            ("Parameters.BeamHeight","Parameters.BeamWidth","Parameters.TableHeight - Parameters.TabletopThickness - Parameters.SpacerHeight - Parameters.BeamHeight"),
+            (x,y,"Parameters.SpacerHeight + Parameters.TabletopThickness - Parameters.TableHeight"),steel)
 
 laptop = group("Laptop", "Ноутбук — основание 332 × 14, наклон 30°")
 env.addObject(laptop)
