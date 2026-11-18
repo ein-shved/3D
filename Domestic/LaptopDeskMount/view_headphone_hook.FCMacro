@@ -1,0 +1,39 @@
+"""Show the right-hand corner without changing any model geometry."""
+from pathlib import Path
+import FreeCAD as App
+import FreeCADGui as Gui
+from PySide import QtCore
+
+D = App.getDocument("LaptopDeskMount")
+# Group visibility propagates to children: turn groups on first, then filter leaves.
+for n in ("Environment", "WholeTable", "HeadphoneHook", "HookHardware"):
+    D.getObject(n).ViewObject.Visibility = True
+visible = {"Environment", "WholeTable", "TabletopFull", "BeamFullNear", "LegNearRight", "LongRailRight",
+           "HeadphoneHook", "HeadphoneHookUpper", "HeadphoneHookLower", "HookHardware", "HookInsertReference", "HookBoltReference"}
+visible.update(b.Tip.Name for b in (D.HeadphoneHookUpper, D.HeadphoneHookLower))
+# Hide unwanted groups before their children to prevent propagation from undoing the leaf filter.
+for o in D.Objects:
+    if o.TypeId == "App::DocumentObjectGroup" and o.Name not in visible:
+        o.ViewObject.Visibility = False
+for o in D.Objects:
+    if hasattr(o.ViewObject, "Visibility"):
+        o.ViewObject.Visibility = o.Name in visible
+D.TabletopFull.ViewObject.Transparency = 55
+for b, color in ((D.HeadphoneHookUpper, (.92,.48,.16)), (D.HeadphoneHookLower, (.25,.62,.76))):
+    b.ViewObject.ShapeColor = color
+    b.Tip.ViewObject.ShapeColor = color
+    b.Tip.ViewObject.DiffuseColor = [color]
+v = Gui.activeDocument().activeView()
+v.setCameraType("Orthographic")
+rotation = App.Rotation(App.Vector(1,1,0), App.Vector(0,0,1), App.Vector(1,-1,.65), "ZXY")
+v.setCameraOrientation(rotation.Q)
+loop = QtCore.QEventLoop()
+QtCore.QTimer.singleShot(600, loop.quit)
+loop.exec()
+camera = v.getCameraNode()
+position = App.Vector(310,22,5) + rotation.multVec(App.Vector(0,0,500))
+camera.position.setValue(position.x,position.y,position.z)
+camera.height.setValue(175)
+camera.nearDistance.setValue(1)
+camera.farDistance.setValue(2500)
+Gui.updateGui()
