@@ -57,8 +57,9 @@ def prepare():
     ns = 'http://schemas.microsoft.com/3dmanufacturing/core/2015/02'
     ET.register_namespace('', ns)
     tag = lambda n: '{' + ns + '}' + n
-    model = ET.Element(tag('model'), unit='millimeter')
-    ET.SubElement(model, tag('metadata'), name='Application').text = 'PrusaSlicer project preparation'
+    model = ET.Element(tag('model'), unit='millimeter', attrib={'xmlns:slic3rpe': 'http://schemas.slic3r.org/3mf/2017/06'})
+    ET.SubElement(model, tag('metadata'), name='slic3rpe:Version3mf').text = '1'
+    ET.SubElement(model, tag('metadata'), name='Application').text = 'PrusaSlicer-2.9.4'
     resources = ET.SubElement(model, tag('resources'))
     build = ET.SubElement(model, tag('build'))
     names = ET.Element('config')
