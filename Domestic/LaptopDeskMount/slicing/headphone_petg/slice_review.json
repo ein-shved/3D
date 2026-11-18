@@ -33,18 +33,18 @@
     ]
   },
   "filament_mm_by_path_type": {
-    "Skirt/Brim": 195.33008000000035,
-    "Support material": 233.1081500000003,
-    "Perimeter": 8036.8324200000825,
-    "External perimeter": 4061.950340000005,
-    "Solid infill": 3106.3420799999985,
-    "Internal infill": 6500.486029999977,
-    "Bridge infill": 834.7449100000002,
-    "Top solid infill": 471.26040000000006,
-    "Support material interface": 299.34772000000055,
-    "Overhang perimeter": 10.892800000000005
+    "Skirt/Brim": 195.33062999999984,
+    "Support material": 233.11119000000022,
+    "Perimeter": 8036.826100000083,
+    "External perimeter": 4061.956170000004,
+    "Solid infill": 3106.064290000002,
+    "Internal infill": 6500.554860000005,
+    "Bridge infill": 834.8042800000001,
+    "Top solid infill": 471.2444899999996,
+    "Support material interface": 299.3395900000003,
+    "Overhang perimeter": 10.902170000000009
   },
-  "support_volume_cm3": 1.2807064535638355,
+  "support_volume_cm3": 1.2806942106790888,
   "notes": [
     "Both parts retain the requested print planes and have first-layer material and brims.",
     "Upper rear joint roof receives accessible support; remove through the open sides before assembly.",
