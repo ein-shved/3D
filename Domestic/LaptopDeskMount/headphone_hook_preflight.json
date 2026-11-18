@@ -1,0 +1,67 @@
+{
+  "status": "offline_inputs_checked_geometry_pending",
+  "document": "LaptopDeskMount.FCStd",
+  "document_sha256": "0ed579af9674b1a9a9afffa8ebb8c30cfa98f773896a93af6531c476c0376179",
+  "environment": {
+    "BeamWidth": {
+      "content": "=60.21 mm",
+      "source": "measured"
+    },
+    "BeamHeight": {
+      "content": "=30.48 mm",
+      "source": "measured"
+    },
+    "SpacerHeight": {
+      "content": "=10.51 mm",
+      "source": "measured"
+    },
+    "TabletopThickness": {
+      "content": "=25.73 mm",
+      "source": "photo_reading"
+    },
+    "BeamClearance": {
+      "content": "=0.4 mm",
+      "source": "existing_design_allowance"
+    },
+    "Overhang": {
+      "content": "=10 mm",
+      "source": "estimated_now_fit_critical"
+    },
+    "LegInset": {
+      "content": "=65 mm",
+      "source": "illustrative_now_fit_critical"
+    },
+    "TableAcross": {
+      "content": "=700 mm",
+      "source": "illustrative"
+    }
+  },
+  "checked_object_names": [
+    "Parameters",
+    "Environment",
+    "WholeTable",
+    "TabletopFull",
+    "BeamFullNear",
+    "LegNearLeft",
+    "LegNearRight",
+    "LongRailLeft",
+    "LongRailRight",
+    "HolderLeft",
+    "HolderRight",
+    "LaptopBase"
+  ],
+  "unresolved": [
+    "corner",
+    "headband_width_mm",
+    "headphones_mass_g",
+    "insert_spec",
+    "bolt_spec",
+    "cable_eye_passage"
+  ],
+  "checks_not_run": [
+    "FreeCAD recompute",
+    "solid geometry",
+    "collisions",
+    "slicing"
+  ]
+}
