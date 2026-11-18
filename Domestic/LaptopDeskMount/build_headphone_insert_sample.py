@@ -9,13 +9,13 @@ D = App.getDocument("LaptopDeskMount")
 if D.getObject("HookInsertFitSample"):
     raise RuntimeError("Insert sample already exists")
 b = D.addObject("PartDesign::Body", "HookInsertFitSample")
-b.Label = "Пробник вставки M4 Ø6: отверстия 5.4 / 5.6 / 5.8 слева направо"
+b.Label = "Пробник вставки M4 Ø5.69: отверстия 5.4 / 5.5 / 5.6 слева направо"
 D.FitSamples.addObject(b)
 base = b.newObject("PartDesign::AdditiveBox", "HookSampleBlock")
 base.Label = "Пробник посадки вставки, 34 × 14 × 8.5"
 base.Length, base.Width, base.Height = 34, 14, 8.5
 D.recompute()
-for i, diameter in enumerate((5.4, 5.6, 5.8)):
+for i, diameter in enumerate((5.4, 5.5, 5.6)):
     previous = b.Tip
     bore = b.newObject("PartDesign::SubtractiveCylinder", "HookSampleBore%d" % i)
     bore.Label = "Отверстие %.1f мм, глубина 6.4 мм" % diameter
@@ -27,7 +27,7 @@ for i, diameter in enumerate((5.4, 5.6, 5.8)):
     previous.ViewObject.Visibility = False
     entry = b.newObject("PartDesign::SubtractiveCone", "HookSampleEntry%d" % i)
     entry.Label = "Заходная фаска к отверстию %.1f" % diameter
-    entry.Radius1, entry.Radius2, entry.Height = diameter / 2, 3, .4
+    entry.Radius1, entry.Radius2, entry.Height = diameter / 2, D.HookParameters.InsertOuterDiameter.Value/2, .4
     entry.Placement.Base = App.Vector(6 + 11 * i, 7, 8.1)
     entry.Refine = True
     D.recompute()
@@ -44,4 +44,4 @@ for o in b.Group:
 b.ViewObject.Visibility = False
 D.FitSamples.ViewObject.Visibility = False
 D.recompute()
-print("Insert sample exported: 34x14x8.5, bore diameters 5.4/5.6/5.8, depth6.4, entrance6.0")
+print("Insert sample exported: 34x14x8.5, bore diameters 5.4/5.5/5.6, depth6.4, entrance5.69")
