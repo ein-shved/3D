@@ -1,4 +1,4 @@
-"""Equal rear joint, rounded mating tips, oval cable guide, and sketch references."""
+"""Equal rear joint, merged oval guide, entrance rounds, and sketch references."""
 from pathlib import Path
 import json
 import FreeCAD as App

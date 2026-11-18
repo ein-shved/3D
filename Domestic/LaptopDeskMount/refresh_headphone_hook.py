@@ -34,7 +34,7 @@ H.set(H.getCellFromAlias("StopWidth"),"=CornerX - ClampX")
 H.set("C" + H.getCellFromAlias("StopWidth")[1:],"Левый и правый края совпадают с краями основания")
 H.set(H.getCellFromAlias("StopThickness"),"=BossDepth")
 H.set("C" + H.getCellFromAlias("StopThickness")[1:],"Передняя грань со стороны ноутбука совпадает с передней гранью основания")
-# Right edge flush with the tabletop, with the cable ring removed from the feature chain.
+# Right edge stays flush with the tabletop; the current oval loop is rebuilt below.
 cell = H.getCellFromAlias("StopCenterX")
 if not cell:
     row = max(i for i in range(1,250) if H.getContents("A%d" % i)) + 1

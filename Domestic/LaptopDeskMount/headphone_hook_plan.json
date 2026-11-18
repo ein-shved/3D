@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "equal_joint_rounded_oval_guide_M4x15_geometry_and_exports_checked",
+  "status": "merged_sidewalls_entry_bottom_side_rounds_geometry_and_exports_checked",
   "document": "LaptopDeskMount.FCStd",
   "document_name": "LaptopDeskMount",
   "reference": "references/headphone_hook_sketch.jpg",
@@ -23,12 +23,13 @@
   "brief": [
     "Основной ограничитель у правого угла со стороны ноутбука: 30 мм над столешницей, прямоугольник R10 и кромки R2.5; оголовье лежит на столе.",
     "Полка на всю ширину и плоский низ для печати; левый и передний края выступа совпадают с основанием, правый с торцом столешницы.",
-    "Верхняя перемычка, просвет и нижний борт заднего паза равны, по 3.303 мм; внутренние углы и сопряжённый зацеп R0.8.",
-    "Перед основной деталью вертикальная овальная петля по Sketch003: свободный проход 14 мм, стенки 4 мм, верх вровень со столешницей; кромки R1.",
+    "Верхняя перемычка, просвет и нижний борт заднего паза равны, по 3.303 мм; боковые углы входа R1 по примеру Fillet, прежние R0.8 в глубине отменены.",
+    "Перед основной деталью вертикальная овальная петля по Sketch003: свободный проход 14 мм, стенки 4 мм, верх вровень со столешницей; кромки R1. Боковые стенки объединены с основанием по Sketch004, прямые участки касательны передним дугам R11.",
     "Две печатные детали, задний паз и скрытый M4×15 с головкой Ø7 в нижнем кармане Ø7.5; материал под головкой уменьшен до 8 мм.",
     "Вставка M4 длиной 6 мм из доступных 4/6/8, наружный размер по фото5.69; канал Ø5.6, вход не более5.7.",
-    "Пользовательские Sketch001/002/003 сохранены с привязками; три отрезка Sketch001 равны.",
-    "Используется существующий документ и исправленное окружение; держатели ноутбука сохранены."
+    "Sketch001/002/003/004 сохранены с привязками; три отрезка Sketch001 равны, Sketch004 полностью определён. Пользовательская Fillet использована для входных углов.",
+    "Используется существующий документ и исправленное окружение; держатели ноутбука сохранены.",
+    "Нижние кромки основной детали и боковые кромки нижнего захвата R1; плоскости печати сохранены."
   ],
   "environment_objects": [
     "Parameters",
@@ -329,7 +330,7 @@
     "stop_flat_top_width_mm": 34.88,
     "stop_rim_radius_mm": 2.5,
     "main_flat_bottom_z_mm": 0.2,
-    "main_print_base_area_mm2": 5039.325393102666,
+    "main_print_base_area_mm2": 4529.625169698566,
     "shelf_width_mm": 54.88,
     "shelf_depth_mm": 93.31,
     "upper_insert_bottom_z_mm": 0.2,
@@ -351,7 +352,7 @@
     "insert_entry_max_diameter_mm": 5.69,
     "material_under_head_mm": 8,
     "rear_joint_thirds_mm": 3.3033333333333332,
-    "joint_inside_radius_mm": 0.8,
+    "joint_inside_radius_mm": 0,
     "tongue_thickness_mm": 2.4033333333333333,
     "oval_guide_passage_mm": 14,
     "oval_guide_wall_mm": 4,
@@ -360,7 +361,12 @@
       42.8867,
       87.01,
       24
-    ]
+    ],
+    "merged_sidewalls": true,
+    "upper_bottom_radius_mm": 1.0,
+    "lower_side_radius_mm": 1.0,
+    "entry_radius_mm": 1.0,
+    "deep_back_rounds_rolled_back": true
   },
   "environment_remove_objects": [
     "LongRailLeft",
@@ -371,10 +377,19 @@
     "shape": "vertical_oval_loop",
     "clear_diameter_mm": 14,
     "wall_mm": 4,
-    "top_flush_with_tabletop": true
+    "top_flush_with_tabletop": true,
+    "merged_sidewalls": true,
+    "outer_profile": "straight sides tangent to front R11 quarters"
   },
   "remaining_physical_checks": [
     "Проверить фактическую посадку выбранной вставки в Ø5.6 мм.",
     "Проверить посадку и затяжку нового зацепа после печати."
-  ]
+  ],
+  "wall_finishing": {
+    "merged_sidewalls": true,
+    "upper_bottom_radius_mm": 1.0,
+    "lower_side_radius_mm": 1.0,
+    "entry_radius_mm": 1.0,
+    "deep_back_rounds_rolled_back": true
+  }
 }
