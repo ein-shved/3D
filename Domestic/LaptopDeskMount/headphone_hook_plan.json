@@ -397,7 +397,18 @@
     "project": "slicing/headphone_petg/headphone_hook_petg_ready.3mf",
     "perimeters": 3,
     "infill": "15% gyroid",
-    "estimated_time": "3h 56m 22s",
-    "physically_printed": false
+    "estimated_time": "3h 57m 26s",
+    "physically_printed": false,
+    "supports": false,
+    "bridge_speed_mm_s": 25
+  },
+  "symmetric_insert_seats": {
+    "count": 2,
+    "axes_x_mm": [
+      307.12,
+      338.0
+    ],
+    "center_x_mm": 322.56,
+    "second_seat_unused": true
   }
 }
