@@ -6,7 +6,7 @@ import re
 
 ROOT = Path(__file__).resolve().parent
 text = (ROOT / 'headphone_hook_petg.gcode').read_text()
-selected = [0.2, 3.2, 6.2, 6.8]
+selected = [0.2, 6.8, 15.4, 15.8]
 panels = {z: [] for z in selected}
 bounds = {'min': [math.inf] * 3, 'max': [-math.inf] * 3}
 support_bounds = {'min': [math.inf] * 3, 'max': [-math.inf] * 3}
@@ -15,6 +15,7 @@ x = y = z = e = 0.0
 absolute = absolute_e = True
 role = 'Custom'
 first_layer_objects = set()
+roof_bridges = []
 
 for line in text.splitlines():
     if line.startswith(';TYPE:'):
@@ -40,6 +41,10 @@ for line in text.splitlines():
     if ne > e and math.hypot(nx - x, ny - y) > 1e-6 and role != 'Custom':
         extrusion[role] = extrusion.get(role, 0) + ne - e
         supporting = role.startswith('Support')
+        if role == 'Bridge infill' and abs(nz - 6.8) < 0.01 and 56 < x < 103 and 56 < nx < 103:
+            if min(y, ny) < 149 and max(y, ny) > 161:
+                roof_bridges.append({'start': [x, y, nz], 'end': [nx, ny, nz],
+                                     'path_length_mm': math.hypot(nx-x, ny-y)})
         for box in [bounds] + ([support_bounds] if supporting else []):
             for point in ((x, y, nz), (nx, ny, nz)):
                 for i in range(3):
@@ -59,18 +64,26 @@ for line in text.splitlines():
 assert first_layer_objects == {'upper', 'lower'}
 assert all(0 <= bounds['min'][i] and bounds['max'][i] <= limit for i, limit in enumerate((225, 225, 265)))
 assert abs(bounds['max'][2] - 66.0) < 0.3
-assert support_layers
+assert not support_layers
 assert extrusion.get('Internal infill', 0) > 0
+assert roof_bridges, 'Rear roof bridge paths not found'
+assert all(abs(b['start'][0]-b['end'][0]) < 0.01 for b in roof_bridges), 'Roof bridges run along the long side'
 report = {
     'decision': 'keep', 'printer': 'Elegoo Neptune 4 Pro', 'material': 'PETG',
     'model_layers': len(layers), 'first_layer_objects': sorted(first_layer_objects),
-    'support_layers': len(support_layers), 'support_bounds_mm': support_bounds,
+    'support_layers': len(support_layers), 'support_bounds_mm': None,
     'extrusion_bounds_mm': bounds, 'filament_mm_by_path_type': extrusion,
     'support_volume_cm3': sum(v for k, v in extrusion.items() if k.startswith('Support')) * math.pi * 1.75 ** 2 / 4000,
+    'rear_roof_bridge': {'geometric_clear_span_mm': 12.6, 'direction': 'Y, across the short gap',
+                         'full_span_extrusion_paths': len(roof_bridges),
+                         'max_path_with_anchors_mm': max(b['path_length_mm'] for b in roof_bridges),
+                         'speed_mm_s': 25},
+    'head_recess_width_mm': 7.5,
     'notes': [
         'Both parts retain the requested print planes and have first-layer material and brims.',
-        'Upper rear joint roof receives accessible support; remove through the open sides before assembly.',
-        'Inspect and clean the horizontal screw/head recess in the lower part after support removal.',
+        'No support extrusion. Rear roof bridges cross the short 12.6 mm gap, anchored at both ends.',
+        'Horizontal 7.5 mm cap recess closes with short bridges and progressively supported arcs.',
+        'PETG bridge sag remains untested; clean stray strands from sliding joint and screw recess if needed.',
         'No rescaling or CAD changes. Slicing prediction does not verify physical fit or strength.',
         'Three perimeters, 15% gyroid, four top/bottom layers replace the laptop mounts six perimeters and 40% infill.',
     ],
