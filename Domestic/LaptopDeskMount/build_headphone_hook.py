@@ -51,12 +51,12 @@ parameters = [
     ("BoltLength", "20 mm", "Болт M4 под головкой", "Подобран по сборке, пользователь подберёт M4×20"),
     ("HeadSeatZ", "=BottomZ + HeadPocketDepth", "Опорная плоскость головки", "Головка утоплена снизу"),
     ("TableTopZ", "=TopGap + DesktopThickness", "Верх столешницы Z", "Размеры из существующего окружения"),
-    ("StopWidth", "24 mm", "Ширина округлого ограничителя", "Небольшая булька у самого угла"),
+    ("StopWidth", "=CornerX - ClampX", "Ширина округлого ограничителя", "Левый и правый края совпадают с краями основания"),
     ("StopCenterX", "=CornerX - StopWidth / 2", "Центр ограничителя X", "Правый край ограничителя совпадает с правым торцом столешницы"),
-    ("StopThickness", "8 mm", "Толщина ограничителя", "Снаружи торца столешницы"),
+    ("StopThickness", "=BossDepth", "Толщина ограничителя", "Передняя грань со стороны ноутбука совпадает с передней гранью основания"),
     ("StopRise", "25 mm", "Выступ над столешницей", "Задано пользователем: 25 мм; оголовье лежит на столе"),
     ("StopTop", "=TableTopZ + StopRise", "Верх ограничителя", "Плавный круглый верх"),
-    ("StopCapZ", "=StopTop - StopWidth / 2", "Центр скругления ограничителя", "Полукруглый верх R12"),
+    ("StopCapZ", "=StopTop - StopWidth / 2", "Центр скругления ограничителя", "Радиус верха равен половине ширины ограничителя"),
 ]
 last = max(i for i in range(1, 200) if H.getContents("A%d" % i))
 for alias, value, label, note in parameters:
@@ -160,7 +160,7 @@ box(upper, "HookRearLip", "Удерживающий борт заднего па
 box(upper, "HookStopStem", "Ограничитель у правого угла",
     (expr("StopWidth"), expr("StopThickness"), expr("StopCapZ") + "-" + expr("ShelfBottom")),
     (expr("StopCenterX") + "-" + expr("StopWidth") + "/2", expr("FrontY") + "-" + expr("StopThickness"), expr("ShelfBottom")))
-cylinder(upper, "Additive", "HookStopCap", "Полукруглый верх ограничителя R12",
+cylinder(upper, "Additive", "HookStopCap", "Полукруглый верх ограничителя",
          expr("StopWidth") + "/2", expr("StopThickness"),
          (expr("StopCenterX"), expr("FrontY"), expr("StopCapZ")), App.Rotation(App.Vector(1, 0, 0), 90))
 cap_edges = []

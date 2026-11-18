@@ -20,6 +20,12 @@ H.set("C" + H.getCellFromAlias("LowerOffset")[1:],
 H.set(H.getCellFromAlias("StopRise"), "25 mm")
 H.set("C" + H.getCellFromAlias("StopRise")[1:], "Задано пользователем: выступ 25 мм над поверхностью столешницы")
 H.set("C" + H.getCellFromAlias("CornerLegInset")[1:], "Половина толщины ноги вдоль X: BeamHeight / 2 = 15.24 мм")
+H.set(H.getCellFromAlias("StopWidth"),"=CornerX - ClampX")
+H.set("C" + H.getCellFromAlias("StopWidth")[1:],"Левый и правый края совпадают с краями основания")
+H.set(H.getCellFromAlias("StopThickness"),"=BossDepth")
+H.set("C" + H.getCellFromAlias("StopThickness")[1:],"Передняя грань со стороны ноутбука совпадает с передней гранью основания")
+H.set("C" + H.getCellFromAlias("StopCapZ")[1:],"Радиус верха равен половине ширины ограничителя")
+doc.HookStopCap.Label = "Полукруглый верх ограничителя"
 # Right edge flush with the tabletop, with the cable ring removed from the feature chain.
 cell = H.getCellFromAlias("StopCenterX")
 if not cell:
@@ -83,5 +89,11 @@ outside = Part.makeBox(100,200,200,App.Vector(q("CornerX")+1e-5,-50,-80))
 report["material_beyond_right_edge_mm3"] = upper.Shape.common(outside).Volume
 assert report["material_beyond_right_edge_mm3"]<1e-5
 report["cable_ring"] = {"present":False,"removed_per_user_request":True}
+report["base_edge_alignment"] = {"stop_left_x_mm":q("StopCenterX")-q("StopWidth")/2,
+                                "base_left_x_mm":q("ClampX"),
+                                "stop_front_y_mm":q("FrontY")-q("StopThickness"),
+                                "base_front_y_mm":q("BossY")}
+assert abs(report["base_edge_alignment"]["stop_left_x_mm"]-q("ClampX"))<1e-6
+assert abs(report["base_edge_alignment"]["stop_front_y_mm"]-q("BossY"))<1e-6
 (ROOT / "headphone_hook_validation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
 print("Updated: 25mm stop rise, lower clamp ends 0.4mm before the corrected leg, hardware moved with clamp.")
