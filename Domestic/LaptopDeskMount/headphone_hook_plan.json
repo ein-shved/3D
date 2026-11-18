@@ -66,9 +66,109 @@
   ],
   "environment_expression_updates": [
     {
+      "object": "BeamFullNear",
+      "property": "Length",
+      "expression": "Parameters.TableAcross"
+    },
+    {
+      "object": "BeamFullNear",
+      "property": "Placement.Base.x",
+      "expression": "-Parameters.TableAcross / 2"
+    },
+    {
+      "object": "BeamFullNear",
+      "property": "Placement.Base.y",
+      "expression": "0 mm"
+    },
+    {
+      "object": "LegNearLeft",
+      "property": "Length",
+      "expression": "Parameters.BeamHeight"
+    },
+    {
+      "object": "LegNearLeft",
+      "property": "Width",
+      "expression": "Parameters.BeamWidth"
+    },
+    {
+      "object": "LegNearLeft",
+      "property": "Placement.Base.x",
+      "expression": "-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamHeight / 2"
+    },
+    {
+      "object": "LegNearLeft",
+      "property": "Placement.Base.y",
+      "expression": "0 mm"
+    },
+    {
+      "object": "LegNearRight",
+      "property": "Length",
+      "expression": "Parameters.BeamHeight"
+    },
+    {
+      "object": "LegNearRight",
+      "property": "Width",
+      "expression": "Parameters.BeamWidth"
+    },
+    {
+      "object": "LegNearRight",
+      "property": "Placement.Base.x",
+      "expression": "Parameters.TableAcross / 2 - Parameters.LegInset - Parameters.BeamHeight / 2"
+    },
+    {
+      "object": "LegNearRight",
+      "property": "Placement.Base.y",
+      "expression": "0 mm"
+    },
+    {
+      "object": "BeamFullFar",
+      "property": "Length",
+      "expression": "Parameters.TableAcross"
+    },
+    {
+      "object": "BeamFullFar",
+      "property": "Placement.Base.x",
+      "expression": "-Parameters.TableAcross / 2"
+    },
+    {
+      "object": "BeamFullFar",
+      "property": "Placement.Base.y",
+      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamWidth"
+    },
+    {
+      "object": "LegFarLeft",
+      "property": "Length",
+      "expression": "Parameters.BeamHeight"
+    },
+    {
+      "object": "LegFarLeft",
+      "property": "Width",
+      "expression": "Parameters.BeamWidth"
+    },
+    {
+      "object": "LegFarLeft",
+      "property": "Placement.Base.x",
+      "expression": "-Parameters.TableAcross / 2 + Parameters.LegInset - Parameters.BeamHeight / 2"
+    },
+    {
       "object": "LegFarLeft",
       "property": "Placement.Base.y",
       "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamWidth"
+    },
+    {
+      "object": "LegFarRight",
+      "property": "Length",
+      "expression": "Parameters.BeamHeight"
+    },
+    {
+      "object": "LegFarRight",
+      "property": "Width",
+      "expression": "Parameters.BeamWidth"
+    },
+    {
+      "object": "LegFarRight",
+      "property": "Placement.Base.x",
+      "expression": "Parameters.TableAcross / 2 - Parameters.LegInset - Parameters.BeamHeight / 2"
     },
     {
       "object": "LegFarRight",
@@ -224,7 +324,7 @@
   ],
   "validation_before_export": [
     "По одному валидному твёрдому телу на печатную часть.",
-    "Нет пересечений пластика со столешницей, перекладиной, ногой, продольной связью, ноутбуком и его держателями.",
+    "Нет пересечений пластика со столешницей, перекладиной, ногой, ноутбуком и его держателями.",
     "Проверены промежуточные положения при сборке, доступ паяльника и ключа, извлечение болта.",
     "Болт имеет достаточное зацепление с вставкой и не упирается в дно глухого отверстия.",
     "Оголовье опирается на столешницу; округлый выступ удерживает его у края. Проверены корень ограничителя, поверхности обхвата, зацеп и материал вокруг вставки.",
@@ -242,5 +342,9 @@
     "leg_thickness_along_beam_mm": 30.48,
     "clamp_x_mm": 295.12,
     "clearance_to_leg_mm": 0.4
-  }
+  },
+  "environment_remove_objects": [
+    "LongRailLeft",
+    "LongRailRight"
+  ]
 }

@@ -59,6 +59,7 @@ def inspect_saved_document(plan):
         "pending_environment_expression_updates": [u for u in plan["environment_expression_updates"]
             if not any(e.get("path", "").lstrip(".") == u["property"] and e.get("expression") == u["expression"]
                        for e in objects[u["object"]].iter("Expression"))],
+        "pending_environment_removals": [n for n in plan.get("environment_remove_objects", []) if n in objects],
         "checks_not_run_by_offline_reader": ["FreeCAD recompute", "solid geometry", "collisions", "slicing"]
     }
 
@@ -93,6 +94,9 @@ def prepare_in_freecad(plan):
             doc.Parameters.setBackground("A%s:C%s" % (cell[1:], cell[1:]), (1.0, 1.0, 1.0))
         for update in plan["environment_expression_updates"]:
             doc.getObject(update["object"]).setExpression(update["property"], update["expression"])
+        for name in plan.get("environment_remove_objects", []):
+            if doc.getObject(name):
+                doc.removeObject(name)
         group = doc.addObject("App::DocumentObjectGroup", "HeadphoneHook")
         group.Label = "05 Крючок для наушников — подготовка"
         group.addProperty("App::PropertyString", "PreparationStatus", "Design")

@@ -1,7 +1,7 @@
 {
   "status": "saved_document_inputs_checked_offline",
   "document": "LaptopDeskMount.FCStd",
-  "document_sha256": "e4fcc9351e3520ce4e92f7a6fc79813b363aedc3521d7c8fb351007b1669e995",
+  "document_sha256": "875ed18658e6937ad7a2af6c5e5b863eca25b14e1920d302dd7cfc810eb9edf4",
   "environment": {
     "BeamWidth": {
       "content": "=60.21 mm",
@@ -28,7 +28,7 @@
       "source": "user_confirmed_zero_overhang_applied"
     },
     "LegInset": {
-      "content": "=BeamWidth / 2",
+      "content": "=BeamHeight / 2",
       "source": "user_confirmed_corner_alignment_applied"
     },
     "TableAcross": {
@@ -44,8 +44,6 @@
     "BeamFullNear",
     "LegNearLeft",
     "LegNearRight",
-    "LongRailLeft",
-    "LongRailRight",
     "HolderLeft",
     "HolderRight",
     "LaptopBase"
@@ -56,7 +54,6 @@
     "corner_x_expression": "Parameters.TableAcross / 2",
     "corner_y_expression": "-Parameters.Overhang",
     "leg_object": "LegNearRight",
-    "rail_object": "LongRailRight",
     "lower_clamp_offset_direction": "Внутрь вдоль перекладины, в сторону отрицательного X"
   },
   "usage": {
@@ -150,6 +147,7 @@
   ],
   "pending_environment_updates": [],
   "pending_environment_expression_updates": [],
+  "pending_environment_removals": [],
   "checks_not_run_by_offline_reader": [
     "FreeCAD recompute",
     "solid geometry",
