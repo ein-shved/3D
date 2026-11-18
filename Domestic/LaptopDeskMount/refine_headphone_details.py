@@ -75,8 +75,15 @@ def rebind_user_guides(doc,placements):
                 result.append((e.Length,"Edge%d" % i))
         if not result:raise RuntimeError("No sketch reference edge at Z"+str(z))
         return min(result)[1]
-    def rebuild_constraints(sk,replacements):
+    def replace_external(sk,source,names):
         values=[(c.Type,c.First,c.FirstPos,c.Second,c.SecondPos) for c in sk.Constraints]
+        for i in reversed(range(sk.ConstraintCount)):sk.delConstraint(i)
+        count=sum(len(subs) for obj,subs in sk.ExternalGeometry)
+        for i in reversed(range(count)):sk.delExternal(i)
+        for name in names:sk.addExternal(source.Name,name)
+        doc.recompute()
+        return values
+    def rebuild_constraints(sk,replacements,values):
         for i in reversed(range(sk.ConstraintCount)):sk.delConstraint(i)
         for typ,a,ap,b,bp in values:
             if typ=="Coincident":
@@ -98,9 +105,8 @@ def rebind_user_guides(doc,placements):
                side_edge(ref.Shape,H.ShelfBottom.Value,y_contains=H.UpperBackInner.Value),
                side_edge(ref.Shape,H.ChannelRoof.Value,y_end=H.UpperBackInner.Value),
                side_edge(ref.Shape,H.ShelfTop.Value,y_contains=H.UpperBackInner.Value)]
-        sk.ExternalGeometry=[(ref,tuple(names))]
-        doc.recompute()
-        rebuild_constraints(sk,{-3:endpoint(sk,-3,True),-5:endpoint(sk,-5,True)})
+        values=replace_external(sk,ref,names)
+        rebuild_constraints(sk,{-3:endpoint(sk,-3,True),-5:endpoint(sk,-5,True)},values)
     if "Sketch002" in placements:attach(doc.Sketch002,"z",H.StopTop.Value)
     if "Sketch003" in placements:
         sk=doc.Sketch003
@@ -114,9 +120,8 @@ def rebind_user_guides(doc,placements):
                 if axis=="x" and b.XLength<1e-6 and abs(b.XMin-coord)<1e-5 and b.YLength>10 and b.YMin<0:result.append((e.Length,"Edge%d" % i))
             if not result:raise RuntimeError("No oval guide reference edge")
             return max(result)[1]
-        sk.ExternalGeometry=[(source,(edge_at("y",H.BossY.Value),edge_at("x",H.ClampX.Value),edge_at("x",H.CornerX.Value)))]
-        doc.recompute()
-        rebuild_constraints(sk,{-4:endpoint(sk,-4,False),-5:endpoint(sk,-5,False)})
+        values=replace_external(sk,source,[edge_at("y",H.BossY.Value),edge_at("x",H.ClampX.Value),edge_at("x",H.CornerX.Value)])
+        rebuild_constraints(sk,{-4:endpoint(sk,-4,False),-5:endpoint(sk,-5,False)},values)
     for name in placements:
         sk=doc.getObject(name)
         sk.ViewObject.Visibility=False
