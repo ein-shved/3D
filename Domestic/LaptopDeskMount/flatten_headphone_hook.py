@@ -17,6 +17,7 @@ def apply_flat_base(doc):
     H.set(cell,"=InsertLength - 0.2 mm")
     H.set("C"+cell[1:],"Вставка 6 мм, запас 0.2 мм до её заднего торца")
     H.set(H.getCellFromAlias("UpperBossBottom"),"=ShelfBottom")
+    H.set("A"+H.getCellFromAlias("UpperBossBottom")[1:],"Плоский низ основной детали")
     H.set("C"+H.getCellFromAlias("UpperBossBottom")[1:],"Плоский низ основной детали; вставка в полке без выступа")
     H.set(H.getCellFromAlias("HeadPocketDepth"),"=UpperBossBottom - BottomZ - BoltLength + BoltEngagement")
     H.set("C"+H.getCellFromAlias("HeadPocketDepth")[1:],"Углублён для M4×20 при плоском низе основной детали")
@@ -44,6 +45,7 @@ def apply_flat_base(doc):
                 idx=profile.addConstraint(Sketcher.Constraint(kind,i,1,value))
                 profile.setExpression("Constraints[%d]" % idx,expression)
     profile.Label = "Прямоугольная полка на всю ширину основной детали"
+    doc.HookShelfRounds.Label = "Скругления прямоугольной полки R2"
     doc.HookRearChannel.BaseFeature = doc.HookShelfRounds
     doc.HookRearChannel.setExpression("Length","HookParameters.StopWidth + 2 mm")
     doc.HookRearLip.setExpression("Length","HookParameters.StopWidth")

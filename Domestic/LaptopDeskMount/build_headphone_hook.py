@@ -145,7 +145,7 @@ check(shelf)
 profile.ViewObject.Visibility = False
 outline = ["Edge%d" % i for i, e in enumerate(shelf.Shape.Edges, 1)
            if abs(e.BoundBox.ZLength - q("ShelfThickness")) < 1e-5 and e.BoundBox.XLength < 1e-6 and e.BoundBox.YLength < 1e-6]
-fillet(upper, "HookShelfRounds", "Скругления скрытого плеча R2", outline, 2)
+fillet(upper, "HookShelfRounds", "Скругления прямоугольной полки R2", outline, 2)
 primitive(upper, "SubtractiveBox", "HookRearChannel", "Боковой вход заднего зацепа — над перекладиной",
           {"Length": expr("StopWidth") + "+2 mm", "Width": expr("UpperBackInner") + "-" + expr("BeamBack") + "+" + expr("JointClearance"),
            "Height": expr("ChannelRoof") + "-" + expr("ShelfBottom") + "+1 mm"},
