@@ -35,7 +35,7 @@ def prepare():
         'layer_height': '0.2', 'first_layer_height': '0.2',
         'perimeters': '3', 'fill_density': '15%', 'fill_pattern': 'gyroid',
         'top_solid_layers': '4', 'bottom_solid_layers': '4',
-        'support_material': '1', 'support_material_auto': '1',
+        'support_material': '0', 'support_material_auto': '0',
         'support_material_style': 'snug', 'support_material_pattern': 'rectilinear',
         'support_material_buildplate_only': '0', 'support_material_threshold': '0',
         'support_material_contact_distance': '0.25',
@@ -43,7 +43,7 @@ def prepare():
         'support_material_interface_layers': '3',
         'support_material_interface_spacing': '0.2',
         'support_material_xy_spacing': '0.4',
-        'dont_support_bridges': '0',
+        'dont_support_bridges': '1', 'bridge_speed': '25',
         'brim_type': 'outer_only', 'brim_width': '3', 'brim_separation': '0.15',
         'gcode_comments': '1', 'binary_gcode': '0',
     }
@@ -105,7 +105,7 @@ def prepare():
                   'source_profiles': sources, 'overrides': overrides,
                   'parts': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in parts},
                   'orientation': 'Upper: flat assembly underside. Lower: side plane. No rescaling.',
-                  'support_reason': 'Accessible support under rear sliding-joint roof; protect fit in PETG.',
+                  'support_reason': 'No supports: rear roof bridges 12.6 mm; horizontal cap recess is 7.5 mm wide. Bridge speed 25 mm/s.',
                   'prior_mount_profile': {'perimeters': 6, 'infill': '40% gyroid'}}
     (ROOT / 'preparation.json').write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + '\n')
     print('Prepared', BASE.with_suffix('.3mf'))
@@ -121,7 +121,7 @@ def finalize():
                        'physical_printer_settings_id': 'Home Neptune 4 Pro'}.items():
         pattern = r'^; ' + re.escape(key) + r' =[^\r\n]*$'
         config = re.sub(pattern, '; ' + key + ' = ' + value, config, flags=re.M) if re.search(pattern, config, re.M) else config + f'; {key} = {value}\n'
-    for key, value in [('perimeters', '3'), ('fill_density', '15%'), ('layer_height', '0.2'), ('support_material', '1')]:
+    for key, value in [('perimeters', '3'), ('fill_density', '15%'), ('layer_height', '0.2'), ('support_material', '0')]:
         assert f'; {key} = {value}\n' in config
     with zipfile.ZipFile(BASE.with_suffix('.3mf')) as z:
         files = {n: z.read(n) for n in z.namelist()}
@@ -139,7 +139,7 @@ def finalize():
         'gcode_sha256': hashlib.sha256(gcode.read_bytes()).hexdigest(),
         'printer_settings_id': 'Neptune 4 Pro', 'physical_printer_settings_id': 'Home Neptune 4 Pro',
         'parts': 2, 'perimeters': 3, 'infill': '15% gyroid', 'layer_height_mm': 0.2,
-        'top_bottom_solid_layers': 4, 'support_material': True,
+        'top_bottom_solid_layers': 4, 'support_material': False, 'bridge_speed_mm_s': 25,
         'slicer_time_estimate': metric(r'^; estimated printing time \(normal mode\) = (.+)$'),
         'filament_length_mm': float(metric(r'^; filament used \[mm\] = ([\d.]+)')),
         'filament_volume_cm3': float(metric(r'^; filament used \[cm3\] = ([\d.]+)')),

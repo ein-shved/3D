@@ -1,0 +1,23 @@
+{
+  "project": "/home/shved/Projects/3D/Domestic/LaptopDeskMount/slicing/headphone_petg/headphone_hook_petg_ready.3mf",
+  "gcode": "/home/shved/Projects/3D/Domestic/LaptopDeskMount/slicing/headphone_petg/headphone_hook_petg.gcode",
+  "gcode_sha256": "1e7dbf48ce20a103726dcffb9301db9623cb8ea80c649ab0c4735d23e0183bb1",
+  "printer_settings_id": "Neptune 4 Pro",
+  "physical_printer_settings_id": "Home Neptune 4 Pro",
+  "parts": 2,
+  "perimeters": 3,
+  "infill": "15% gyroid",
+  "layer_height_mm": 0.2,
+  "top_bottom_solid_layers": 4,
+  "support_material": true,
+  "slicer_time_estimate": "3h 56m 22s",
+  "filament_length_mm": 23770.14,
+  "filament_volume_cm3": 57.17,
+  "filament_mass_g": null,
+  "reason_mass_unknown": "Filament density is unspecified in user preset.",
+  "nozzle_temperature_C": 230,
+  "bed_temperature_C": [
+    90,
+    80
+  ]
+}

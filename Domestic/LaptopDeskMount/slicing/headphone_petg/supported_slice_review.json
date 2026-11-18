@@ -1,0 +1,56 @@
+{
+  "decision": "keep",
+  "printer": "Elegoo Neptune 4 Pro",
+  "material": "PETG",
+  "model_layers": 330,
+  "first_layer_objects": [
+    "lower",
+    "upper"
+  ],
+  "support_layers": 56,
+  "support_bounds_mm": {
+    "min": [
+      49.301,
+      72.778,
+      0.2
+    ],
+    "max": [
+      167.083,
+      160.756,
+      15.35
+    ]
+  },
+  "extrusion_bounds_mm": {
+    "min": [
+      42.743,
+      47.137,
+      0.2
+    ],
+    "max": [
+      175.751,
+      176.174,
+      66.0
+    ]
+  },
+  "filament_mm_by_path_type": {
+    "Skirt/Brim": 195.33062999999984,
+    "Support material": 233.11119000000022,
+    "Perimeter": 8036.826100000083,
+    "External perimeter": 4061.956170000004,
+    "Solid infill": 3106.064290000002,
+    "Internal infill": 6500.554860000005,
+    "Bridge infill": 834.8042800000001,
+    "Top solid infill": 471.2444899999996,
+    "Support material interface": 299.3395900000003,
+    "Overhang perimeter": 10.902170000000009
+  },
+  "support_volume_cm3": 1.2806942106790888,
+  "notes": [
+    "Both parts retain the requested print planes and have first-layer material and brims.",
+    "Upper rear joint roof receives accessible support; remove through the open sides before assembly.",
+    "Inspect and clean the horizontal screw/head recess in the lower part after support removal.",
+    "No rescaling or CAD changes. Slicing prediction does not verify physical fit or strength.",
+    "Three perimeters, 15% gyroid, four top/bottom layers replace the laptop mounts six perimeters and 40% infill."
+  ],
+  "embedded_profile_verified_by_reslicing": true
+}

@@ -18,8 +18,8 @@
     "fill_pattern": "gyroid",
     "top_solid_layers": "4",
     "bottom_solid_layers": "4",
-    "support_material": "1",
-    "support_material_auto": "1",
+    "support_material": "0",
+    "support_material_auto": "0",
     "support_material_style": "snug",
     "support_material_pattern": "rectilinear",
     "support_material_buildplate_only": "0",
@@ -29,7 +29,8 @@
     "support_material_interface_layers": "3",
     "support_material_interface_spacing": "0.2",
     "support_material_xy_spacing": "0.4",
-    "dont_support_bridges": "0",
+    "dont_support_bridges": "1",
+    "bridge_speed": "25",
     "brim_type": "outer_only",
     "brim_width": "3",
     "brim_separation": "0.15",
@@ -41,7 +42,7 @@
     "headphone_hook_lower.stl": "75c5c85598f66b69859ce3532a32ea46d75de7ac11f1b6d0cbd8508ff10a6e8c"
   },
   "orientation": "Upper: flat assembly underside. Lower: side plane. No rescaling.",
-  "support_reason": "Accessible support under rear sliding-joint roof; protect fit in PETG.",
+  "support_reason": "No supports: rear roof bridges 12.6 mm; horizontal cap recess is 7.5 mm wide. Bridge speed 25 mm/s.",
   "prior_mount_profile": {
     "perimeters": 6,
     "infill": "40% gyroid"
