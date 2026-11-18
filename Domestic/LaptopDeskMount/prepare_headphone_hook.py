@@ -13,11 +13,12 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parent
 PLAN_PATH = ROOT / "headphone_hook_plan.json"
+PARAMETER_KINDS = ("linked_parameters", "specified_parameters", "provisional_parameters")
 
 
 def read_plan():
     plan = json.loads(PLAN_PATH.read_text())
-    aliases = [r["alias"] for kind in ("linked_parameters", "provisional_parameters")
+    aliases = [r["alias"] for kind in PARAMETER_KINDS
                for r in plan[kind]]
     if len(aliases) != len(set(aliases)):
         raise ValueError("Duplicate hook parameter aliases")
@@ -48,6 +49,8 @@ def inspect_saved_document(plan):
                         for k, v in plan["environment_aliases"].items()},
         "checked_object_names": plan["environment_objects"],
         "unresolved": [u["key"] for u in plan["unresolved"] if u["value"] is None],
+        "specified_parameters": plan["specified_parameters"],
+        "provisional_parameters": plan["provisional_parameters"],
         "checks_not_run": ["FreeCAD recompute", "solid geometry", "collisions", "slicing"]
     }
 
@@ -92,7 +95,7 @@ def prepare_in_freecad(plan):
             sheet.setColumnWidth(col, width)
         sheet.setStyle("A1:C1", "bold", "add")
         row = 2
-        for kind in ("linked_parameters", "provisional_parameters"):
+        for kind in PARAMETER_KINDS:
             for param in plan[kind]:
                 sheet.set("A%d" % row, param["label"])
                 sheet.set("B%d" % row, param.get("expression", param.get("value")))
@@ -113,7 +116,7 @@ def prepare_in_freecad(plan):
             body.Label = label
             group.addObject(body)
         doc.recompute()
-        for param in plan["linked_parameters"] + plan["provisional_parameters"]:
+        for param in [p for kind in PARAMETER_KINDS for p in plan[kind]]:
             getattr(sheet, param["alias"])
         doc.commitTransaction()
     except Exception:
