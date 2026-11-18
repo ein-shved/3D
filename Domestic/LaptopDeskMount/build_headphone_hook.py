@@ -34,10 +34,11 @@ parameters = [
     ("TongueEnd", "=RearStemEnd + Wall", "Задний зацеп: торец Y", "Заходит в канал верхней детали"),
     ("UpperBackInner", "=TongueEnd + JointClearance", "Задняя стенка канала Y", "Запас для зацепа"),
     ("UpperBackEnd", "=UpperBackInner + Wall", "Задний габарит верхней части", "Силовая стенка канала"),
-    ("TongueTop", "=ShelfBottom - 2 * JointClearance", "Верх зацепа Z", "Зазор допускает подтяжку обхвата болтом"),
-    ("TongueBottom", "=TongueTop - Wall + JointClearance", "Низ зацепа Z", "Толщина зацепа 5.7 мм"),
+    ("ChannelRoof", "=ShelfTop - 2 mm", "Низ верхнего перекрытия канала", "Канал целиком в зазоре над перекладиной"),
+    ("TongueTop", "=ChannelRoof - 2 * JointClearance", "Верх зацепа Z", "Зазор допускает подтяжку обхвата болтом"),
+    ("TongueBottom", "=ShelfBottom + 2.5 mm + JointClearance", "Низ зацепа Z", "Толщина зацепа 4.21 мм при заданном зазоре стола"),
     ("RearLipTop", "=TongueBottom - JointClearance", "Верх заднего удерживающего борта", "Зацеп захвачен сверху и снизу"),
-    ("RearLipBottom", "=RearLipTop - Wall", "Низ заднего удерживающего борта", "Толщина борта 6 мм"),
+    ("RearLipBottom", "=ShelfBottom", "Низ заднего удерживающего борта", "Весь верхний захват находится над металлом"),
     ("RearLipFront", "=RearStemEnd + JointClearance", "Передний торец заднего борта", "Зазор к стойке нижней части"),
     ("BottomInside", "=-ProfileHeight - VerticalClearance", "Внутреннее дно обхвата", "Под перекладиной"),
     ("BottomZ", "=BottomInside - Wall", "Низ нижнего обхвата", "Толщина дна 6 мм"),
@@ -63,7 +64,13 @@ parameters = [
     ("EyeThickness", "8 mm", "Толщина кольца вдоль X", "Замкнутое кольцо для джека"),
 ]
 last = max(i for i in range(1, 200) if H.getContents("A%d" % i))
-for row, (alias, value, label, note) in enumerate(parameters, last + 1):
+for alias, value, label, note in parameters:
+    cell = H.getCellFromAlias(alias)
+    if cell:
+        row = int(cell[1:])
+    else:
+        last += 1
+        row = last
     H.set("A%d" % row, label)
     H.set("B%d" % row, "=" + value if value.startswith("-") else value)
     H.setAlias("B%d" % row, alias)
@@ -148,11 +155,12 @@ fillet(upper, "HookShelfRounds", "Скругления скрытого плеч
 box(upper, "HookFrontBoss", "Передняя стойка под термовставку",
     (expr("ClipWidth"), expr("BossDepth"), expr("ShelfTop") + "-" + expr("UpperBossBottom")),
     (expr("ClampX"), expr("BossY"), expr("UpperBossBottom")))
-box(upper, "HookRearWall", "Задняя стенка канала зацепа",
-    (expr("ClipWidth"), expr("Wall"), expr("ShelfTop") + "-" + expr("RearLipBottom")),
-    (expr("ClampX"), expr("UpperBackInner"), expr("RearLipBottom")))
+primitive(upper, "SubtractiveBox", "HookRearChannel", "Боковой вход заднего зацепа — над перекладиной",
+          {"Length": expr("ClipWidth") + "+2 mm", "Width": expr("UpperBackInner") + "-" + expr("BeamBack") + "+" + expr("JointClearance"),
+           "Height": expr("ChannelRoof") + "-" + expr("ShelfBottom") + "+1 mm"},
+          (expr("ClampX") + "-1 mm", expr("BeamBack") + "-" + expr("JointClearance"), expr("ShelfBottom") + "-1 mm"))
 box(upper, "HookRearLip", "Удерживающий борт заднего паза",
-    (expr("ClipWidth"), expr("UpperBackEnd") + "-" + expr("RearLipFront"), expr("Wall")),
+    (expr("ClipWidth"), expr("UpperBackEnd") + "-" + expr("RearLipFront"), expr("RearLipTop") + "-" + expr("RearLipBottom")),
     (expr("ClampX"), expr("RearLipFront"), expr("RearLipBottom")))
 box(upper, "HookStopStem", "Ограничитель у правого угла",
     (expr("StopWidth"), expr("StopThickness"), expr("StopCapZ") + "-" + expr("ShelfBottom")),
@@ -219,7 +227,9 @@ for body, color, label in ((upper, (.92, .48, .16), "Верхний ограни
     for obj in body.Group:
         obj.ViewObject.Visibility = obj == body.Tip
     body.ViewObject.Visibility = True
+    body.ViewObject.ShapeColor = color
     body.Tip.ViewObject.ShapeColor = color
+    body.Tip.ViewObject.DiffuseColor = [color]
     body.Tip.ViewObject.LineColor = (.18, .18, .20)
 doc.HeadphoneHook.Label = "05 Наушники — правый угловой ограничитель"
 doc.HeadphoneHook.PreparationStatus = "Построены две печатные детали; оголовье лежит на столешнице"
