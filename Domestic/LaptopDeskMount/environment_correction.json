@@ -1,0 +1,11 @@
+{
+  "status": "environment_corrected_waiting_user_review",
+  "profile": "Beam 60.21Y x30.48Z; leg30.48X x60.21Y, same rectangle bent down90deg",
+  "removed": [
+    "LongRailLeft",
+    "LongRailRight"
+  ],
+  "frame": "Each U frame has one crossbar along the laptop and two vertical ends",
+  "hook_changed": false,
+  "hook_validation": "previous environment validation superseded; do not use until reviewed"
+}
