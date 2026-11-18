@@ -230,14 +230,22 @@ def add_oval_loop(doc):
     pad.Refine=True
     doc.recompute()
     if pad.Shape.isNull() or not pad.Shape.isValid() or len(pad.Shape.Solids)!=1:raise RuntimeError("Invalid oval cable pad: "+pad.getStatusString())
-    edges=[]
-    for i,e in enumerate(pad.Shape.Edges,1):
-        b=e.BoundBox
-        if b.ZLength<1e-6 and abs(b.ZMin-H.CableTop.Value)<1e-5 and e.CenterOfMass.y<H.BossY.Value-.1:
-            edges.append("Edge%d" % i)
-    rim=native_fillet(doc,body,"HookCableRim","Мягкие кромки овальной петли R1",pad,edges,"HookParameters.CableRimRadius")
+    def top_edges(shape,inside):
+        edges=[]
+        radius=H.CableGap.Value/2 if inside else H.CableOuterRadius.Value
+        for i,e in enumerate(shape.Edges,1):
+            b=e.BoundBox
+            if b.ZLength>1e-6 or abs(b.ZMin-H.CableTop.Value)>1e-5 or e.CenterOfMass.y>=H.BossY.Value-.1:continue
+            circular=isinstance(e.Curve,Part.Circle) and abs(e.Curve.Radius-radius)<1e-5
+            straight=isinstance(e.Curve,Part.Line) and abs(e.CenterOfMass.y-(H.CableCenterY.Value-radius))<1e-5
+            if circular or straight:edges.append("Edge%d" % i)
+        return edges
+    # Separate inside/outside blends avoid an OCCT combined corner solution that closes the passage.
+    inside=native_fillet(doc,body,"HookCableInnerRounds","Мягкий внутренний вход петли R1",pad,top_edges(pad.Shape,True),"HookParameters.CableRimRadius")
+    rim=native_fillet(doc,body,"HookCableRim","Мягкие наружные кромки петли R1",inside,top_edges(inside.Shape,False),"HookParameters.CableRimRadius")
+    if rim.Shape.Volume>pad.Shape.Volume+1e-5:raise RuntimeError("Cable rim unexpectedly added material")
     pocket=doc.getObject("HookInsertPocket")
-    items=[sk,pad,rim]
+    items=[sk,pad,inside,rim]
     if pocket:
         pocket.BaseFeature=rim
         order=[o for o in body.Group if o not in items]
