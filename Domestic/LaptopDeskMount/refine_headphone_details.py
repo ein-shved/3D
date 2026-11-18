@@ -41,6 +41,87 @@ def set_dimensions(doc):
     doc.recompute()
 
 
+def capture_guides(doc):
+    return {name:App.Placement(doc.getObject(name).Placement) for name in ("Sketch001","Sketch002","Sketch003")
+            if doc.getObject(name)}
+
+
+def rebind_user_guides(doc,placements):
+    """Keep the user's attachment geometry meaningful before cosmetic rounds/oval union."""
+    H=doc.HookParameters
+    source=doc.HookStopRim
+    def attach(sk,plane,value):
+        candidates=[]
+        for i,f in enumerate(source.Shape.Faces,1):
+            b=f.BoundBox
+            span=b.XLength if plane=="x" else b.ZLength
+            coord=b.XMin if plane=="x" else b.ZMin
+            if span<1e-6 and abs(coord-value)<1e-5:candidates.append((f.Area,i))
+        if not candidates:raise RuntimeError("No support face for "+sk.Name)
+        index=max(candidates)[1]
+        sk.AttachmentSupport=[(source,("Face%d" % index,))]
+        sk.MapMode="FlatFace"
+        doc.recompute()
+        mapping=sk.Placement.multiply(sk.AttachmentOffset.inverse())
+        sk.AttachmentOffset=mapping.inverse().multiply(placements[sk.Name])
+        doc.recompute()
+    def side_edge(shape,z,y_end=None,y_contains=None):
+        result=[]
+        for i,e in enumerate(shape.Edges,1):
+            b=e.BoundBox
+            if b.XLength<1e-6 and abs(b.XMin-H.CornerX.Value)<1e-5 and b.ZLength<1e-6 and abs(b.ZMin-z)<1e-5 and b.YLength>1:
+                if y_end is not None and abs(b.YMax-y_end)>1e-5:continue
+                if y_contains is not None and not b.YMin-1e-5<=y_contains<=b.YMax+1e-5:continue
+                result.append((e.Length,"Edge%d" % i))
+        if not result:raise RuntimeError("No sketch reference edge at Z"+str(z))
+        return min(result)[1]
+    def rebuild_constraints(sk,replacements):
+        values=[(c.Type,c.First,c.FirstPos,c.Second,c.SecondPos) for c in sk.Constraints]
+        for i in reversed(range(sk.ConstraintCount)):sk.delConstraint(i)
+        for typ,a,ap,b,bp in values:
+            if typ=="Coincident":
+                if b in replacements:bp=replacements[b]
+                c=Sketcher.Constraint(typ,a,ap,b,bp)
+            elif typ in ("Vertical","Horizontal"):c=Sketcher.Constraint(typ,a)
+            elif typ=="PointOnObject":c=Sketcher.Constraint(typ,a,ap,b)
+            else:raise RuntimeError("Unsupported guide constraint "+typ)
+            sk.addConstraint(c)
+        doc.recompute()
+    def endpoint(sk,external,want_max):
+        values=[(sk.Placement.multVec(sk.getPoint(external,p)).y,p) for p in (1,2)]
+        return (max(values) if want_max else min(values))[1]
+    if "Sketch001" in placements:
+        sk=doc.Sketch001
+        attach(sk,"x",H.CornerX.Value)
+        ref=doc.HookRearLip
+        names=[side_edge(ref.Shape,H.RearLipTop.Value,y_end=H.UpperBackInner.Value),
+               side_edge(ref.Shape,H.ShelfBottom.Value,y_contains=H.UpperBackInner.Value),
+               side_edge(ref.Shape,H.ChannelRoof.Value,y_end=H.UpperBackInner.Value),
+               side_edge(ref.Shape,H.ShelfTop.Value,y_contains=H.UpperBackInner.Value)]
+        sk.ExternalGeometry=[(ref,tuple(names))]
+        doc.recompute()
+        rebuild_constraints(sk,{-3:endpoint(sk,-3,True),-5:endpoint(sk,-5,True)})
+    if "Sketch002" in placements:attach(doc.Sketch002,"z",H.StopTop.Value)
+    if "Sketch003" in placements:
+        sk=doc.Sketch003
+        attach(sk,"z",H.ShelfBottom.Value)
+        def edge_at(axis,coord):
+            result=[]
+            for i,e in enumerate(source.Shape.Edges,1):
+                b=e.BoundBox
+                if b.ZLength>1e-6 or abs(b.ZMin-H.ShelfBottom.Value)>1e-5:continue
+                if axis=="y" and b.YLength<1e-6 and abs(b.YMin-coord)<1e-5 and b.XLength>10:result.append((e.Length,"Edge%d" % i))
+                if axis=="x" and b.XLength<1e-6 and abs(b.XMin-coord)<1e-5 and b.YLength>10 and b.YMin<0:result.append((e.Length,"Edge%d" % i))
+            if not result:raise RuntimeError("No oval guide reference edge")
+            return max(result)[1]
+        sk.ExternalGeometry=[(source,(edge_at("y",H.BossY.Value),edge_at("x",H.ClampX.Value),edge_at("x",H.CornerX.Value)))]
+        doc.recompute()
+        rebuild_constraints(sk,{-4:endpoint(sk,-4,False),-5:endpoint(sk,-5,False)})
+    for name in placements:
+        sk=doc.getObject(name)
+        sk.ViewObject.Visibility=False
+
+
 def native_fillet(doc,body,name,label,base,edges,radius):
     if not edges:
         raise RuntimeError("No edges for "+name)
