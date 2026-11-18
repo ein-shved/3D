@@ -216,6 +216,7 @@ p=ROOT/"finish_headphone_walls.py"
 walls={"__file__":str(p),"__name__":"hook_walls"}
 exec(compile(p.read_text(),str(p),"exec"),walls)
 walls["finish_lower"](doc)
+walls["finish_insert_pair"](doc)
 
 for body, color, label in ((upper, (.92, .48, .16), "Верхний ограничитель с овальной петлёй — PETG"),
                             (lower, (.25, .62, .76), "Нижний захват — PETG, M4×15")):

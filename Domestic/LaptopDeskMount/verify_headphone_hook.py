@@ -57,6 +57,18 @@ passage_collision=collision(guide,upper.Shape)
 if passage_collision>1e-5:raise RuntimeError("Oval cable passage is narrowed")
 assert abs(q("CableTop")-q("TableTopZ"))<1e-6
 assert max(D.HookInsertPocket.Radius.Value*2,D.HookInsertLeadIn.Radius1.Value*2,D.HookInsertLeadIn.Radius2.Value*2)<=5.7+1e-6
+if D.getObject('HookSecondInsertPocket'):
+    a,b=D.HookInsertPocket,D.HookSecondInsertPocket
+    assert abs(a.Placement.Base.x+b.Placement.Base.x-2*q('StopCenterX'))<1e-6
+    assert a.Radius==b.Radius and a.Height==b.Height
+    assert max(D.HookSecondInsertLeadIn.Radius1.Value*2,D.HookSecondInsertLeadIn.Radius2.Value*2)<=5.7+1e-6
+    for seat in (a,b):
+        bore=Part.makeCylinder(q('InsertPocketDiameter')/2-.01, q('InsertPocketDepth')-.1,
+            App.Vector(seat.Placement.Base.x,seat.Placement.Base.y,q('UpperBossBottom')+.05))
+        assert collision(bore,upper.Shape)<1e-5
+    report['symmetric_insert_seats']={'count':2,'center_x_mm':q('StopCenterX'),
+        'axes_x_mm':[a.Placement.Base.x,b.Placement.Base.x],'bore_diameter_mm':a.Radius.Value*2,
+        'second_seat_unused':True}
 report["cable_ring"]={"present":True,"shape":"vertical_oval_loop","free_diameter_mm":q("CableGap"),"wall_mm":q("CableWall"),
                       "top_flush_with_tabletop":True,"top_z_mm":q("CableTop"),"passage_intersection_mm3":passage_collision}
 thirds=[q("ShelfTop")-q("ChannelRoof"),q("ChannelRoof")-q("RearLipTop"),q("RearLipTop")-q("ShelfBottom")]

@@ -112,6 +112,7 @@ walls={"__file__":str(p),"__name__":"hook_walls"}
 exec(compile(p.read_text(),str(p),"exec"),walls)
 walls["finish_lower"](doc)
 details["rebind_user_guides"](doc,guide_placements)
+walls["finish_insert_pair"](doc)
 upper.Label="Верхний ограничитель с овальной петлёй — PETG"
 lower.Label="Нижний захват — PETG, M4×15"
 for o in upper.Group:

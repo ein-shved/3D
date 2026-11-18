@@ -96,3 +96,34 @@ def finish_lower(doc):
     order.insert(order.index(base)+1,sides);body.Group=order;body.Tip=sides
     for o in body.Group:o.ViewObject.Visibility=o==sides
     return sides
+
+
+def finish_insert_pair(doc):
+    """Duplicate the insert seat across the upper part's X centre plane."""
+    body=doc.HeadphoneHookUpper
+    base=doc.HookInsertLeadIn
+    for source_name,name,label in (
+        ('HookInsertPocket','HookSecondInsertPocket','Симметричная посадка термовставки'),
+        ('HookScrewRelief','HookSecondScrewRelief','Симметричный запас под конец винта'),
+        ('HookInsertLeadIn','HookSecondInsertLeadIn','Симметричная входная фаска термовставки')):
+        source=doc.getObject(source_name)
+        obj=doc.getObject(name)
+        if obj is None:
+            last=[o for o in body.Group if o.TypeId.startswith('PartDesign::')]
+            body.Tip=last[-1]
+            obj=body.newObject(source.TypeId,name)
+        obj.Label=label;obj.BaseFeature=base;obj.Refine=True
+        for prop in ('Radius','Radius1','Radius2','Height','Angle'):
+            if prop in source.PropertiesList:
+                obj.setExpression(prop,source.Name+'.'+prop)
+        obj.setExpression('Placement.Base.x','2 * HookParameters.StopCenterX - '+source.Name+'.Placement.Base.x')
+        for axis in ('y','z'):
+            obj.setExpression('Placement.Base.'+axis,source.Name+'.Placement.Base.'+axis)
+        doc.recompute()
+        if obj.Shape.isNull() or not obj.Shape.isValid() or len(obj.Shape.Solids)!=1:
+            raise RuntimeError('Invalid symmetric insert operation '+name)
+        base.ViewObject.Visibility=False
+        base=obj
+    body.Tip=base
+    for o in body.Group:o.ViewObject.Visibility=o==base
+    return base
