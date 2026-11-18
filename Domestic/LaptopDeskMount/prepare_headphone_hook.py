@@ -43,7 +43,7 @@ def inspect_saved_document(plan):
     if not (ROOT / plan["reference"]).is_file():
         raise ValueError("Missing reference sketch")
     return {
-        "status": "offline_inputs_checked_geometry_pending",
+        "status": "saved_document_inputs_checked_offline",
         "document": plan["document"],
         "document_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "environment": {k: {"content": cells[k], "source": v}
@@ -54,9 +54,12 @@ def inspect_saved_document(plan):
         "unresolved": [u["key"] for u in plan["unresolved"] if u["value"] is None],
         "specified_parameters": plan["specified_parameters"],
         "provisional_parameters": plan["provisional_parameters"],
-        "pending_environment_updates": plan["environment_updates"],
-        "pending_environment_expression_updates": plan["environment_expression_updates"],
-        "checks_not_run": ["FreeCAD recompute", "solid geometry", "collisions", "slicing"]
+        "pending_environment_updates": [u for u in plan["environment_updates"]
+                                        if cells[u["alias"]].strip().lstrip("=") != u["content"].strip().lstrip("=")],
+        "pending_environment_expression_updates": [u for u in plan["environment_expression_updates"]
+            if not any(e.get("path", "").lstrip(".") == u["property"] and e.get("expression") == u["expression"]
+                       for e in objects[u["object"]].iter("Expression"))],
+        "checks_not_run_by_offline_reader": ["FreeCAD recompute", "solid geometry", "collisions", "slicing"]
     }
 
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "prepared_offline_geometry_not_built",
+  "status": "built_in_existing_document_geometry_and_installation_checked",
   "document": "LaptopDeskMount.FCStd",
   "document_name": "LaptopDeskMount",
   "reference": "references/headphone_hook_sketch.jpg",
@@ -32,9 +32,18 @@
     "Использовать существующее окружение и тот же документ; держатели ноутбука сохраняются."
   ],
   "environment_objects": [
-    "Parameters", "Environment", "WholeTable", "TabletopFull", "BeamFullNear",
-    "LegNearLeft", "LegNearRight", "LongRailLeft", "LongRailRight",
-    "HolderLeft", "HolderRight", "LaptopBase"
+    "Parameters",
+    "Environment",
+    "WholeTable",
+    "TabletopFull",
+    "BeamFullNear",
+    "LegNearLeft",
+    "LegNearRight",
+    "LongRailLeft",
+    "LongRailRight",
+    "HolderLeft",
+    "HolderRight",
+    "LaptopBase"
   ],
   "environment_aliases": {
     "BeamWidth": "measured",
@@ -42,44 +51,165 @@
     "SpacerHeight": "measured",
     "TabletopThickness": "photo_reading",
     "BeamClearance": "existing_design_allowance",
-    "Overhang": "estimated_now_fit_critical",
-    "LegInset": "illustrative_now_fit_critical",
+    "Overhang": "user_confirmed_zero_overhang_applied",
+    "LegInset": "user_confirmed_corner_alignment_applied",
     "TableAcross": "illustrative"
   },
   "environment_updates": [
-    {"alias": "Overhang", "content": "0 mm", "note": "Уточнение пользователя 18.11.2026: угол столешницы точно над углом ноги, свеса нет"},
-    {"alias": "LegInset", "content": "=BeamWidth / 2", "note": "Уточнение пользователя 18.11.2026: наружная грань ноги совпадает с торцом столешницы; параметр задаёт отступ ОСИ ноги"}
+    {
+      "alias": "Overhang",
+      "content": "0 mm",
+      "note": "Уточнение пользователя 18.11.2026: угол столешницы точно над углом ноги, свеса нет"
+    },
+    {
+      "alias": "LegInset",
+      "content": "=BeamWidth / 2",
+      "note": "Уточнение пользователя 18.11.2026: наружная грань ноги совпадает с торцом столешницы; параметр задаёт отступ ОСИ ноги"
+    }
   ],
   "environment_expression_updates": [
-    {"object": "LegFarLeft", "property": "Placement.Base.y", "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"},
-    {"object": "LegFarRight", "property": "Placement.Base.y", "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"}
+    {
+      "object": "LegFarLeft",
+      "property": "Placement.Base.y",
+      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
+    },
+    {
+      "object": "LegFarRight",
+      "property": "Placement.Base.y",
+      "expression": "Parameters.TableAlong - 2 * Parameters.Overhang - Parameters.BeamHeight"
+    }
   ],
   "linked_parameters": [
-    {"alias": "ProfileWidth", "expression": "=Parameters.BeamWidth", "label": "Ширина перекладины / ноги", "note": "Замер из существующего окружения"},
-    {"alias": "ProfileHeight", "expression": "=Parameters.BeamHeight", "label": "Высота перекладины", "note": "Замер из существующего окружения"},
-    {"alias": "TopGap", "expression": "=Parameters.SpacerHeight", "label": "Зазор до столешницы", "note": "Замер из существующего окружения"},
-    {"alias": "DesktopThickness", "expression": "=Parameters.TabletopThickness", "label": "Толщина столешницы", "note": "Считывание по фото, из существующего окружения"},
-    {"alias": "FitClearance", "expression": "=Parameters.BeamClearance", "label": "Зазор обхвата на сторону", "note": "Исходный зазор 0.4 мм, отдельно от погрешности замеров"},
-    {"alias": "LowerOffset", "expression": "=Parameters.BeamWidth", "label": "Начальное смещение нижнего захвата", "note": "По схеме: на ширину ноги; направление и полный габарит проверить в сборке"},
-    {"alias": "CornerOverhang", "expression": "=Parameters.Overhang", "label": "Свес края над перекладиной", "note": "Подтверждено пользователем: 0 мм, наружные грани ноги и столешницы совпадают"},
-    {"alias": "CornerLegInset", "expression": "=Parameters.LegInset", "label": "Отступ оси ноги от торца", "note": "Половина ширины ноги, чтобы наружная грань совпадала с торцом столешницы"}
+    {
+      "alias": "ProfileWidth",
+      "expression": "=Parameters.BeamWidth",
+      "label": "Ширина перекладины / ноги",
+      "note": "Замер из существующего окружения"
+    },
+    {
+      "alias": "ProfileHeight",
+      "expression": "=Parameters.BeamHeight",
+      "label": "Высота перекладины",
+      "note": "Замер из существующего окружения"
+    },
+    {
+      "alias": "TopGap",
+      "expression": "=Parameters.SpacerHeight",
+      "label": "Зазор до столешницы",
+      "note": "Замер из существующего окружения"
+    },
+    {
+      "alias": "DesktopThickness",
+      "expression": "=Parameters.TabletopThickness",
+      "label": "Толщина столешницы",
+      "note": "Считывание по фото, из существующего окружения"
+    },
+    {
+      "alias": "FitClearance",
+      "expression": "=Parameters.BeamClearance",
+      "label": "Зазор обхвата на сторону",
+      "note": "Исходный зазор 0.4 мм, отдельно от погрешности замеров"
+    },
+    {
+      "alias": "LowerOffset",
+      "expression": "=Parameters.BeamWidth",
+      "label": "Начальное смещение нижнего захвата",
+      "note": "По схеме: на ширину ноги; направление и полный габарит проверить в сборке"
+    },
+    {
+      "alias": "CornerOverhang",
+      "expression": "=Parameters.Overhang",
+      "label": "Свес края над перекладиной",
+      "note": "Подтверждено пользователем: 0 мм, наружные грани ноги и столешницы совпадают"
+    },
+    {
+      "alias": "CornerLegInset",
+      "expression": "=Parameters.LegInset",
+      "label": "Отступ оси ноги от торца",
+      "note": "Половина ширины ноги, чтобы наружная грань совпадала с торцом столешницы"
+    }
   ],
   "specified_parameters": [
-    {"alias": "BoltDiameter", "value": "4 mm", "label": "Номинальный диаметр резьбы M4", "note": "Задано пользователем: болт с цилиндрической головкой и внутренним шестигранником"},
-    {"alias": "HeadDiameter", "value": "7 mm", "label": "Диаметр головки болта", "note": "Задано пользователем; карман делать с отдельным посадочным запасом"},
-    {"alias": "InsertOuterDiameter", "value": "6 mm", "label": "Наружный диаметр термовставки M4", "note": "Подтверждено пользователем: наружный диаметр 6 мм, вставки разной длины доступны"},
-    {"alias": "CableEyeFactor", "value": "4", "label": "Ширина прохода в диаметрах джека", "note": "Задано пользователем: через кольцо должен проходить джек"},
-    {"alias": "CableEyeWidth", "expression": "=CableEyeFactor * JackDiameter", "label": "Минимальная свободная ширина прохода", "note": "4 диаметра джека; при принятом джеке 3.5 мм получится 14 мм; не сужать проход скруглениями"}
+    {
+      "alias": "BoltDiameter",
+      "value": "4 mm",
+      "label": "Номинальный диаметр резьбы M4",
+      "note": "Задано пользователем: болт с цилиндрической головкой и внутренним шестигранником"
+    },
+    {
+      "alias": "HeadDiameter",
+      "value": "7 mm",
+      "label": "Диаметр головки болта",
+      "note": "Задано пользователем; карман делать с отдельным посадочным запасом"
+    },
+    {
+      "alias": "InsertOuterDiameter",
+      "value": "6 mm",
+      "label": "Наружный диаметр термовставки M4",
+      "note": "Подтверждено пользователем: наружный диаметр 6 мм, вставки разной длины доступны"
+    },
+    {
+      "alias": "CableEyeFactor",
+      "value": "4",
+      "label": "Ширина прохода в диаметрах джека",
+      "note": "Задано пользователем: через кольцо должен проходить джек"
+    },
+    {
+      "alias": "CableEyeWidth",
+      "expression": "=CableEyeFactor * JackDiameter",
+      "label": "Минимальная свободная ширина прохода",
+      "note": "4 диаметра джека; при принятом джеке 3.5 мм получится 14 мм; не сужать проход скруглениями"
+    }
   ],
   "provisional_parameters": [
-    {"alias": "JackDiameter", "value": "3.5 mm", "label": "Диаметр металлической части джека", "note": "ДОПУЩЕНИЕ: обычный джек 3.5 мм; пользователь номинал не называл"},
-    {"alias": "BoltHoleDiameter", "value": "4.5 mm", "label": "Сквозное отверстие под M4", "note": "Конструктивный зазор для свободного прохода болта"},
-    {"alias": "HeadPocketDiameter", "value": "7.5 mm", "label": "Диаметр кармана головки", "note": "7 мм по пользователю + 0.5 мм суммарного посадочного запаса"},
-    {"alias": "HeadHeight", "value": "4 mm", "label": "Рабочая высота головки", "note": "ДОПУЩЕНИЕ для компоновки, проверить по выбранному болту"},
-    {"alias": "HeadPocketDepth", "value": "4.5 mm", "label": "Исходная глубина кармана головки", "note": "ДОПУЩЕНИЕ: запас 0.5 мм к рабочей высоте головки; оставить доступ шестиграннику"},
-    {"alias": "Wall", "value": "6 mm", "label": "Исходная толщина силовой стенки", "note": "ЭСКИЗНО, выбрать по сечению и нагрузке; не подтверждение прочности"},
-    {"alias": "JointClearance", "value": "0.3 mm", "label": "Зазор зацепа на сторону", "note": "ЭСКИЗНО для PETG, зацеп должен собираться без упругого защёлкивания"},
-    {"alias": "EdgeRadius", "value": "2 mm", "label": "Малые наружные скругления", "note": "ЭСКИЗНО; крупный радиус опоры оголовья назначить отдельно"}
+    {
+      "alias": "JackDiameter",
+      "value": "3.5 mm",
+      "label": "Диаметр металлической части джека",
+      "note": "ДОПУЩЕНИЕ: обычный джек 3.5 мм; пользователь номинал не называл"
+    },
+    {
+      "alias": "BoltHoleDiameter",
+      "value": "4.5 mm",
+      "label": "Сквозное отверстие под M4",
+      "note": "Конструктивный зазор для свободного прохода болта"
+    },
+    {
+      "alias": "HeadPocketDiameter",
+      "value": "7.5 mm",
+      "label": "Диаметр кармана головки",
+      "note": "7 мм по пользователю + 0.5 мм суммарного посадочного запаса"
+    },
+    {
+      "alias": "HeadHeight",
+      "value": "4 mm",
+      "label": "Рабочая высота головки",
+      "note": "ДОПУЩЕНИЕ для компоновки, проверить по выбранному болту"
+    },
+    {
+      "alias": "HeadPocketDepth",
+      "value": "4.5 mm",
+      "label": "Исходная глубина кармана головки",
+      "note": "ДОПУЩЕНИЕ: запас 0.5 мм к рабочей высоте головки; оставить доступ шестиграннику"
+    },
+    {
+      "alias": "Wall",
+      "value": "6 mm",
+      "label": "Исходная толщина силовой стенки",
+      "note": "ЭСКИЗНО, выбрать по сечению и нагрузке; не подтверждение прочности"
+    },
+    {
+      "alias": "JointClearance",
+      "value": "0.3 mm",
+      "label": "Зазор зацепа на сторону",
+      "note": "ЭСКИЗНО для PETG, зацеп должен собираться без упругого защёлкивания"
+    },
+    {
+      "alias": "EdgeRadius",
+      "value": "2 mm",
+      "label": "Малые наружные скругления",
+      "note": "ЭСКИЗНО; крупный радиус опоры оголовья назначить отдельно"
+    }
   ],
   "unresolved": [],
   "derive_during_modeling": [
@@ -89,11 +219,11 @@
     "Кольцо: гарантировать свободный проход 4 диаметров джека в обоих поперечных направлениях; исходно круглое отверстие 14 мм при допущении 3.5 мм."
   ],
   "assembly_order": [
-    "Вплавить вставку в верхнюю деталь до установки на стол, оставив доступ жалу.",
-    "Установить верхнюю деталь у угла стола.",
-    "Завести задний зацеп нижней детали в паз, затем подвести обхват под перекладину мимо ноги.",
-    "Вставить скрытый болт снизу и затянуть через доступный канал для инструмента.",
-    "Проверить свободный путь провода и укладку оголовья на столешницу за ограничителем при установленном ноутбуке."
+    "Вплавить вставку M4 Ø6 × 6 в верхнюю деталь до монтажа; исходное отверстие 5.6 проверить пробником.",
+    "Завести верхнюю деталь со стороны ноутбука в зазор над перекладиной, двигая её внутрь стола по +Y.",
+    "Поднять нижний захват на 28 мм левее окончательного положения, затем сдвинуть его вправо вдоль перекладины, заведя задний зацеп в паз.",
+    "Вставить M4×20 снизу и затянуть через открытый канал головки.",
+    "Положить оголовье на столешницу за ограничителем; пропустить джек через кольцо."
   ],
   "validation_before_export": [
     "По одному валидному твёрдому телу на печатную часть.",
@@ -103,5 +233,14 @@
     "Оголовье опирается на столешницу; округлый выступ удерживает его у края. Проверены корень ограничителя, поверхности обхвата, зацеп и материал вокруг вставки.",
     "Ориентация печати выбирается отдельно для обеих деталей; контактный выступ гладкий, зацеп и паз очищаемы от поддержек.",
     "В нарезке проверить замкнутость кольца, стенки у вставки, поддержки, габариты и длительность."
-  ]
+  ],
+  "derived_parameters": {
+    "bolt": "M4x20",
+    "insert": "M4 OD6 length6",
+    "insert_pocket_diameter_mm": 5.6,
+    "stop_rise_mm": 10,
+    "ring_clear_diameter_mm": 14,
+    "rear_channel": "entirely above crossbar; lateral tongue entry",
+    "lower_inboard_installation_offset_mm": 28
+  }
 }
