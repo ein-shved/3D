@@ -1,7 +1,7 @@
 {
   "status": "saved_document_inputs_checked_offline",
   "document": "LaptopDeskMount.FCStd",
-  "document_sha256": "875ed18658e6937ad7a2af6c5e5b863eca25b14e1920d302dd7cfc810eb9edf4",
+  "document_sha256": "b196567f0dbd33446c21e5d77c8cf6159685c2dd7d6c17d0b22385adf9aff2dc",
   "environment": {
     "BeamWidth": {
       "content": "=60.21 mm",
@@ -81,27 +81,9 @@
       "value": "6 mm",
       "label": "Наружный диаметр термовставки M4",
       "note": "Подтверждено пользователем: наружный диаметр 6 мм, вставки разной длины доступны"
-    },
-    {
-      "alias": "CableEyeFactor",
-      "value": "4",
-      "label": "Ширина прохода в диаметрах джека",
-      "note": "Задано пользователем: через кольцо должен проходить джек"
-    },
-    {
-      "alias": "CableEyeWidth",
-      "expression": "=CableEyeFactor * JackDiameter",
-      "label": "Минимальная свободная ширина прохода",
-      "note": "4 диаметра джека; при принятом джеке 3.5 мм получится 14 мм; не сужать проход скруглениями"
     }
   ],
   "provisional_parameters": [
-    {
-      "alias": "JackDiameter",
-      "value": "3.5 mm",
-      "label": "Диаметр металлической части джека",
-      "note": "ДОПУЩЕНИЕ: обычный джек 3.5 мм; пользователь номинал не называл"
-    },
     {
       "alias": "BoltHoleDiameter",
       "value": "4.5 mm",
