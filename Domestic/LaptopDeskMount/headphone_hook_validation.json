@@ -1,0 +1,60 @@
+{
+  "status": "native_geometry_built",
+  "corner": "right_from_laptop",
+  "headband_supported_by": "tabletop",
+  "bodies": {
+    "HeadphoneHookUpper": {
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 57897.81231407951,
+      "bounds_mm": [
+        96.61000000000001,
+        106.30936910606499,
+        64.23544368429944
+      ]
+    },
+    "HeadphoneHookLower": {
+      "valid": true,
+      "solids": 1,
+      "volume_mm3": 20236.792780690274,
+      "bounds_mm": [
+        24.0,
+        87.01,
+        36.28
+      ]
+    }
+  },
+  "environment_collisions_mm3": {
+    "HeadphoneHookUpper:TabletopFull": 0.0,
+    "HeadphoneHookUpper:BeamFullNear": 0.0,
+    "HeadphoneHookUpper:LegNearRight": 0.0,
+    "HeadphoneHookUpper:LongRailRight": 0.0,
+    "HeadphoneHookUpper:HolderLeft": 0.0,
+    "HeadphoneHookUpper:HolderRight": 0.0,
+    "HeadphoneHookUpper:LaptopBase": 0.0,
+    "HeadphoneHookLower:TabletopFull": 0.0,
+    "HeadphoneHookLower:BeamFullNear": 0.0,
+    "HeadphoneHookLower:LegNearRight": 0.0,
+    "HeadphoneHookLower:LongRailRight": 0.0,
+    "HeadphoneHookLower:HolderLeft": 0.0,
+    "HeadphoneHookLower:HolderRight": 0.0,
+    "HeadphoneHookLower:LaptopBase": 0.0
+  },
+  "holders_unchanged": {
+    "HolderLeft": true,
+    "HolderRight": true
+  },
+  "assumptions": [
+    "Jack metal diameter 3.5 mm; clear ring bore 14 mm",
+    "Insert M4 OD6 length6; initial heat-set bore5.6 requires validation for chosen insert",
+    "M4x20 head OD7 height4 based on user's diameter and provisional height"
+  ],
+  "parts_intersection_mm3": 0.0,
+  "bolt": {
+    "suggested": "M4x20 socket cap",
+    "insert": "M4 OD6 length6",
+    "nominal_engagement_mm": 5.82,
+    "front_closing_gap_mm": 1.2,
+    "total_vertical_clearance_mm": 0.4
+  }
+}
