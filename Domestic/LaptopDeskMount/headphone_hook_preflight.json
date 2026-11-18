@@ -1,7 +1,7 @@
 {
   "status": "saved_document_inputs_checked_offline",
   "document": "LaptopDeskMount.FCStd",
-  "document_sha256": "f5fb8a46535c1dba4399234c32f97dd83ae966229ff3664384e76e59412a2dba",
+  "document_sha256": "ef94da17ee7c514c11710e8dea0f19f213712db0d3edb247997bf7014b52ca25",
   "environment": {
     "BeamWidth": {
       "content": "=60.21 mm",
@@ -104,9 +104,9 @@
     },
     {
       "alias": "HeadPocketDepth",
-      "value": "4.5 mm",
-      "label": "Исходная глубина кармана головки",
-      "note": "ДОПУЩЕНИЕ: запас 0.5 мм к рабочей высоте головки; оставить доступ шестиграннику"
+      "value": "22.68 mm",
+      "label": "Глубина канала головки",
+      "note": "В построении пересчитывается по плоскому низу, длине M4×20 и зацеплению 5.8 мм"
     },
     {
       "alias": "Wall",
