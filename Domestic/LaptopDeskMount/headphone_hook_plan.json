@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "flush_right_edge_no_ring_geometry_and_exports_checked",
+  "status": "stop_left_front_edges_aligned_to_base_geometry_and_exports_checked",
   "document": "LaptopDeskMount.FCStd",
   "document_name": "LaptopDeskMount",
   "reference": "references/headphone_hook_sketch.jpg",
@@ -28,7 +28,8 @@
     "На противоположной стороне скрытый болт входит в термовставку верхней детали.",
     "Нижний обхват смещён относительно верхней детали, чтобы обойти вертикальную ногу.",
     "Использовать существующее окружение и тот же документ; держатели ноутбука сохраняются.",
-    "Правый край ограничителя совпадает с правым торцом стола; кольцо по текущему указанию отсутствует."
+    "Правый край ограничителя совпадает с правым торцом стола; кольцо по текущему указанию отсутствует.",
+    "Левый и передний со стороны ноутбука края крюка совпадают с краями основания; правый край остаётся у торца стола."
   ],
   "environment_objects": [
     "Parameters",
@@ -322,8 +323,12 @@
     "leg_thickness_along_beam_mm": 30.48,
     "clamp_x_mm": 295.12,
     "clearance_to_leg_mm": 0.4,
-    "stop_center_x_mm": 338,
-    "right_edge_x_mm": 350
+    "stop_center_x_mm": 322.56,
+    "right_edge_x_mm": 350,
+    "stop_width_mm": 54.88,
+    "stop_thickness_mm": 14,
+    "stop_left_x_mm": 295.12,
+    "stop_front_y_mm": -14.4
   },
   "environment_remove_objects": [
     "LongRailLeft",
