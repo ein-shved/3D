@@ -1,0 +1,49 @@
+{
+  "printer": "Elegoo Neptune 4 Pro",
+  "material": "PETG",
+  "source_profiles": [
+    "print/Neptune 4 Pro.ini",
+    "printer/Neptune 4 Pro.ini",
+    "filament/Neptune 4 - PETG.ini"
+  ],
+  "overrides": {
+    "printer_settings_id": "Neptune 4 Pro",
+    "physical_printer_settings_id": "Home Neptune 4 Pro",
+    "filament_settings_id": "Neptune 4 - PETG",
+    "print_settings_id": "Headphone hook - PETG 0.20 / 3 walls / 15% gyroid",
+    "layer_height": "0.2",
+    "first_layer_height": "0.2",
+    "perimeters": "3",
+    "fill_density": "15%",
+    "fill_pattern": "gyroid",
+    "top_solid_layers": "4",
+    "bottom_solid_layers": "4",
+    "support_material": "1",
+    "support_material_auto": "1",
+    "support_material_style": "snug",
+    "support_material_pattern": "rectilinear",
+    "support_material_buildplate_only": "0",
+    "support_material_threshold": "0",
+    "support_material_contact_distance": "0.25",
+    "support_material_bottom_contact_distance": "0.25",
+    "support_material_interface_layers": "3",
+    "support_material_interface_spacing": "0.2",
+    "support_material_xy_spacing": "0.4",
+    "dont_support_bridges": "0",
+    "brim_type": "outer_only",
+    "brim_width": "3",
+    "brim_separation": "0.15",
+    "gcode_comments": "1",
+    "binary_gcode": "0"
+  },
+  "parts": {
+    "headphone_hook_upper.stl": "c5ad6a359a69e4cb14a764b96248ef46e731ed0cf6fa386dda35ae2db6d42b05",
+    "headphone_hook_lower.stl": "75c5c85598f66b69859ce3532a32ea46d75de7ac11f1b6d0cbd8508ff10a6e8c"
+  },
+  "orientation": "Upper: flat assembly underside. Lower: side plane. No rescaling.",
+  "support_reason": "Accessible support under rear sliding-joint roof; protect fit in PETG.",
+  "prior_mount_profile": {
+    "perimeters": 6,
+    "infill": "40% gyroid"
+  }
+}
