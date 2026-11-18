@@ -6,7 +6,7 @@
     "HeadphoneHookUpper": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 57897.81231407951,
+      "volume_mm3": 53174.70671720572,
       "bounds_mm": [
         96.61000000000001,
         106.30936910606499,
@@ -16,11 +16,11 @@
     "HeadphoneHookLower": {
       "valid": true,
       "solids": 1,
-      "volume_mm3": 20236.792780690274,
+      "volume_mm3": 21204.47278069028,
       "bounds_mm": [
         24.0,
         87.01,
-        36.28
+        44.19
       ]
     }
   },
