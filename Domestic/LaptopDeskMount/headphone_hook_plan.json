@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "stop_left_front_edges_aligned_to_base_geometry_and_exports_checked",
+  "status": "30mm_rounded_rectangle_geometry_and_exports_checked",
   "document": "LaptopDeskMount.FCStd",
   "document_name": "LaptopDeskMount",
   "reference": "references/headphone_hook_sketch.jpg",
@@ -29,7 +29,8 @@
     "Нижний обхват смещён относительно верхней детали, чтобы обойти вертикальную ногу.",
     "Использовать существующее окружение и тот же документ; держатели ноутбука сохраняются.",
     "Правый край ограничителя совпадает с правым торцом стола; кольцо по текущему указанию отсутствует.",
-    "Левый и передний со стороны ноутбука края крюка совпадают с краями основания; правый край остаётся у торца стола."
+    "Левый и передний со стороны ноутбука края крюка совпадают с краями основания; правый край остаётся у торца стола.",
+    "Высота над столешницей 30 мм (единицы уточнены пользователем); смягчённый прямоугольник с плоским верхом, углами R5 и кромками R1.5."
   ],
   "environment_objects": [
     "Parameters",
@@ -317,7 +318,7 @@
     "bolt": "M4x20",
     "insert": "M4 OD6 length6",
     "insert_pocket_diameter_mm": 5.6,
-    "stop_rise_mm": 25,
+    "stop_rise_mm": 30,
     "rear_channel": "entirely above crossbar; lateral tongue entry",
     "lower_inboard_installation_offset_mm": 28,
     "leg_thickness_along_beam_mm": 30.48,
@@ -328,7 +329,10 @@
     "stop_width_mm": 54.88,
     "stop_thickness_mm": 14,
     "stop_left_x_mm": 295.12,
-    "stop_front_y_mm": -14.4
+    "stop_front_y_mm": -14.4,
+    "stop_profile": "rounded_rectangle",
+    "stop_corner_radius_mm": 5,
+    "stop_flat_top_width_mm": 44.88
   },
   "environment_remove_objects": [
     "LongRailLeft",
