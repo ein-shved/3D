@@ -52,16 +52,11 @@ parameters = [
     ("HeadSeatZ", "=BottomZ + HeadPocketDepth", "Опорная плоскость головки", "Головка утоплена снизу"),
     ("TableTopZ", "=TopGap + DesktopThickness", "Верх столешницы Z", "Размеры из существующего окружения"),
     ("StopWidth", "24 mm", "Ширина округлого ограничителя", "Небольшая булька у самого угла"),
+    ("StopCenterX", "=CornerX - StopWidth / 2", "Центр ограничителя X", "Правый край ограничителя совпадает с правым торцом столешницы"),
     ("StopThickness", "8 mm", "Толщина ограничителя", "Снаружи торца столешницы"),
     ("StopRise", "25 mm", "Выступ над столешницей", "Задано пользователем: 25 мм; оголовье лежит на столе"),
     ("StopTop", "=TableTopZ + StopRise", "Верх ограничителя", "Плавный круглый верх"),
     ("StopCapZ", "=StopTop - StopWidth / 2", "Центр скругления ограничителя", "Полукруглый верх R12"),
-    ("EyeWall", "4 mm", "Стенка кольца", "Проход сохраняется Ø14 мм"),
-    ("EyeRadius", "=CableEyeWidth / 2 + EyeWall", "Наружный радиус кольца", "R11 при проходе Ø14"),
-    ("EyeOverlap", "3 mm", "Перекрытие кольца и ограничителя", "Кольцо составляет единое тело с верхней деталью; проход отделён от стойки"),
-    ("EyeCenterY", "=FrontY - StopThickness - EyeRadius + EyeOverlap", "Центр кольца Y", "Ось отверстия вдоль X, проход снаружи столешницы"),
-    ("EyeCenterZ", "=StopCapZ", "Центр кольца Z", "Рядом с округлым верхом"),
-    ("EyeThickness", "8 mm", "Толщина кольца вдоль X", "Замкнутое кольцо для джека"),
 ]
 last = max(i for i in range(1, 200) if H.getContents("A%d" % i))
 for alias, value, label, note in parameters:
@@ -164,26 +159,15 @@ box(upper, "HookRearLip", "Удерживающий борт заднего па
     (expr("ClampX"), expr("RearLipFront"), expr("RearLipBottom")))
 box(upper, "HookStopStem", "Ограничитель у правого угла",
     (expr("StopWidth"), expr("StopThickness"), expr("StopCapZ") + "-" + expr("ShelfBottom")),
-    (expr("CornerX") + "-" + expr("StopWidth") + "/2", expr("FrontY") + "-" + expr("StopThickness"), expr("ShelfBottom")))
+    (expr("StopCenterX") + "-" + expr("StopWidth") + "/2", expr("FrontY") + "-" + expr("StopThickness"), expr("ShelfBottom")))
 cylinder(upper, "Additive", "HookStopCap", "Полукруглый верх ограничителя R12",
          expr("StopWidth") + "/2", expr("StopThickness"),
-         (expr("CornerX"), expr("FrontY"), expr("StopCapZ")), App.Rotation(App.Vector(1, 0, 0), 90))
+         (expr("StopCenterX"), expr("FrontY"), expr("StopCapZ")), App.Rotation(App.Vector(1, 0, 0), 90))
 cap_edges = []
 for i, e in enumerate(upper.Tip.Shape.Edges, 1):
     if isinstance(e.Curve, Part.Circle) and abs(e.Curve.Radius - q("StopWidth") / 2) < 1e-5 and e.BoundBox.ZMin >= q("StopCapZ") - 1e-5:
         cap_edges.append("Edge%d" % i)
 fillet(upper, "HookStopRim", "Мягкие кромки округлого верха R1.5", cap_edges, 1.5)
-cylinder(upper, "Additive", "HookEyeOuter", "Кольцо для провода — наружный контур",
-         expr("EyeRadius"), expr("EyeThickness"),
-         (expr("CornerX") + "-" + expr("EyeThickness") + "/2", expr("EyeCenterY"), expr("EyeCenterZ")),
-         App.Rotation(App.Vector(0, 1, 0), 90))
-cylinder(upper, "Subtractive", "HookEyeBore", "Свободный проход джека Ø14",
-         expr("CableEyeWidth") + "/2", expr("EyeThickness") + "+2 mm",
-         (expr("CornerX") + "-" + expr("EyeThickness") + "/2-1 mm", expr("EyeCenterY"), expr("EyeCenterZ")),
-         App.Rotation(App.Vector(0, 1, 0), 90))
-eye_edges = ["Edge%d" % i for i, e in enumerate(upper.Tip.Shape.Edges, 1)
-             if isinstance(e.Curve, Part.Circle) and abs(e.Curve.Radius - q("CableEyeWidth") / 2) < 1e-5]
-fillet(upper, "HookEyeRim", "Скругления прохода провода R0.8", eye_edges, .8)
 cylinder(upper, "Subtractive", "HookInsertPocket", "Посадка термовставки M4 Ø6 × 6",
          expr("InsertPocketDiameter") + "/2", expr("InsertPocketDepth") + "+1 mm",
          (expr("ClampX") + "+" + expr("ClipWidth") + "/2", expr("BoltY"), expr("UpperBossBottom") + "-1 mm"))
@@ -221,7 +205,7 @@ cylinder(lower, "Subtractive", "HookClampHeadPocket", "Скрытая цилин
          expr("HeadPocketDiameter") + "/2", expr("HeadPocketDepth") + "+1 mm",
          (expr("ClampX") + "+" + expr("ClipWidth") + "/2", expr("BoltY"), expr("BottomZ") + "-1 mm"))
 
-for body, color, label in ((upper, (.92, .48, .16), "Верхний ограничитель с кольцом — PETG"),
+for body, color, label in ((upper, (.92, .48, .16), "Верхний ограничитель — PETG"),
                             (lower, (.25, .62, .76), "Нижний захват — PETG, M4×20")):
     body.Label = label
     for obj in body.Group:
@@ -256,7 +240,6 @@ doc.recompute()
 
 report = {"status": "native_geometry_built", "corner": "right_from_laptop", "headband_supported_by": "tabletop",
           "bodies": {}, "environment_collisions_mm3": {}, "holders_unchanged": {}, "assumptions": [
-              "Jack metal diameter 3.5 mm; clear ring bore 14 mm",
               "Insert M4 OD6 length6; initial heat-set bore5.6 requires validation for chosen insert",
               "M4x20 head OD7 height4 based on user's diameter and provisional height"]}
 for body in (upper, lower):

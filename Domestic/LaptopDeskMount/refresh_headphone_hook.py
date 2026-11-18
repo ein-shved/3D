@@ -20,6 +20,36 @@ H.set("C" + H.getCellFromAlias("LowerOffset")[1:],
 H.set(H.getCellFromAlias("StopRise"), "25 mm")
 H.set("C" + H.getCellFromAlias("StopRise")[1:], "Задано пользователем: выступ 25 мм над поверхностью столешницы")
 H.set("C" + H.getCellFromAlias("CornerLegInset")[1:], "Половина толщины ноги вдоль X: BeamHeight / 2 = 15.24 мм")
+# Right edge flush with the tabletop, with the cable ring removed from the feature chain.
+cell = H.getCellFromAlias("StopCenterX")
+if not cell:
+    row = max(i for i in range(1,250) if H.getContents("A%d" % i)) + 1
+    cell = "B%d" % row
+    H.set("A%d" % row,"Центр ограничителя X")
+    H.setAlias(cell,"StopCenterX")
+H.set(cell,"=CornerX - StopWidth / 2")
+H.set("C" + cell[1:],"Правый край ограничителя совпадает с правым торцом столешницы")
+doc.HookStopStem.setExpression("Placement.Base.x","HookParameters.StopCenterX - HookParameters.StopWidth / 2")
+doc.HookStopCap.setExpression("Placement.Base.x","HookParameters.StopCenterX")
+doc.HookInsertPocket.BaseFeature = doc.HookStopRim
+for name in ("HookEyeRim","HookEyeBore","HookEyeOuter"):
+    if doc.getObject(name):
+        doc.removeObject(name)
+for alias in ("EyeWall","EyeRadius","EyeOverlap","EyeCenterY","EyeCenterZ","EyeThickness","CableEyeWidth","CableEyeFactor","JackDiameter"):
+    cell = H.getCellFromAlias(alias)
+    if cell:
+        H.setAlias(cell,"")
+        for col in "ABC":
+            H.clear(col + cell[1:])
+upper.Label = "Верхний ограничитель — PETG"
+doc.recompute()
+# Rebind the native finishing edges after the upright moves into the shelf's end plane.
+cap_edges = ["Edge%d" % i for i,e in enumerate(doc.HookStopCap.Shape.Edges,1)
+             if isinstance(e.Curve,Part.Circle) and abs(e.Curve.Radius-H.StopWidth.Value/2)<1e-5
+             and e.BoundBox.ZMin>=H.StopCapZ.Value-1e-5]
+if len(cap_edges)!=2:
+    raise RuntimeError("Unable to identify rounded stop rim edges")
+doc.HookStopRim.Base = (doc.HookStopCap,cap_edges)
 doc.recompute()
 for body in (upper, lower):
     if not body.Shape.isValid() or len(body.Shape.Solids) != 1:
@@ -48,5 +78,10 @@ report["clearance_to_leg_mm"] = doc.LegNearRight.Shape.BoundBox.XMin - lower.Sha
 assert abs(report["clearance_to_leg_mm"] - q("FitClearance")) < 1e-6
 assert abs(q("StopTop") - q("TableTopZ") - 25) < 1e-6
 report["environment_version"] = "User approved U frames: legs30.48X x60.21Y, no longitudinal rails"
+report["right_edge_alignment"] = {"tabletop_x_mm":q("CornerX"),"stop_right_x_mm":q("StopCenterX")+q("StopWidth")/2}
+outside = Part.makeBox(100,200,200,App.Vector(q("CornerX")+1e-5,-50,-80))
+report["material_beyond_right_edge_mm3"] = upper.Shape.common(outside).Volume
+assert report["material_beyond_right_edge_mm3"]<1e-5
+report["cable_ring"] = {"present":False,"removed_per_user_request":True}
 (ROOT / "headphone_hook_validation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
 print("Updated: 25mm stop rise, lower clamp ends 0.4mm before the corrected leg, hardware moved with clamp.")

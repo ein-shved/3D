@@ -49,12 +49,8 @@ for name, shape in obstacles + [("upper", upper.Shape), ("lower", lower.Shape)]:
     if collision(tool, shape) > 1e-5:
         raise RuntimeError("Hidden screw tool access blocked: " + name)
 report["tool_access"] = {"clear": True, "test": "4mm-diameter axial tool envelope for 65mm below head seat"}
-jack = Part.makeCylinder(q("CableEyeWidth") / 2, 100,
-                         App.Vector(q("CornerX") - 50, q("EyeCenterY"), q("EyeCenterZ")), App.Vector(1, 0, 0))
-for name, shape in obstacles + [("upper", upper.Shape), ("lower", lower.Shape)]:
-    if collision(jack, shape) > 1e-5:
-        raise RuntimeError("Clear jack passage blocked: " + name)
-report["cable_passage"] = {"clear": True, "diameter_mm": q("CableEyeWidth"), "tested_length_mm": 100, "axis": "X"}
+assert not any(D.getObject(n) for n in ("HookEyeOuter","HookEyeBore","HookEyeRim"))
+report["cable_ring"] = {"present":False,"removed_per_user_request":True}
 
 exports = ROOT / "exports"
 report["exports"] = {}
@@ -82,4 +78,4 @@ report["status"] = "geometry_installation_paths_and_exports_checked"
 report["physical_fit_tested"] = False
 report["sliced"] = False
 (ROOT / "headphone_hook_validation.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
-print(json.dumps({k:report[k] for k in ("installation_paths", "tool_access", "cable_passage", "exports")}, ensure_ascii=False, indent=2))
+print(json.dumps({k:report[k] for k in ("installation_paths", "tool_access", "cable_ring", "exports")}, ensure_ascii=False, indent=2))
