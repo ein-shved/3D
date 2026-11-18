@@ -13,10 +13,16 @@ backup = ROOT / "archive" / "LaptopDeskMount_before_hook_25mm_and_leg_fit.FCStd"
 if not backup.exists():
     shutil.copy2(doc.FileName, backup)
 original_holders = {name: doc.getObject(name).Shape.copy() for name in ("HolderLeft", "HolderRight")}
+p = ROOT / "refine_headphone_details.py"
+details = {"__file__":str(p),"__name__":"hook_details"}
+exec(compile(p.read_text(),str(p),"exec"),details)
+guide_placements = details["capture_guides"](doc)
+details["set_dimensions"](doc)
 p = ROOT / "flatten_headphone_hook.py"
 module = {"__file__":str(p),"__name__":"hook_flat_base"}
 exec(compile(p.read_text(),str(p),"exec"),module)
 module["apply_flat_base"](doc)
+details["round_joint"](doc)
 
 H.set(H.getCellFromAlias("LowerOffset"), "=ProfileHeight")
 H.set("C" + H.getCellFromAlias("LowerOffset")[1:],
@@ -43,7 +49,7 @@ doc.HookInsertPocket.BaseFeature = doc.HookStopRim
 for name in ("HookEyeRim","HookEyeBore","HookEyeOuter"):
     if doc.getObject(name):
         doc.removeObject(name)
-for alias in ("EyeWall","EyeRadius","EyeOverlap","EyeCenterY","EyeCenterZ","EyeThickness","CableEyeWidth","CableEyeFactor","JackDiameter"):
+for alias in ("EyeWall","EyeRadius","EyeOverlap","EyeCenterY","EyeCenterZ","EyeThickness","CableEyeWidth","CableEyeFactor"):
     cell = H.getCellFromAlias(alias)
     if cell:
         H.setAlias(cell,"")
@@ -100,6 +106,10 @@ order=[o for o in upper.Group if o!=corners]
 order.insert(order.index(doc.HookStopRim),corners)
 upper.Group=order
 upper.Tip=doc.HookInsertLeadIn
+details["rebind_user_guides"](doc,guide_placements)
+details["add_oval_loop"](doc)
+upper.Label="Верхний ограничитель с овальной петлёй — PETG"
+lower.Label="Нижний захват — PETG, M4×15"
 for o in upper.Group:
     o.ViewObject.Visibility = o==upper.Tip
 doc.recompute()
@@ -115,10 +125,13 @@ def q(alias):
 
 # The printed geometry is driven by the sheet; reference hardware is regenerated at its new axis.
 x, y = q("ClampX") + q("ClipWidth") / 2, q("BoltY")
-doc.HookInsertReference.Shape = Part.makeCylinder(3, q("InsertLength"), App.Vector(x,y,q("UpperBossBottom"))).cut(
+doc.HookInsertReference.Shape = Part.makeCylinder(q("InsertOuterDiameter")/2, q("InsertLength"), App.Vector(x,y,q("UpperBossBottom"))).cut(
     Part.makeCylinder(2, q("InsertLength"), App.Vector(x,y,q("UpperBossBottom"))))
 doc.HookBoltReference.Shape = Part.makeCylinder(q("HeadDiameter")/2, q("HeadHeight"), App.Vector(x,y,q("HeadSeatZ")-q("HeadHeight"))).fuse(
     Part.makeCylinder(2, q("BoltLength"), App.Vector(x,y,q("HeadSeatZ"))))
+doc.HookInsertReference.Label="Термовставка M4, Ø5.69 × 6 — условная геометрия"
+doc.HookBoltReference.Label="Болт M4×15, головка Ø7 — условная геометрия"
+doc.HookHardware.Label="Крепёж — M4×15, вставка M4 Ø5.69 × 6"
 doc.recompute()
 # Reuse the full final-position validation, retaining the installed laptop mount checks.
 source = (ROOT / "build_headphone_hook.py").read_text()
@@ -135,7 +148,9 @@ report["right_edge_alignment"] = {"tabletop_x_mm":q("CornerX"),"stop_right_x_mm"
 outside = Part.makeBox(100,200,200,App.Vector(q("CornerX")+1e-5,-50,-80))
 report["material_beyond_right_edge_mm3"] = upper.Shape.common(outside).Volume
 assert report["material_beyond_right_edge_mm3"]<1e-5
-report["cable_ring"] = {"present":False,"removed_per_user_request":True}
+report["cable_ring"] = {"present":True,"shape":"vertical_oval_loop","passage_mm":q("CableGap"),"wall_mm":q("CableWall"),"top_z_mm":q("CableTop")}
+report["equal_rear_joint"]={"upper_mm":q("ShelfTop")-q("ChannelRoof"),"opening_mm":q("ChannelRoof")-q("RearLipTop"),"lower_mm":q("RearLipTop")-q("ShelfBottom"),"inner_radius_mm":q("JointInsideRadius"),"tongue_thickness_mm":q("TongueTop")-q("TongueBottom")}
+report["bolt"]["material_under_head_mm"]=q("LowerBossTop")-q("HeadSeatZ")
 zmin = upper.Shape.BoundBox.ZMin
 base_area = sum(f.Area for f in upper.Shape.Faces if f.BoundBox.ZLength<1e-5 and abs(f.BoundBox.ZMin-zmin)<1e-5)
 report["flat_print_base"] = {"z_mm":zmin,"nominal_z_mm":q("ShelfBottom"),"contact_area_mm2":base_area,

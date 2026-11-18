@@ -28,15 +28,17 @@ parameters = [
     ("ShelfBottom", "=VerticalClearance", "Низ верхней полки", "Над верхом перекладины"),
     ("ShelfTop", "=TopGap - FitClearance", "Верх верхней полки", "В зазоре под столешницей"),
     ("ShelfThickness", "=ShelfTop - ShelfBottom", "Толщина верхней полки", "Максимально использован зазор под столешницей"),
+    ("JointThird", "=ShelfThickness / 3", "Три равных участка заднего узла", "По эскизу пользователя"),
+    ("JointInsideRadius", "0.8 mm", "Внутренние скругления зацепа", "Согласованы с нижним зацепом"),
     ("BeamBack", "=ProfileWidth + FitClearance", "Задняя грань обхвата Y", "Боковой зазор от перекладины"),
     ("RearStemEnd", "=BeamBack + Wall", "Задняя стойка: торец Y", "Стойка нижнего обхвата"),
     ("TongueEnd", "=RearStemEnd + Wall", "Задний зацеп: торец Y", "Заходит в канал верхней детали"),
     ("UpperBackInner", "=TongueEnd + JointClearance", "Задняя стенка канала Y", "Запас для зацепа"),
     ("UpperBackEnd", "=UpperBackInner + Wall", "Задний габарит верхней части", "Силовая стенка канала"),
-    ("ChannelRoof", "=ShelfTop - 2 mm", "Низ верхнего перекрытия канала", "Канал целиком в зазоре над перекладиной"),
+    ("ChannelRoof", "=ShelfTop - JointThird", "Низ верхнего перекрытия канала", "Толщина равна трети высоты"),
     ("TongueTop", "=ChannelRoof - 2 * JointClearance", "Верх зацепа Z", "Зазор допускает подтяжку обхвата болтом"),
-    ("TongueBottom", "=ShelfBottom + 2.5 mm + JointClearance", "Низ зацепа Z", "Толщина зацепа 4.51 мм при заданном зазоре стола"),
-    ("RearLipTop", "=TongueBottom - JointClearance", "Верх заднего удерживающего борта", "Зацеп захвачен сверху и снизу"),
+    ("TongueBottom", "=RearLipTop + JointClearance", "Низ зацепа Z", "Зазор снизу 0.3 мм"),
+    ("RearLipTop", "=ShelfBottom + JointThird", "Верх заднего удерживающего борта", "Толщина равна трети высоты"),
     ("RearLipBottom", "=ShelfBottom", "Низ заднего удерживающего борта", "Весь верхний захват находится над металлом"),
     ("RearLipFront", "=RearStemEnd + JointClearance", "Передний торец заднего борта", "Зазор к стойке нижней части"),
     ("BottomInside", "=-ProfileHeight - VerticalClearance", "Внутреннее дно обхвата", "Под перекладиной"),
@@ -47,7 +49,7 @@ parameters = [
     ("InsertLength", "6 mm", "Выбранная длина вставки M4", "У пользователя есть вставки разной длины, выбрана 6 мм"),
     ("InsertPocketDiameter", "5.6 mm", "Отверстие для вплавления Ø6", "Исходная посадка, проверить на выбранной вставке; это не наружный диаметр вставки"),
     ("InsertPocketDepth", "6.4 mm", "Глубина отверстия вставки", "Вставка 6 мм + запас 0.4 мм"),
-    ("BoltLength", "20 mm", "Болт M4 под головкой", "Подобран по сборке, пользователь подберёт M4×20"),
+    ("BoltLength", "15 mm", "Болт M4 под головкой", "Самый длинный доступный болт M4×15"),
     ("BoltEngagement", "=InsertLength - 0.2 mm", "Номинальное зацепление болта", "Вставка 6 мм, запас 0.2 мм до её заднего торца"),
     ("HeadPocketDepth", "=UpperBossBottom - BottomZ - BoltLength + BoltEngagement", "Глубина канала головки", "Углублён, чтобы сохранить M4×20 при плоском низе основной детали"),
     ("HeadSeatZ", "=BottomZ + HeadPocketDepth", "Опорная плоскость головки", "Головка утоплена снизу"),
@@ -72,6 +74,10 @@ for alias, value, label, note in parameters:
     H.setAlias("B%d" % row, alias)
     H.set("C%d" % row, note)
 doc.recompute()
+p = ROOT / "refine_headphone_details.py"
+details = {"__file__":str(p),"__name__":"hook_details"}
+exec(compile(p.read_text(),str(p),"exec"),details)
+details["set_dimensions"](doc)
 
 def q(alias):
     return getattr(H, alias).Value
@@ -150,6 +156,10 @@ primitive(upper, "SubtractiveBox", "HookRearChannel", "Боковой вход �
 box(upper, "HookRearLip", "Удерживающий борт заднего паза",
     (expr("StopWidth"), expr("UpperBackEnd") + "-" + expr("RearLipFront"), expr("RearLipTop") + "-" + expr("RearLipBottom")),
     (expr("ClampX"), expr("RearLipFront"), expr("RearLipBottom")))
+inner_edges=["Edge%d" % i for i,e in enumerate(upper.Tip.Shape.Edges,1)
+             if abs(e.BoundBox.XLength-q("StopWidth"))<1e-5 and e.BoundBox.YLength<1e-6 and e.BoundBox.ZLength<1e-6
+             and abs(e.BoundBox.YMin-q("UpperBackInner"))<1e-5 and min(abs(e.BoundBox.ZMin-z) for z in (q("ChannelRoof"),q("RearLipTop")))<1e-5]
+fillet(upper,"HookChannelInnerRounds","Внутренние углы паза R0.8",inner_edges,q("JointInsideRadius"))
 outline = ["Edge%d" % i for i,e in enumerate(upper.Tip.Shape.Edges,1)
            if abs(e.BoundBox.ZLength-q("ShelfThickness"))<1e-5
            and e.BoundBox.XLength<1e-6 and e.BoundBox.YLength<1e-6]
@@ -169,7 +179,8 @@ for i, e in enumerate(upper.Tip.Shape.Edges, 1):
         if isinstance(e.Curve,Part.Circle) or (bb.ZLength<1e-6 and abs(bb.ZMax-q("StopTop"))<1e-5):
             rim_edges.append("Edge%d" % i)
 fillet(upper, "HookStopRim", "Мягкие кромки прямоугольного верха R2.5", rim_edges, 2.5)
-cylinder(upper, "Subtractive", "HookInsertPocket", "Посадка термовставки M4 Ø6 × 6",
+details["add_oval_loop"](doc)
+cylinder(upper, "Subtractive", "HookInsertPocket", "Посадка термовставки M4 Ø5.69 × 6",
          expr("InsertPocketDiameter") + "/2", expr("InsertPocketDepth") + "+1 mm",
          (expr("ClampX") + "+" + expr("ClipWidth") + "/2", expr("BoltY"), expr("UpperBossBottom") + "-1 mm"))
 cylinder(upper, "Subtractive", "HookScrewRelief", "Запас под конец болта над вставкой",
@@ -191,6 +202,10 @@ box(lower, "HookClampRear", "Задняя стойка обхвата",
 box(lower, "HookClampTongue", "Задний зацеп входит в паз верхней части",
     (expr("ClipWidth"), expr("TongueEnd") + "-" + expr("BeamBack"), expr("TongueTop") + "-" + expr("TongueBottom")),
     (expr("ClampX"), expr("BeamBack"), expr("TongueBottom")))
+nose_edges=["Edge%d" % i for i,e in enumerate(lower.Tip.Shape.Edges,1)
+            if abs(e.BoundBox.XLength-q("ClipWidth"))<1e-5 and e.BoundBox.YLength<1e-6 and e.BoundBox.ZLength<1e-6
+            and abs(e.BoundBox.YMin-q("TongueEnd"))<1e-5 and min(abs(e.BoundBox.ZMin-z) for z in (q("TongueTop"),q("TongueBottom")))<1e-5]
+fillet(lower,"HookTongueRounds","Скруглённый конец нижнего зацепа R0.8",nose_edges,q("JointInsideRadius"))
 # Round the exterior side outline, leaving the planar crossbar bearing surfaces intact.
 outer_edges = []
 for i, e in enumerate(lower.Tip.Shape.Edges, 1):
@@ -206,8 +221,8 @@ cylinder(lower, "Subtractive", "HookClampHeadPocket", "Скрытая цилин
          expr("HeadPocketDiameter") + "/2", expr("HeadPocketDepth") + "+1 mm",
          (expr("ClampX") + "+" + expr("ClipWidth") + "/2", expr("BoltY"), expr("BottomZ") + "-1 mm"))
 
-for body, color, label in ((upper, (.92, .48, .16), "Верхний ограничитель — PETG"),
-                            (lower, (.25, .62, .76), "Нижний захват — PETG, M4×20")):
+for body, color, label in ((upper, (.92, .48, .16), "Верхний ограничитель с овальной петлёй — PETG"),
+                            (lower, (.25, .62, .76), "Нижний захват — PETG, M4×15")):
     body.Label = label
     for obj in body.Group:
         obj.ViewObject.Visibility = obj == body.Tip
@@ -222,17 +237,17 @@ doc.recompute()
 
 # Reversible reference hardware; deliberately separate from printed bodies.
 hardware = doc.addObject("App::DocumentObjectGroup", "HookHardware")
-hardware.Label = "Крепёж крючка — M4×20 и термовставка Ø6 × 6"
+hardware.Label = "Крепёж крючка — M4×15 и термовставка Ø5.69 × 6"
 doc.HeadphoneHook.addObject(hardware)
 x, y = q("ClampX") + q("ClipWidth") / 2, q("BoltY")
 insert = doc.addObject("PartDesign::Feature", "HookInsertReference")
-insert.Label = "Термовставка M4, Ø6 × 6 — условная геометрия"
-insert.Shape = Part.makeCylinder(3, q("InsertLength"), App.Vector(x, y, q("UpperBossBottom"))).cut(
+insert.Label = "Термовставка M4, Ø5.69 × 6 — условная геометрия"
+insert.Shape = Part.makeCylinder(q("InsertOuterDiameter")/2, q("InsertLength"), App.Vector(x, y, q("UpperBossBottom"))).cut(
     Part.makeCylinder(2, q("InsertLength"), App.Vector(x, y, q("UpperBossBottom"))))
 hardware.addObject(insert)
 insert.ViewObject.ShapeColor = (.78, .61, .22)
 bolt = doc.addObject("PartDesign::Feature", "HookBoltReference")
-bolt.Label = "Болт M4×20, цилиндрическая головка — условная геометрия"
+bolt.Label = "Болт M4×15, цилиндрическая головка — условная геометрия"
 bolt.Shape = Part.makeCylinder(q("HeadDiameter") / 2, q("HeadHeight"), App.Vector(x, y, q("HeadSeatZ") - q("HeadHeight"))).fuse(
     Part.makeCylinder(2, q("BoltLength"), App.Vector(x, y, q("HeadSeatZ"))))
 hardware.addObject(bolt)
@@ -241,8 +256,8 @@ doc.recompute()
 
 report = {"status": "native_geometry_built", "corner": "right_from_laptop", "headband_supported_by": "tabletop",
           "bodies": {}, "environment_collisions_mm3": {}, "holders_unchanged": {}, "assumptions": [
-              "Insert M4 OD6 length6; initial heat-set bore5.6 requires validation for chosen insert",
-              "M4x20 head OD7 height4 based on user's diameter and provisional height"]}
+              "Insert M4 measured OD5.69 length6; bore5.6, entry max5.7",
+              "M4x15 head OD7 height4 based on user's diameter and provisional height"]}
 for body in (upper, lower):
     shape = body.Shape
     report["bodies"][body.Name] = {"valid": shape.isValid(), "solids": len(shape.Solids), "volume_mm3": shape.Volume,
@@ -261,7 +276,7 @@ for name, before in original_holders.items():
     report["holders_unchanged"][name] = delta < 1e-6
     if delta > 1e-6:
         raise RuntimeError("Existing laptop holder changed: " + name)
-report["bolt"] = {"suggested": "M4x20 socket cap", "insert": "M4 OD6 length6",
+report["bolt"] = {"suggested": "M4x15 socket cap", "insert": "M4 OD5.69 length6",
                   "nominal_engagement_mm": q("HeadSeatZ") + q("BoltLength") - q("UpperBossBottom"),
                   "front_closing_gap_mm": q("FrontClosingGap"),
                   "total_vertical_clearance_mm": 2 * q("VerticalClearance")}
