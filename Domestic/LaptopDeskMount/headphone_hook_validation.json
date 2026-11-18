@@ -1,5 +1,5 @@
 {
-  "status": "native_geometry_built",
+  "status": "geometry_installation_paths_and_exports_checked",
   "corner": "right_from_laptop",
   "headband_supported_by": "tabletop",
   "bodies": {
@@ -8,10 +8,11 @@
       "solids": 1,
       "volume_mm3": 78177.19055010323,
       "bounds_mm": [
-        54.879999999999995,
-        93.31,
-        84.24000000000001
-      ]
+        54.880001068115234,
+        93.30999755859375,
+        84.23999786376953
+      ],
+      "bounds_source": "tessellation dimensions mapped back to assembly axes"
     },
     "HeadphoneHookLower": {
       "valid": true,
@@ -19,9 +20,10 @@
       "volume_mm3": 21204.47278069028,
       "bounds_mm": [
         24.0,
-        87.01,
-        44.19
-      ]
+        87.01000213623047,
+        44.189998626708984
+      ],
+      "bounds_source": "tessellation dimensions mapped back to assembly axes"
     }
   },
   "environment_collisions_mm3": {
@@ -77,5 +79,50 @@
     "base_left_x_mm": 295.12,
     "stop_front_y_mm": -14.4,
     "base_front_y_mm": -14.4
-  }
+  },
+  "installation_paths": {
+    "upper_slide_in_from_laptop_side": {
+      "samples": 49,
+      "max_collision_mm3": 0
+    },
+    "lower_raise_28mm_inboard": {
+      "samples": 41,
+      "max_collision_mm3": 0
+    },
+    "lower_slide_along_crossbar_into_rear_channel": {
+      "samples": 29,
+      "max_collision_mm3": 0
+    },
+    "method": "Upper slides +Y into tabletop gap. Lower rises 28mm inboard, then slides +X into rear channel."
+  },
+  "tool_access": {
+    "clear": true,
+    "test": "4mm-diameter axial tool envelope for 65mm below head seat"
+  },
+  "exports": {
+    "headphone_hook_upper": {
+      "stl_closed": true,
+      "facets": 5284,
+      "print_bounds_mm": [
+        84.23999786376953,
+        93.30999755859375,
+        54.880001068115234
+      ],
+      "base_plane": "Assembly X-min on print Z=0",
+      "sliced": false
+    },
+    "headphone_hook_lower": {
+      "stl_closed": true,
+      "facets": 964,
+      "print_bounds_mm": [
+        44.189998626708984,
+        87.01000213623047,
+        24.0
+      ],
+      "base_plane": "Assembly X-min on print Z=0",
+      "sliced": false
+    }
+  },
+  "physical_fit_tested": false,
+  "sliced": false
 }
