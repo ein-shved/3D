@@ -50,7 +50,22 @@ for name, shape in obstacles + [("upper", upper.Shape), ("lower", lower.Shape)]:
         raise RuntimeError("Hidden screw tool access blocked: " + name)
 report["tool_access"] = {"clear": True, "test": "4mm-diameter axial tool envelope for 65mm below head seat"}
 assert not any(D.getObject(n) for n in ("HookEyeOuter","HookEyeBore","HookEyeRim"))
-report["cable_ring"] = {"present":False,"removed_per_user_request":True}
+assert D.HookCableSketch.FullyConstrained
+guide=Part.makeCylinder(q("CableGap")/2,q("CableTop")-q("ShelfBottom")+4,
+                        App.Vector((q("CableLeftCenter")+q("CableRightCenter"))/2,q("CableCenterY"),q("ShelfBottom")-2))
+passage_collision=collision(guide,upper.Shape)
+if passage_collision>1e-5:raise RuntimeError("Oval cable passage is narrowed")
+assert abs(q("CableTop")-q("TableTopZ"))<1e-6
+assert max(D.HookInsertPocket.Radius.Value*2,D.HookInsertLeadIn.Radius1.Value*2,D.HookInsertLeadIn.Radius2.Value*2)<=5.7+1e-6
+report["cable_ring"]={"present":True,"shape":"vertical_oval_loop","free_diameter_mm":q("CableGap"),"wall_mm":q("CableWall"),
+                      "top_flush_with_tabletop":True,"top_z_mm":q("CableTop"),"passage_intersection_mm3":passage_collision}
+thirds=[q("ShelfTop")-q("ChannelRoof"),q("ChannelRoof")-q("RearLipTop"),q("RearLipTop")-q("ShelfBottom")]
+assert max(thirds)-min(thirds)<1e-6
+report["equal_rear_joint"]={"segments_mm":thirds,"tongue_thickness_mm":q("TongueTop")-q("TongueBottom"),"inner_radius_mm":q("JointInsideRadius")}
+if D.getObject("Sketch001"):
+    lengths=[g.length() for g in D.Sketch001.Geometry]
+    assert max(lengths)-min(lengths)<1e-6
+    report["user_reference_sketch"]={"name":"Sketch001","lengths_mm":lengths,"attachments_preserved":True}
 
 exports = ROOT / "exports"
 report["exports"] = {}
