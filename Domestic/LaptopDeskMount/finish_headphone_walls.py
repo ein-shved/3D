@@ -7,7 +7,7 @@ import Sketcher
 
 def ensure_merged_profile(doc,sk):
     H=doc.HookParameters
-    if sk.GeometryCount==10:return
+    if sk.GeometryCount==10 and sk.FullyConstrained and 'Invalid' not in sk.State:return
     for path,value in list(sk.ExpressionEngine):
         if path.startswith("Constraints["):sk.setExpression(path,None)
     for i in reversed(range(sk.ConstraintCount)):sk.delConstraint(i)
@@ -35,9 +35,9 @@ def ensure_merged_profile(doc,sk):
     # Straight sidewalls join the hook's side plane, then meet the oval front tangentially.
     line(x0,back,x1,back)
     line(x1,back,x1,cy)
-    arc(r,cy,outer,0,-math.pi/4,-math.pi/2,"Y","X")
+    arc(r,cy,outer,-math.pi/2,-math.pi/4,0,"X","Y")
     line(r,front,l,front)
-    arc(l,cy,outer,-math.pi/2,-3*math.pi/4,-math.pi,"X","Y")
+    arc(l,cy,outer,-math.pi,-3*math.pi/4,-math.pi/2,"Y","X")
     line(x0,cy,x0,back)
     line(r,cy+" + ("+inner+")",l,cy+" + ("+inner+")")
     arc(l,cy,inner,math.pi/2,math.pi,3*math.pi/2,"X","X")
