@@ -49,6 +49,8 @@ def inspect_saved_document(plan):
         "environment": {k: {"content": cells[k], "source": v}
                         for k, v in plan["environment_aliases"].items()},
         "checked_object_names": plan["environment_objects"],
+        "placement": plan["placement"],
+        "usage": plan["usage"],
         "unresolved": [u["key"] for u in plan["unresolved"] if u["value"] is None],
         "specified_parameters": plan["specified_parameters"],
         "provisional_parameters": plan["provisional_parameters"],

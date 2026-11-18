@@ -50,11 +50,22 @@
     "HolderRight",
     "LaptopBase"
   ],
-  "unresolved": [
-    "corner",
-    "headband_width_mm",
-    "headphones_mass_g"
-  ],
+  "placement": {
+    "corner": "near_right",
+    "viewpoint": "Правый угол, если смотреть со стороны ноутбука внутрь стола",
+    "corner_x_expression": "Parameters.TableAcross / 2",
+    "corner_y_expression": "-Parameters.Overhang",
+    "leg_object": "LegNearRight",
+    "rail_object": "LongRailRight",
+    "lower_clamp_offset_direction": "Внутрь вдоль перекладины, в сторону отрицательного X"
+  },
+  "usage": {
+    "headband_support": "Оголовье лежит на столешнице",
+    "stop_function": "Округлый выступ удерживает наушники от соскальзывания с правого угла",
+    "headphones_mass_required": false,
+    "headband_width_required": false
+  },
+  "unresolved": [],
   "specified_parameters": [
     {
       "alias": "BoltDiameter",
