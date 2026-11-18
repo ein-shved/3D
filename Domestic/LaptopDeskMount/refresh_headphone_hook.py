@@ -1,4 +1,4 @@
-"""Apply corrected U-frame fit and the user's 25mm stop height in place."""
+"""Apply corrected U-frame fit and the user's 30mm rounded rectangle in place."""
 from pathlib import Path
 import json
 import shutil
@@ -17,15 +17,13 @@ original_holders = {name: doc.getObject(name).Shape.copy() for name in ("HolderL
 H.set(H.getCellFromAlias("LowerOffset"), "=ProfileHeight")
 H.set("C" + H.getCellFromAlias("LowerOffset")[1:],
       "Толщина ноги вдоль перекладины после поворота профиля: 30.48 мм; обхват заканчивается перед внутренней гранью ноги")
-H.set(H.getCellFromAlias("StopRise"), "25 mm")
-H.set("C" + H.getCellFromAlias("StopRise")[1:], "Задано пользователем: выступ 25 мм над поверхностью столешницы")
+H.set(H.getCellFromAlias("StopRise"), "30 mm")
+H.set("C" + H.getCellFromAlias("StopRise")[1:], "Задано пользователем: выступ 30 мм над поверхностью столешницы")
 H.set("C" + H.getCellFromAlias("CornerLegInset")[1:], "Половина толщины ноги вдоль X: BeamHeight / 2 = 15.24 мм")
 H.set(H.getCellFromAlias("StopWidth"),"=CornerX - ClampX")
 H.set("C" + H.getCellFromAlias("StopWidth")[1:],"Левый и правый края совпадают с краями основания")
 H.set(H.getCellFromAlias("StopThickness"),"=BossDepth")
 H.set("C" + H.getCellFromAlias("StopThickness")[1:],"Передняя грань со стороны ноутбука совпадает с передней гранью основания")
-H.set("C" + H.getCellFromAlias("StopCapZ")[1:],"Радиус верха равен половине ширины ограничителя")
-doc.HookStopCap.Label = "Полукруглый верх ограничителя"
 # Right edge flush with the tabletop, with the cable ring removed from the feature chain.
 cell = H.getCellFromAlias("StopCenterX")
 if not cell:
@@ -36,7 +34,7 @@ if not cell:
 H.set(cell,"=CornerX - StopWidth / 2")
 H.set("C" + cell[1:],"Правый край ограничителя совпадает с правым торцом столешницы")
 doc.HookStopStem.setExpression("Placement.Base.x","HookParameters.StopCenterX - HookParameters.StopWidth / 2")
-doc.HookStopCap.setExpression("Placement.Base.x","HookParameters.StopCenterX")
+doc.HookStopStem.setExpression("Height","HookParameters.StopTop - HookParameters.ShelfBottom")
 doc.HookInsertPocket.BaseFeature = doc.HookStopRim
 for name in ("HookEyeRim","HookEyeBore","HookEyeOuter"):
     if doc.getObject(name):
@@ -49,13 +47,56 @@ for alias in ("EyeWall","EyeRadius","EyeOverlap","EyeCenterY","EyeCenterZ","EyeT
             H.clear(col + cell[1:])
 upper.Label = "Верхний ограничитель — PETG"
 doc.recompute()
-# Rebind the native finishing edges after the upright moves into the shelf's end plane.
-cap_edges = ["Edge%d" % i for i,e in enumerate(doc.HookStopCap.Shape.Edges,1)
-             if isinstance(e.Curve,Part.Circle) and abs(e.Curve.Radius-H.StopWidth.Value/2)<1e-5
-             and e.BoundBox.ZMin>=H.StopCapZ.Value-1e-5]
-if len(cap_edges)!=2:
-    raise RuntimeError("Unable to identify rounded stop rim edges")
-doc.HookStopRim.Base = (doc.HookStopCap,cap_edges)
+# Replace the former semicircle with a flat top and two rounded corners.
+cell = H.getCellFromAlias("StopCornerRadius")
+if not cell:
+    row = max(i for i in range(1,250) if H.getContents("A%d" % i)) + 1
+    cell = "B%d" % row
+    H.set("A%d" % row,"Скругление верхних углов")
+    H.setAlias(cell,"StopCornerRadius")
+H.set(cell,"5 mm")
+H.set("C" + cell[1:],"Прямоугольный силуэт с двумя верхними углами R5")
+H.set("C" + H.getCellFromAlias("StopTop")[1:],"Плоский верх смягчённого прямоугольника")
+doc.recompute()
+corner_edges = ["Edge%d" % i for i,e in enumerate(doc.HookStopStem.Shape.Edges,1)
+                if abs(e.BoundBox.ZMin-H.StopTop.Value)<1e-5 and e.BoundBox.ZLength<1e-6
+                and e.BoundBox.XLength<1e-6 and abs(e.BoundBox.YLength-H.StopThickness.Value)<1e-5]
+if len(corner_edges)!=2:
+    raise RuntimeError("Unable to identify the two upper rectangle corners")
+corners = doc.getObject("HookStopCorners")
+if corners is None:
+    corners = upper.newObject("PartDesign::Fillet","HookStopCorners")
+corners.Label = "Верхние углы прямоугольного ограничителя R5"
+corners.Base = (doc.HookStopStem,corner_edges)
+corners.BaseFeature = doc.HookStopStem
+corners.setExpression("Radius","HookParameters.StopCornerRadius")
+corners.Refine = True
+doc.recompute()
+if not corners.Shape.isValid():
+    raise RuntimeError("Invalid rounded rectangle corners")
+rim_edges = []
+for i,e in enumerate(corners.Shape.Edges,1):
+    bb=e.BoundBox
+    if bb.YLength<1e-6 and bb.ZMin>=H.StopTop.Value-H.StopCornerRadius.Value-1e-5:
+        if isinstance(e.Curve,Part.Circle) or (bb.ZLength<1e-6 and abs(bb.ZMax-H.StopTop.Value)<1e-5):
+            rim_edges.append("Edge%d" % i)
+if len(rim_edges)!=6:
+    raise RuntimeError("Unable to identify rectangle rim: " + str(rim_edges))
+doc.HookStopRim.Base = (corners,rim_edges)
+doc.HookStopRim.BaseFeature = corners
+doc.HookStopRim.Label = "Мягкие кромки прямоугольного верха R1.5"
+if doc.getObject("HookStopCap"):
+    doc.removeObject("HookStopCap")
+cell = H.getCellFromAlias("StopCapZ")
+if cell:
+    H.setAlias(cell,"")
+    for col in "ABC": H.clear(col+cell[1:])
+order=[o for o in upper.Group if o!=corners]
+order.insert(order.index(doc.HookStopRim),corners)
+upper.Group=order
+upper.Tip=doc.HookInsertLeadIn
+for o in upper.Group:
+    o.ViewObject.Visibility = o==upper.Tip
 doc.recompute()
 for body in (upper, lower):
     if not body.Shape.isValid() or len(body.Shape.Solids) != 1:
@@ -79,10 +120,11 @@ source = (ROOT / "build_headphone_hook.py").read_text()
 tail = source[source.index('report = {"status":'):]
 exec(compile(tail, str(ROOT / "build_headphone_hook.py"), "exec"), globals())
 report["stop_height_mm"] = q("StopRise")
+report["stop_profile"] = {"shape":"rounded_rectangle","corner_radius_mm":q("StopCornerRadius"),"flat_top_width_mm":q("StopWidth")-2*q("StopCornerRadius")}
 report["leg_thickness_along_beam_mm"] = q("LowerOffset")
 report["clearance_to_leg_mm"] = doc.LegNearRight.Shape.BoundBox.XMin - lower.Shape.BoundBox.XMax
 assert abs(report["clearance_to_leg_mm"] - q("FitClearance")) < 1e-6
-assert abs(q("StopTop") - q("TableTopZ") - 25) < 1e-6
+assert abs(q("StopTop") - q("TableTopZ") - 30) < 1e-6
 report["environment_version"] = "User approved U frames: legs30.48X x60.21Y, no longitudinal rails"
 report["right_edge_alignment"] = {"tabletop_x_mm":q("CornerX"),"stop_right_x_mm":q("StopCenterX")+q("StopWidth")/2}
 outside = Part.makeBox(100,200,200,App.Vector(q("CornerX")+1e-5,-50,-80))
@@ -96,4 +138,4 @@ report["base_edge_alignment"] = {"stop_left_x_mm":q("StopCenterX")-q("StopWidth"
 assert abs(report["base_edge_alignment"]["stop_left_x_mm"]-q("ClampX"))<1e-6
 assert abs(report["base_edge_alignment"]["stop_front_y_mm"]-q("BossY"))<1e-6
 (ROOT / "headphone_hook_validation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
-print("Updated: 25mm stop rise, lower clamp ends 0.4mm before the corrected leg, hardware moved with clamp.")
+print("Updated: 30mm rounded-rectangle stop rise, lower clamp ends 0.4mm before the corrected leg, hardware moved with clamp.")

@@ -54,9 +54,9 @@ parameters = [
     ("StopWidth", "=CornerX - ClampX", "Ширина округлого ограничителя", "Левый и правый края совпадают с краями основания"),
     ("StopCenterX", "=CornerX - StopWidth / 2", "Центр ограничителя X", "Правый край ограничителя совпадает с правым торцом столешницы"),
     ("StopThickness", "=BossDepth", "Толщина ограничителя", "Передняя грань со стороны ноутбука совпадает с передней гранью основания"),
-    ("StopRise", "25 mm", "Выступ над столешницей", "Задано пользователем: 25 мм; оголовье лежит на столе"),
-    ("StopTop", "=TableTopZ + StopRise", "Верх ограничителя", "Плавный круглый верх"),
-    ("StopCapZ", "=StopTop - StopWidth / 2", "Центр скругления ограничителя", "Радиус верха равен половине ширины ограничителя"),
+    ("StopRise", "30 mm", "Выступ над столешницей", "Задано пользователем: 30 мм; оголовье лежит на столе"),
+    ("StopTop", "=TableTopZ + StopRise", "Верх ограничителя", "Плоский верх смягчённого прямоугольника"),
+    ("StopCornerRadius", "5 mm", "Скругление верхних углов", "Прямоугольный силуэт с двумя верхними углами R5"),
 ]
 last = max(i for i in range(1, 200) if H.getContents("A%d" % i))
 for alias, value, label, note in parameters:
@@ -158,16 +158,20 @@ box(upper, "HookRearLip", "Удерживающий борт заднего па
     (expr("ClipWidth"), expr("UpperBackEnd") + "-" + expr("RearLipFront"), expr("RearLipTop") + "-" + expr("RearLipBottom")),
     (expr("ClampX"), expr("RearLipFront"), expr("RearLipBottom")))
 box(upper, "HookStopStem", "Ограничитель у правого угла",
-    (expr("StopWidth"), expr("StopThickness"), expr("StopCapZ") + "-" + expr("ShelfBottom")),
+    (expr("StopWidth"), expr("StopThickness"), expr("StopTop") + "-" + expr("ShelfBottom")),
     (expr("StopCenterX") + "-" + expr("StopWidth") + "/2", expr("FrontY") + "-" + expr("StopThickness"), expr("ShelfBottom")))
-cylinder(upper, "Additive", "HookStopCap", "Полукруглый верх ограничителя",
-         expr("StopWidth") + "/2", expr("StopThickness"),
-         (expr("StopCenterX"), expr("FrontY"), expr("StopCapZ")), App.Rotation(App.Vector(1, 0, 0), 90))
-cap_edges = []
+corner_edges = ["Edge%d" % i for i,e in enumerate(upper.Tip.Shape.Edges,1)
+                if abs(e.BoundBox.ZMin-q("StopTop"))<1e-5 and e.BoundBox.ZLength<1e-6
+                and e.BoundBox.XLength<1e-6 and abs(e.BoundBox.YLength-q("StopThickness"))<1e-5]
+corners = fillet(upper,"HookStopCorners","Верхние углы прямоугольного ограничителя R5",corner_edges,q("StopCornerRadius"))
+corners.setExpression("Radius",expr("StopCornerRadius"))
+rim_edges = []
 for i, e in enumerate(upper.Tip.Shape.Edges, 1):
-    if isinstance(e.Curve, Part.Circle) and abs(e.Curve.Radius - q("StopWidth") / 2) < 1e-5 and e.BoundBox.ZMin >= q("StopCapZ") - 1e-5:
-        cap_edges.append("Edge%d" % i)
-fillet(upper, "HookStopRim", "Мягкие кромки округлого верха R1.5", cap_edges, 1.5)
+    bb=e.BoundBox
+    if bb.YLength<1e-6 and bb.ZMin>=q("StopTop")-q("StopCornerRadius")-1e-5:
+        if isinstance(e.Curve,Part.Circle) or (bb.ZLength<1e-6 and abs(bb.ZMax-q("StopTop"))<1e-5):
+            rim_edges.append("Edge%d" % i)
+fillet(upper, "HookStopRim", "Мягкие кромки прямоугольного верха R1.5", rim_edges, 1.5)
 cylinder(upper, "Subtractive", "HookInsertPocket", "Посадка термовставки M4 Ø6 × 6",
          expr("InsertPocketDiameter") + "/2", expr("InsertPocketDepth") + "+1 mm",
          (expr("ClampX") + "+" + expr("ClipWidth") + "/2", expr("BoltY"), expr("UpperBossBottom") + "-1 mm"))
