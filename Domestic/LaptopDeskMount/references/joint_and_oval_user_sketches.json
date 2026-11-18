@@ -1,0 +1,292 @@
+{
+  "Sketch001": {
+    "placement_position": [
+      350.0,
+      -7.4,
+      0.2
+    ],
+    "placement_quaternion": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "external": [
+      [
+        "HookInsertLeadIn",
+        [
+          "Edge53",
+          "Edge52",
+          "Edge49",
+          "Edge48"
+        ]
+      ]
+    ],
+    "geometry": [
+      "<Line segment (80.31,7.91,0) (80.31,9.91,0) >",
+      "<Line segment (80.31,7.91,0) (80.31,2.5,0) >",
+      "<Line segment (80.31,2.5,0) (80.31,0,0) >"
+    ],
+    "constraints": [
+      {
+        "type": "Coincident",
+        "first": 0,
+        "first_pos": 1,
+        "second": -5,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "PointOnObject",
+        "first": 0,
+        "first_pos": 2,
+        "second": -6,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "Vertical",
+        "first": 0,
+        "first_pos": 0,
+        "second": -2000,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 1,
+        "first_pos": 1,
+        "second": 0,
+        "second_pos": 1,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 1,
+        "first_pos": 2,
+        "second": -3,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 2,
+        "first_pos": 1,
+        "second": 1,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "PointOnObject",
+        "first": 2,
+        "first_pos": 2,
+        "second": -4,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "Vertical",
+        "first": 2,
+        "first_pos": 0,
+        "second": -2000,
+        "second_pos": 0,
+        "value": 0.0
+      }
+    ]
+  },
+  "Sketch002": {
+    "placement_position": [
+      307.12,
+      -7.4,
+      66.24000000000001
+    ],
+    "placement_quaternion": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "external": [],
+    "geometry": [],
+    "constraints": []
+  },
+  "Sketch003": {
+    "placement_position": [
+      307.12,
+      -7.4,
+      0.20000000000000007
+    ],
+    "placement_quaternion": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "external": [
+      [
+        "HookInsertLeadIn",
+        [
+          "Edge33",
+          "Edge23",
+          "Edge45"
+        ]
+      ]
+    ],
+    "geometry": [
+      "<Line segment (-12,4.5,0) (-12,22.7407,0) >",
+      "<Line segment (-12,22.7407,0) (42.88,22.7407,0) >",
+      "<Line segment (42.88,22.7407,0) (42.88,4.5,0) >",
+      "<Line segment (-4.93027,7,0) (33.83,7,0) >",
+      "<Line segment (-12,4.5,0) (42.88,4.5,0) >",
+      "<Line segment (-4.93027,7,0) (-4.93027,16.5462,0) >",
+      "<Line segment (-4.93027,16.5462,0) (33.83,16.5462,0) >",
+      "<Line segment (33.83,16.5462,0) (33.83,7,0) >"
+    ],
+    "constraints": [
+      {
+        "type": "Coincident",
+        "first": 0,
+        "first_pos": 1,
+        "second": -4,
+        "second_pos": 1,
+        "value": 0.0
+      },
+      {
+        "type": "Vertical",
+        "first": 0,
+        "first_pos": 0,
+        "second": -2000,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 1,
+        "first_pos": 1,
+        "second": 0,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "Horizontal",
+        "first": 1,
+        "first_pos": 0,
+        "second": -2000,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 2,
+        "first_pos": 1,
+        "second": 1,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 2,
+        "first_pos": 2,
+        "second": -5,
+        "second_pos": 1,
+        "value": 0.0
+      },
+      {
+        "type": "Vertical",
+        "first": 2,
+        "first_pos": 0,
+        "second": -2000,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "PointOnObject",
+        "first": 3,
+        "first_pos": 1,
+        "second": -3,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "PointOnObject",
+        "first": 3,
+        "first_pos": 2,
+        "second": -3,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 4,
+        "first_pos": 1,
+        "second": 0,
+        "second_pos": 1,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 4,
+        "first_pos": 2,
+        "second": 2,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 5,
+        "first_pos": 1,
+        "second": 3,
+        "second_pos": 1,
+        "value": 0.0
+      },
+      {
+        "type": "Vertical",
+        "first": 5,
+        "first_pos": 0,
+        "second": -2000,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 6,
+        "first_pos": 1,
+        "second": 5,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "Horizontal",
+        "first": 6,
+        "first_pos": 0,
+        "second": -2000,
+        "second_pos": 0,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 7,
+        "first_pos": 1,
+        "second": 6,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "Coincident",
+        "first": 7,
+        "first_pos": 2,
+        "second": 3,
+        "second_pos": 2,
+        "value": 0.0
+      },
+      {
+        "type": "Vertical",
+        "first": 7,
+        "first_pos": 0,
+        "second": -2000,
+        "second_pos": 0,
+        "value": 0.0
+      }
+    ]
+  }
+}
