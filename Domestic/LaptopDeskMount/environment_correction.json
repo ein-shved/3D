@@ -7,5 +7,6 @@
   ],
   "frame": "Each U frame has one crossbar along the laptop and two vertical ends",
   "hook_changed": false,
-  "hook_validation": "being_updated_to_corrected_environment"
+  "hook_validation": "updated hook geometry and installation paths verified against approved environment",
+  "hook_updated_after_environment_approval": true
 }
