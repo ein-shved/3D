@@ -56,7 +56,7 @@ parameters = [
     ("StopThickness", "=BossDepth", "Толщина ограничителя", "Передняя грань со стороны ноутбука совпадает с передней гранью основания"),
     ("StopRise", "30 mm", "Выступ над столешницей", "Задано пользователем: 30 мм; оголовье лежит на столе"),
     ("StopTop", "=TableTopZ + StopRise", "Верх ограничителя", "Плоский верх смягчённого прямоугольника"),
-    ("StopCornerRadius", "5 mm", "Скругление верхних углов", "Прямоугольный силуэт с двумя верхними углами R5"),
+    ("StopCornerRadius", "10 mm", "Скругление верхних углов", "Прямоугольный силуэт с двумя верхними углами R10"),
 ]
 last = max(i for i in range(1, 200) if H.getContents("A%d" % i))
 for alias, value, label, note in parameters:
@@ -163,7 +163,7 @@ box(upper, "HookStopStem", "Ограничитель у правого угла"
 corner_edges = ["Edge%d" % i for i,e in enumerate(upper.Tip.Shape.Edges,1)
                 if abs(e.BoundBox.ZMin-q("StopTop"))<1e-5 and e.BoundBox.ZLength<1e-6
                 and e.BoundBox.XLength<1e-6 and abs(e.BoundBox.YLength-q("StopThickness"))<1e-5]
-corners = fillet(upper,"HookStopCorners","Верхние углы прямоугольного ограничителя R5",corner_edges,q("StopCornerRadius"))
+corners = fillet(upper,"HookStopCorners","Верхние углы прямоугольного ограничителя R10",corner_edges,q("StopCornerRadius"))
 corners.setExpression("Radius",expr("StopCornerRadius"))
 rim_edges = []
 for i, e in enumerate(upper.Tip.Shape.Edges, 1):
@@ -171,7 +171,7 @@ for i, e in enumerate(upper.Tip.Shape.Edges, 1):
     if bb.YLength<1e-6 and bb.ZMin>=q("StopTop")-q("StopCornerRadius")-1e-5:
         if isinstance(e.Curve,Part.Circle) or (bb.ZLength<1e-6 and abs(bb.ZMax-q("StopTop"))<1e-5):
             rim_edges.append("Edge%d" % i)
-fillet(upper, "HookStopRim", "Мягкие кромки прямоугольного верха R1.5", rim_edges, 1.5)
+fillet(upper, "HookStopRim", "Мягкие кромки прямоугольного верха R2.5", rim_edges, 2.5)
 cylinder(upper, "Subtractive", "HookInsertPocket", "Посадка термовставки M4 Ø6 × 6",
          expr("InsertPocketDiameter") + "/2", expr("InsertPocketDepth") + "+1 mm",
          (expr("ClampX") + "+" + expr("ClipWidth") + "/2", expr("BoltY"), expr("UpperBossBottom") + "-1 mm"))

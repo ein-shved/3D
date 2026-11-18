@@ -54,8 +54,8 @@ if not cell:
     cell = "B%d" % row
     H.set("A%d" % row,"Скругление верхних углов")
     H.setAlias(cell,"StopCornerRadius")
-H.set(cell,"5 mm")
-H.set("C" + cell[1:],"Прямоугольный силуэт с двумя верхними углами R5")
+H.set(cell,"10 mm")
+H.set("C" + cell[1:],"Прямоугольный силуэт с двумя верхними углами R10")
 H.set("C" + H.getCellFromAlias("StopTop")[1:],"Плоский верх смягчённого прямоугольника")
 doc.recompute()
 corner_edges = ["Edge%d" % i for i,e in enumerate(doc.HookStopStem.Shape.Edges,1)
@@ -66,7 +66,7 @@ if len(corner_edges)!=2:
 corners = doc.getObject("HookStopCorners")
 if corners is None:
     corners = upper.newObject("PartDesign::Fillet","HookStopCorners")
-corners.Label = "Верхние углы прямоугольного ограничителя R5"
+corners.Label = "Верхние углы прямоугольного ограничителя R10"
 corners.Base = (doc.HookStopStem,corner_edges)
 corners.BaseFeature = doc.HookStopStem
 corners.setExpression("Radius","HookParameters.StopCornerRadius")
@@ -84,7 +84,8 @@ if len(rim_edges)!=6:
     raise RuntimeError("Unable to identify rectangle rim: " + str(rim_edges))
 doc.HookStopRim.Base = (corners,rim_edges)
 doc.HookStopRim.BaseFeature = corners
-doc.HookStopRim.Label = "Мягкие кромки прямоугольного верха R1.5"
+doc.HookStopRim.Radius = 2.5
+doc.HookStopRim.Label = "Мягкие кромки прямоугольного верха R2.5"
 if doc.getObject("HookStopCap"):
     doc.removeObject("HookStopCap")
 cell = H.getCellFromAlias("StopCapZ")
@@ -120,7 +121,7 @@ source = (ROOT / "build_headphone_hook.py").read_text()
 tail = source[source.index('report = {"status":'):]
 exec(compile(tail, str(ROOT / "build_headphone_hook.py"), "exec"), globals())
 report["stop_height_mm"] = q("StopRise")
-report["stop_profile"] = {"shape":"rounded_rectangle","corner_radius_mm":q("StopCornerRadius"),"flat_top_width_mm":q("StopWidth")-2*q("StopCornerRadius")}
+report["stop_profile"] = {"shape":"rounded_rectangle","corner_radius_mm":q("StopCornerRadius"),"rim_radius_mm":doc.HookStopRim.Radius.Value,"flat_top_width_mm":q("StopWidth")-2*q("StopCornerRadius")}
 report["leg_thickness_along_beam_mm"] = q("LowerOffset")
 report["clearance_to_leg_mm"] = doc.LegNearRight.Shape.BoundBox.XMin - lower.Shape.BoundBox.XMax
 assert abs(report["clearance_to_leg_mm"] - q("FitClearance")) < 1e-6
