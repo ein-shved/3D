@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "30mm_rounded_rectangle_geometry_and_exports_checked",
+  "status": "stronger_R10_R2_5_stop_rounds_geometry_and_exports_checked",
   "document": "LaptopDeskMount.FCStd",
   "document_name": "LaptopDeskMount",
   "reference": "references/headphone_hook_sketch.jpg",
@@ -30,7 +30,7 @@
     "Использовать существующее окружение и тот же документ; держатели ноутбука сохраняются.",
     "Правый край ограничителя совпадает с правым торцом стола; кольцо по текущему указанию отсутствует.",
     "Левый и передний со стороны ноутбука края крюка совпадают с краями основания; правый край остаётся у торца стола.",
-    "Высота над столешницей 30 мм (единицы уточнены пользователем); смягчённый прямоугольник с плоским верхом, углами R5 и кромками R1.5."
+    "Высота над столешницей 30 мм (единицы уточнены пользователем); смягчённый прямоугольник с плоским верхом, углами R10 и кромками R2.5."
   ],
   "environment_objects": [
     "Parameters",
@@ -331,8 +331,9 @@
     "stop_left_x_mm": 295.12,
     "stop_front_y_mm": -14.4,
     "stop_profile": "rounded_rectangle",
-    "stop_corner_radius_mm": 5,
-    "stop_flat_top_width_mm": 44.88
+    "stop_corner_radius_mm": 10,
+    "stop_flat_top_width_mm": 34.88,
+    "stop_rim_radius_mm": 2.5
   },
   "environment_remove_objects": [
     "LongRailLeft",
