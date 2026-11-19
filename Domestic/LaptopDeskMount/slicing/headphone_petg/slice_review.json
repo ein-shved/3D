@@ -2,34 +2,33 @@
   "decision": "keep",
   "printer": "Elegoo Neptune 4 Pro",
   "material": "PETG",
-  "model_layers": 330,
+  "model_layers": 480,
   "first_layer_objects": [
-    "lower",
     "upper"
   ],
   "support_layers": 0,
   "support_bounds_mm": null,
   "extrusion_bounds_mm": {
     "min": [
-      43.137,
-      47.137,
+      76.197,
+      47.982,
       0.2
     ],
     "max": [
-      175.751,
-      176.174,
-      66.0
+      148.804,
+      177.019,
+      96.0
     ]
   },
   "filament_mm_by_path_type": {
-    "Skirt/Brim": 195.33023999999992,
-    "Perimeter": 8099.919630000081,
-    "External perimeter": 4087.4136299999823,
-    "Solid infill": 3100.1849200000024,
-    "Internal infill": 6490.281990000009,
-    "Bridge infill": 839.0716799999998,
-    "Top solid infill": 471.2444899999995,
-    "Overhang perimeter": 11.700090000000014
+    "Skirt/Brim": 116.60611000000011,
+    "Perimeter": 6740.610970000107,
+    "External perimeter": 3403.341780000007,
+    "Solid infill": 2527.2298499999997,
+    "Internal infill": 6483.016350000004,
+    "Bridge infill": 701.0623899999997,
+    "Top solid infill": 405.7480199999996,
+    "Overhang perimeter": 5.465609999999998
   },
   "support_volume_cm3": 0.0,
   "rear_roof_bridge": {
@@ -39,12 +38,15 @@
     "max_path_with_anchors_mm": 14.602000000000004,
     "speed_mm_s": 25
   },
-  "head_recess_width_mm": 7.5,
+  "part_names": [
+    "headphone_hook_upper"
+  ],
+  "stop_rise_above_table_mm": 60,
   "notes": [
-    "Both parts retain the requested print planes and have first-layer material and brims.",
+    "Upper part only, on its requested flat underside with a brim; lower part is excluded.",
     "No support extrusion. Rear roof bridges cross the short 12.6 mm gap, anchored at both ends.",
-    "Horizontal 7.5 mm cap recess closes with short bridges and progressively supported arcs.",
-    "PETG bridge sag remains untested; clean stray strands from sliding joint and screw recess if needed.",
+    "Two insert seats retained; stop is 60 mm above the tabletop, 96.04 mm total print height.",
+    "PETG bridge sag remains untested; clean stray strands from sliding joint if needed.",
     "No rescaling or CAD changes. Slicing prediction does not verify physical fit or strength.",
     "Three perimeters, 15% gyroid, four top/bottom layers replace the laptop mounts six perimeters and 40% infill."
   ]
