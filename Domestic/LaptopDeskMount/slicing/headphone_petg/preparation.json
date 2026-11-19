@@ -38,11 +38,24 @@
     "binary_gcode": "0"
   },
   "parts": {
-    "headphone_hook_upper.stl": "d4173906e009a4eae37f3a97a7acd4ec019896887cd142344af201e4717934de",
-    "headphone_hook_lower.stl": "75c5c85598f66b69859ce3532a32ea46d75de7ac11f1b6d0cbd8508ff10a6e8c"
+    "headphone_hook_upper.stl": "ed9450a65fc6d14e8f38e869de4079910da2d50f18ea84866498bb97bf377604"
   },
-  "orientation": "Upper: flat assembly underside. Lower: side plane. No rescaling.",
-  "support_reason": "No supports: rear roof bridges 12.6 mm; horizontal cap recess is 7.5 mm wide. Bridge speed 25 mm/s.",
+  "parts_layout": {
+    "headphone_hook_upper": {
+      "translation_mm": [
+        85.05999946594238,
+        56.84499740600586,
+        0
+      ],
+      "dimensions_mm": [
+        54.880001068115234,
+        111.31000518798828,
+        96.04000091552734
+      ]
+    }
+  },
+  "orientation": "Upper only: flat assembly underside, centred on bed. No rescaling.",
+  "support_reason": "No supports: rear roof bridges 12.6 mm. Bridge speed 25 mm/s.",
   "prior_mount_profile": {
     "perimeters": 6,
     "infill": "40% gyroid"
