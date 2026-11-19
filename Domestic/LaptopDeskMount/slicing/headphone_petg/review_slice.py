@@ -6,7 +6,10 @@ import re
 
 ROOT = Path(__file__).resolve().parent
 text = (ROOT / 'headphone_hook_petg.gcode').read_text()
-selected = [0.2, 6.8, 15.4, 15.8]
+layout=json.loads((ROOT/'preparation.json').read_text())['parts_layout']['headphone_hook_upper']
+tx,ty,_=layout['translation_mm']
+width,depth,height=layout['dimensions_mm']
+selected = [0.2, 6.8, 36.2, 90.0]
 panels = {z: [] for z in selected}
 bounds = {'min': [math.inf] * 3, 'max': [-math.inf] * 3}
 support_bounds = {'min': [math.inf] * 3, 'max': [-math.inf] * 3}
@@ -41,8 +44,8 @@ for line in text.splitlines():
     if ne > e and math.hypot(nx - x, ny - y) > 1e-6 and role != 'Custom':
         extrusion[role] = extrusion.get(role, 0) + ne - e
         supporting = role.startswith('Support')
-        if role == 'Bridge infill' and abs(nz - 6.8) < 0.01 and 56 < x < 103 and 56 < nx < 103:
-            if min(y, ny) < 149 and max(y, ny) > 161:
+        if role == 'Bridge infill' and abs(nz - 6.8) < 0.01 and tx+4 < x < tx+width-4 and tx+4 < nx < tx+width-4:
+            if min(y, ny) < ty+92.71 and max(y, ny) > ty+105.31:
                 roof_bridges.append({'start': [x, y, nz], 'end': [nx, ny, nz],
                                      'path_length_mm': math.hypot(nx-x, ny-y)})
         for box in [bounds] + ([support_bounds] if supporting else []):
@@ -55,15 +58,15 @@ for line in text.splitlines():
         elif role != 'Skirt/Brim':
             layers.add(round(nz, 3))
             if abs(nz - 0.2) < 0.01:
-                first_layer_objects.add('upper' if (x + nx) / 2 < 114 else 'lower')
+                first_layer_objects.add('upper')
         for plane in selected:
             if abs(nz - plane) < 0.025:
                 panels[plane].append((x, y, nx, ny, role))
     x, y, z, e = nx, ny, nz, ne
 
-assert first_layer_objects == {'upper', 'lower'}
+assert first_layer_objects == {'upper'}
 assert all(0 <= bounds['min'][i] and bounds['max'][i] <= limit for i, limit in enumerate((225, 225, 265)))
-assert abs(bounds['max'][2] - 66.0) < 0.3
+assert abs(bounds['max'][2] - height) < 0.3
 assert not support_layers
 assert extrusion.get('Internal infill', 0) > 0
 assert roof_bridges, 'Rear roof bridge paths not found'
@@ -78,12 +81,12 @@ report = {
                          'full_span_extrusion_paths': len(roof_bridges),
                          'max_path_with_anchors_mm': max(b['path_length_mm'] for b in roof_bridges),
                          'speed_mm_s': 25},
-    'head_recess_width_mm': 7.5,
+    'part_names':['headphone_hook_upper'],'stop_rise_above_table_mm':60,
     'notes': [
-        'Both parts retain the requested print planes and have first-layer material and brims.',
+        'Upper part only, on its requested flat underside with a brim; lower part is excluded.',
         'No support extrusion. Rear roof bridges cross the short 12.6 mm gap, anchored at both ends.',
-        'Horizontal 7.5 mm cap recess closes with short bridges and progressively supported arcs.',
-        'PETG bridge sag remains untested; clean stray strands from sliding joint and screw recess if needed.',
+        'Two insert seats retained; stop is 60 mm above the tabletop, 96.04 mm total print height.',
+        'PETG bridge sag remains untested; clean stray strands from sliding joint if needed.',
         'No rescaling or CAD changes. Slicing prediction does not verify physical fit or strength.',
         'Three perimeters, 15% gyroid, four top/bottom layers replace the laptop mounts six perimeters and 40% infill.',
     ],
@@ -101,10 +104,10 @@ def color(role):
 
 svg = '<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1000" viewBox="0 0 1100 1000"><rect width="1100" height="1000" fill="white"/>'
 for i, (plane, segments) in enumerate(panels.items()):
-    ox, oy, scale = 45 + (i % 2) * 550, 65 + (i // 2) * 480, 3.4
+    ox, oy, scale = 160 + (i % 2) * 550, 65 + (i // 2) * 480, 3.4
     svg += f'<text x="{ox}" y="{oy-22}" font-size="20">Z = {plane} mm</text>'
     for x, y, nx, ny, role in segments:
-        svg += f'<path d="M{ox+(x-42)*scale:.2f},{oy+(176-y)*scale:.2f}L{ox+(nx-42)*scale:.2f},{oy+(176-ny)*scale:.2f}" fill="none" stroke="{color(role)}" stroke-width="0.8"/>'
+        svg += f'<path d="M{ox+(x-tx)*scale:.2f},{oy+(ty+depth-y)*scale:.2f}L{ox+(nx-tx)*scale:.2f},{oy+(ty+depth-ny)*scale:.2f}" fill="none" stroke="{color(role)}" stroke-width="0.8"/>'
 svg += '<text x="45" y="985" font-size="18">Blue: walls; teal: fill; orange: supports; purple: bridge paths</text></svg>'
 (ROOT / 'layer_review.svg').write_text(svg)
 print(json.dumps({k: v for k, v in report.items() if k != 'filament_mm_by_path_type'}, indent=2))

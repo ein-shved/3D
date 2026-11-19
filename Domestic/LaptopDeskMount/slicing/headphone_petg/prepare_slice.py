@@ -1,4 +1,4 @@
-"""Prepare both hook parts and bind the sliced project to local printer presets."""
+"""Prepare the upper hook only and bind the sliced project to local printer presets."""
 from pathlib import Path
 import hashlib
 import json
@@ -52,8 +52,8 @@ def prepare():
     assert config['filament_type'] == 'PETG' and config['gcode_flavor'] == 'klipper'
     PROFILE.write_text('# Project-local copy of user presets.\n' +
                        '\n'.join(f'{k} = {v}' for k, v in sorted(config.items())) + '\n')
-    parts = [MODEL / 'exports' / f'headphone_hook_{p}.stl' for p in ('upper', 'lower')]
-    # Explicit positions preserve the chosen flat faces and leave room for both brims.
+    parts = [MODEL / 'exports' / 'headphone_hook_upper.stl']
+    # Centre the upper part on its chosen flat underside; the lower part is excluded.
     ns = 'http://schemas.microsoft.com/3dmanufacturing/core/2015/02'
     ET.register_namespace('', ns)
     tag = lambda n: '{' + ns + '}' + n
@@ -63,7 +63,8 @@ def prepare():
     resources = ET.SubElement(model, tag('resources'))
     build = ET.SubElement(model, tag('build'))
     names = ET.Element('config')
-    for objid, (part, tx, ty) in enumerate(zip(parts, [52, 124], [56, 68]), 1):
+    layout = {}
+    for objid, part in enumerate(parts, 1):
         raw = part.read_bytes()
         count = struct.unpack_from('<I', raw, 80)[0]
         assert len(raw) == 84 + 50 * count
@@ -78,6 +79,11 @@ def prepare():
                     vertices.append(point)
                 ids.append(index[point])
             triangles.append(ids)
+        minima=[min(p[i] for p in vertices) for i in range(3)]
+        maxima=[max(p[i] for p in vertices) for i in range(3)]
+        tx,ty=[112.5-(minima[i]+maxima[i])/2 for i in (0,1)]
+        layout[part.stem]={'translation_mm':[tx,ty,0],
+                           'dimensions_mm':[maxima[i]-minima[i] for i in range(3)]}
         obj = ET.SubElement(resources, tag('object'), id=str(objid), type='model', name=part.stem)
         mesh = ET.SubElement(obj, tag('mesh'))
         verts = ET.SubElement(mesh, tag('vertices'))
@@ -104,8 +110,9 @@ def prepare():
     provenance = {'printer': 'Elegoo Neptune 4 Pro', 'material': 'PETG',
                   'source_profiles': sources, 'overrides': overrides,
                   'parts': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in parts},
-                  'orientation': 'Upper: flat assembly underside. Lower: side plane. No rescaling.',
-                  'support_reason': 'No supports: rear roof bridges 12.6 mm; horizontal cap recess is 7.5 mm wide. Bridge speed 25 mm/s.',
+                  'parts_layout':layout,
+                  'orientation': 'Upper only: flat assembly underside, centred on bed. No rescaling.',
+                  'support_reason': 'No supports: rear roof bridges 12.6 mm. Bridge speed 25 mm/s.',
                   'prior_mount_profile': {'perimeters': 6, 'infill': '40% gyroid'}}
     (ROOT / 'preparation.json').write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + '\n')
     print('Prepared', BASE.with_suffix('.3mf'))
@@ -138,7 +145,8 @@ def finalize():
         'project': str(ready), 'gcode': str(gcode),
         'gcode_sha256': hashlib.sha256(gcode.read_bytes()).hexdigest(),
         'printer_settings_id': 'Neptune 4 Pro', 'physical_printer_settings_id': 'Home Neptune 4 Pro',
-        'parts': 2, 'perimeters': 3, 'infill': '15% gyroid', 'layer_height_mm': 0.2,
+        'parts': 1, 'part_names':['headphone_hook_upper'], 'stop_rise_above_table_mm':60,
+        'perimeters': 3, 'infill': '15% gyroid', 'layer_height_mm': 0.2,
         'top_bottom_solid_layers': 4, 'support_material': False, 'bridge_speed_mm_s': 25,
         'slicer_time_estimate': metric(r'^; estimated printing time \(normal mode\) = (.+)$'),
         'filament_length_mm': float(metric(r'^; filament used \[mm\] = ([\d.]+)')),
