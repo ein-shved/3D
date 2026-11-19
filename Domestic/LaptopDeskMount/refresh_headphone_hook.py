@@ -1,4 +1,4 @@
-"""Apply corrected U-frame fit and the user's 30mm rounded rectangle in place."""
+"""Apply corrected U-frame fit and the user's 60mm rounded rectangle in place."""
 from pathlib import Path
 import json
 import shutil
@@ -27,8 +27,8 @@ details["round_joint"](doc)
 H.set(H.getCellFromAlias("LowerOffset"), "=ProfileHeight")
 H.set("C" + H.getCellFromAlias("LowerOffset")[1:],
       "Толщина ноги вдоль перекладины после поворота профиля: 30.48 мм; обхват заканчивается перед внутренней гранью ноги")
-H.set(H.getCellFromAlias("StopRise"), "30 mm")
-H.set("C" + H.getCellFromAlias("StopRise")[1:], "Задано пользователем: выступ 30 мм над поверхностью столешницы")
+H.set(H.getCellFromAlias("StopRise"), "60 mm")
+H.set("C" + H.getCellFromAlias("StopRise")[1:], "Задано пользователем: выступ 60 мм над поверхностью столешницы")
 H.set("C" + H.getCellFromAlias("CornerLegInset")[1:], "Половина толщины ноги вдоль X: BeamHeight / 2 = 15.24 мм")
 H.set(H.getCellFromAlias("StopWidth"),"=CornerX - ClampX")
 H.set("C" + H.getCellFromAlias("StopWidth")[1:],"Левый и правый края совпадают с краями основания")
@@ -147,7 +147,7 @@ report["stop_profile"] = {"shape":"rounded_rectangle","corner_radius_mm":q("Stop
 report["leg_thickness_along_beam_mm"] = q("LowerOffset")
 report["clearance_to_leg_mm"] = doc.LegNearRight.Shape.BoundBox.XMin - lower.Shape.BoundBox.XMax
 assert abs(report["clearance_to_leg_mm"] - q("FitClearance")) < 1e-6
-assert abs(q("StopTop") - q("TableTopZ") - 30) < 1e-6
+assert abs(q("StopTop") - q("TableTopZ") - 60) < 1e-6
 report["environment_version"] = "User approved U frames: legs30.48X x60.21Y, no longitudinal rails"
 report["right_edge_alignment"] = {"tabletop_x_mm":q("CornerX"),"stop_right_x_mm":q("StopCenterX")+q("StopWidth")/2}
 outside = Part.makeBox(100,200,200,App.Vector(q("CornerX")+1e-5,-50,-80))
@@ -173,4 +173,4 @@ report["base_edge_alignment"] = {"stop_left_x_mm":q("StopCenterX")-q("StopWidth"
 assert abs(report["base_edge_alignment"]["stop_left_x_mm"]-q("ClampX"))<1e-6
 assert abs(report["base_edge_alignment"]["stop_front_y_mm"]-q("BossY"))<1e-6
 (ROOT / "headphone_hook_validation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n")
-print("Updated: 30mm rounded-rectangle stop rise, lower clamp ends 0.4mm before the corrected leg, hardware moved with clamp.")
+print("Updated: 60mm rounded-rectangle stop rise, lower clamp ends 0.4mm before the corrected leg, hardware moved with clamp.")

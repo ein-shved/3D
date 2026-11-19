@@ -29,9 +29,9 @@ rotation = App.Rotation(App.Vector(1,1,0), App.Vector(0,0,1), App.Vector(1,-1,.6
 camera = v.getCameraNode()
 camera.orientation.setValue(coin.SbRotation(*rotation.Q))
 center_x = (D.HookParameters.ClampX.Value + D.HookParameters.CornerX.Value) / 2 + 5
-position = App.Vector(center_x,22,12) + rotation.multVec(App.Vector(0,0,500))
+position = App.Vector(center_x,22,27) + rotation.multVec(App.Vector(0,0,500))
 camera.position.setValue(position.x,position.y,position.z)
-camera.height.setValue(175)
+camera.height.setValue(205)
 camera.nearDistance.setValue(1)
 camera.farDistance.setValue(2500)
 Gui.updateGui()
