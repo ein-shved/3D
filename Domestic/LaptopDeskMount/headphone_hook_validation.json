@@ -161,7 +161,7 @@
         96.04000091552734
       ],
       "base_plane": "Assembly Z-min on print Z=0",
-      "sliced": false
+      "sliced": true
     },
     "headphone_hook_lower": {
       "stl_closed": true,
@@ -176,5 +176,13 @@
     }
   },
   "physical_fit_tested": false,
-  "sliced": false
+  "sliced": true,
+  "slicing_parts": [
+    "headphone_hook_upper"
+  ],
+  "height_change_checks": {
+    "stop_rise_above_table_mm": 60,
+    "lower_part_volume_delta_mm3": 0,
+    "base_below_z37_volume_delta_mm3": 0
+  }
 }

@@ -49,5 +49,7 @@
     "PETG bridge sag remains untested; clean stray strands from sliding joint if needed.",
     "No rescaling or CAD changes. Slicing prediction does not verify physical fit or strength.",
     "Three perimeters, 15% gyroid, four top/bottom layers replace the laptop mounts six perimeters and 40% infill."
-  ]
+  ],
+  "embedded_profile_verified_by_reslicing": true,
+  "single_upper_mesh_verified": true
 }
